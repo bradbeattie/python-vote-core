@@ -278,7 +278,69 @@ class TestSchulzeMethod(unittest.TestCase):
             ],
             'winners': 'C'
         })
-            
+    
+     
+    # http://en.wikipedia.org/wiki/Schulze_method#Example
+    def testWikiExample2(self):
+
+        # Generate data
+        input = [
+            { "count":5, "ballot":[["A"], ["C"], ["B"], ["E"], ["D"]] },
+            { "count":5, "ballot":[["A"], ["D"], ["E"], ["C"], ["B"]] },
+            { "count":8, "ballot":[["B"], ["E"], ["D"], ["A"], ["C"]] },
+            { "count":3, "ballot":[["C"], ["A"], ["B"], ["E"], ["D"]] },
+            { "count":7, "ballot":[["C"], ["A"], ["E"], ["B"], ["D"]] },
+            { "count":2, "ballot":[["C"], ["B"], ["A"], ["D"], ["E"]] },
+            { "count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]] },
+            { "count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]] }
+        ]
+        output = SchulzeMethod.calculateWinner(input)
+        
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['A', 'C', 'B', 'E', 'D']),
+            'pairs': {
+                ('A', 'B'): 20,
+                ('A', 'C'): 26,
+                ('A', 'D'): 30,
+                ('A', 'E'): 22,
+                ('B', 'A'): 25,
+                ('B', 'C'): 16,
+                ('B', 'D'): 33,
+                ('B', 'E'): 18,
+                ('C', 'A'): 19,
+                ('C', 'B'): 29,
+                ('C', 'D'): 17,
+                ('C', 'E'): 24,
+                ('D', 'A'): 15,
+                ('D', 'B'): 12,
+                ('D', 'C'): 28,
+                ('D', 'E'): 14,
+                ('E', 'A'): 23,
+                ('E', 'B'): 27,
+                ('E', 'C'): 21,
+                ('E', 'D'): 31
+            },
+            'strongPairs': {
+                ('B', 'D'): 33,
+                ('E', 'D'): 31,
+                ('A', 'D'): 30,
+                ('C', 'B'): 29,
+                ('D', 'C'): 28,
+                ('E', 'B'): 27,
+                ('A', 'C'): 26,
+                ('B', 'A'): 25,
+                ('C', 'E'): 24,
+                ('E', 'A'): 23
+            },
+            'actions': [
+                ['edges', set([('E', 'A')])],
+                ['edges', set([('C', 'E')])],
+                ['nodes', set(['A', 'C', 'B', 'D'])]
+            ],
+            'winners': 'E'
+        })
+
 
 class TestPluralityAtLarge(unittest.TestCase):
     
