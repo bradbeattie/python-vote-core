@@ -25,6 +25,16 @@ import json, types, StringIO, traceback
 
 class ElectionRequestHandler(BaseHTTPRequestHandler):
 
+
+    def do_GET(self):
+        response = '<html><body><h1>Election Web Service</h1><p>This server only responds to posts. Try sending something like this:</p><code>curl -d \'{"votingSystem": "stv", "ballots": [{"count": 4, "ballot": ["orange"]}, {"count": 2, "ballot": ["pear", "orange"]}, {"count": 8, "ballot": ["chocolate", "strawberry"]}, {"count": 4, "ballot": ["chocolate", "sweets"]}, {"count": 1, "ballot": ["strawberry"]}, {"count": 1, "ballot": ["sweets"]}], "winners": 3}\' http://vote.cognitivesandbox.com; echo;</code><p>For further documentation, see <a href="http://github.com/bradbeattie/Election-Web-Service">the GitHub project page</a>.</p></body></html>'
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.send_header("Content-length", str(len(response)))
+        self.end_headers()
+        self.wfile.write(response)
+
+
     def do_POST(self):
         try:
             # Parse the incoming data
