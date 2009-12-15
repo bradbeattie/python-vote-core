@@ -38,7 +38,7 @@ class InstantRunoffVote(VotingSystem):
 
         # Loop until a candidate has obtained a majority of votes
         tallies = {}
-        while len(tallies) == 0 or max(tallies.values()) < quota:
+        while len(tallies) == 0 or max(tallies.values()) < quota or len(candidates) == 1:
             round = {}
             
             # Elimination step
@@ -75,5 +75,8 @@ class InstantRunoffVote(VotingSystem):
                     tallies[ballot["ballot"][0]] +=  ballot["count"]
             
         # Append the final winner and return
-        result["winners"] = set([max(tallies, key=tallies.get)])
+        if len(candidates) == 1:
+            result["winners"] = list(candidates)[0]
+        else:
+            result["winners"] = set([max(tallies, key=tallies.get)])
         return result

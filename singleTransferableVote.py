@@ -19,6 +19,7 @@ class SingleTransferableVote(VotingSystem):
     
     @staticmethod
     def calculateWinner(ballots, requiredWinners = 1):
+        result = {"rounds": [], "winners": set()}
                 
         # We might need to split ballots into fractions
         for ballot in ballots:
@@ -34,16 +35,23 @@ class SingleTransferableVote(VotingSystem):
         elif len(candidates) == requiredWinners:
             return {"winners":candidates}
         
+        # Determine the number of votes necessary to win (Droop Quota)
+        quota = 0;
+        for ballot in ballots:
+            quota += ballot["count"]
+        quota = int(math.floor(quota / (requiredWinners + 1)) + 1)
+        result["quota"] = quota
+        
         # Generate tie breaker
         tieBreaker = SingleTransferableVote.generateTieBreaker(candidates)
         
         # Loop until a candidate has obtained a majority of votes
-        result = {"rounds": [], "winners": set()}
-        while len(result["winners"]) < requiredWinners:
+        while len(result["winners"]) < requiredWinners and len(candidates) + len(result["winners"]) > requiredWinners:
             round = {}
             
             # Remove any zero-strength ballots
-            for ballot in ballots:
+            tmpBallots = copy.deepcopy(ballots)
+            for ballot in tmpBallots:
                 if len(ballot["ballot"]) == 0 or ballot["count"] == 0:
                     ballots.remove(ballot)
             
@@ -52,13 +60,6 @@ class SingleTransferableVote(VotingSystem):
             for ballot in ballots:
                 tallies[ballot["ballot"][0]] += ballot["count"]
             round["tallies"] = copy.deepcopy(tallies)
-            
-            # Determine the number of votes necessary to win (Droop Quota)
-            quota = 0;
-            for ballot in ballots:
-                quota += ballot["count"]
-            quota = int(math.floor(quota / (requiredWinners - len(result["winners"]) + 1)) + 1)
-            round["quota"] = quota
             
             # If any candidates meet or exceeds the quota
             if max(tallies.values()) >= quota:
@@ -109,4 +110,8 @@ class SingleTransferableVote(VotingSystem):
             result["rounds"].append(round)
 
         # Append the final winner and return
+        if len(result["winners"]) < requiredWinners:
+            result["remainingCandidates"] = candidates
+            for candidate in candidates:
+                result["winners"].add(candidate)
         return result
