@@ -15,6 +15,11 @@
 
 from votingSystem import VotingSystem
 import copy
+
+# This class implements the Single Transferable vote (aka STV) in its most
+# classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
+# Alternate counting methods such as Meek's and Warren's would be nice, but
+# would need to be covered in a separate class.
 class SingleTransferableVote(VotingSystem):
     
     @staticmethod

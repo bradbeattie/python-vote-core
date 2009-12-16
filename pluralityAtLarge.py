@@ -15,6 +15,8 @@
 
 from votingSystem import VotingSystem
 import copy, types
+
+# This class implements plurality at large (aka block voting).
 class PluralityAtLarge(VotingSystem):
     
     @staticmethod

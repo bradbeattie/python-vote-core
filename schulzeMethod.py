@@ -16,6 +16,8 @@
 from condorcet import CondorcetSystem
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
+
+# This class implements the Schulze Method (aka the beatpath method)
 class SchulzeMethod(CondorcetSystem):
     
     @staticmethod

@@ -15,6 +15,8 @@
 
 from votingSystem import VotingSystem
 import types
+
+# This class implements Plurality (aka first past the post, fptp, etc).
 class Plurality(VotingSystem):
     
     @staticmethod

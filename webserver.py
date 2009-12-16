@@ -22,7 +22,9 @@ from rankedPairs import RankedPairs
 from schulzeMethod import SchulzeMethod
 import json, types, StringIO, traceback
 
-
+# This class provides a basic server to listen for JSON requests. It then
+# calculates the winner using the desired voting system and returns the results,
+# again, encoded in JSON.
 class ElectionRequestHandler(BaseHTTPRequestHandler):
 
 

@@ -17,6 +17,8 @@ from condorcet import CondorcetSystem
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.cycles import find_cycle
 import copy
+
+# This class implements Tideman's Ranked Pairs
 class RankedPairs(CondorcetSystem):
     
     @staticmethod

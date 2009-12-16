@@ -15,6 +15,8 @@
 
 from votingSystem import VotingSystem
 import copy
+
+# This class implements instant-runoff voting (aka IRV, alternative vote, etc).
 class InstantRunoffVote(VotingSystem):
     
     @staticmethod

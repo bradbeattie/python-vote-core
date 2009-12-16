@@ -15,16 +15,11 @@
 
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
+import types
+
+# This class implements Schulze STV, a proportional representation system
 class SchulzeSTV:
     
     @staticmethod
     def calculateWinner(ballots):
-        
-        # Determine droop quota
-        
-        # Find guaranteed winners
-        
-        # Of the remaining winners
-        
-        
-        return ""
+        pass

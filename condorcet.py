@@ -15,6 +15,8 @@
 
 from votingSystem import VotingSystem
 import types, itertools
+
+# This class determines the Condorcet winner if one exists.
 class CondorcetSystem(VotingSystem):
     
     @staticmethod
