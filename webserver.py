@@ -57,7 +57,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             # Send the data to the requested voting system
             if jsonData["votingSystem"] in ["plurality", "fptp"]:
                 response = Plurality.calculateWinner(jsonData["ballots"])
-            if jsonData["votingSystem"] in ["pluralityAtLarge", "blockVoting"]:
+            elif jsonData["votingSystem"] in ["pluralityAtLarge", "blockVoting"]:
                 response = PluralityAtLarge.calculateWinner(jsonData["ballots"], jsonData["winners"])
             elif jsonData["votingSystem"] in ["irv", "instantRunoff"]:
                 response = InstantRunoffVote.calculateWinner(jsonData["ballots"], jsonData["winners"])
@@ -77,7 +77,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
                 raise Exception("No voting system specified")
         except:
             fp = StringIO.StringIO()
-            traceback.print_exc(1,fp)
+            traceback.print_exc(10,fp)
             response = fp.getvalue()
             self.send_response(500)
 
