@@ -29,8 +29,8 @@ class SchulzeMethod(CondorcetSystem):
         # Initialize the candidate graph
         candidateGraph = digraph()
         candidateGraph.add_nodes(list(result["candidates"]))
-        for pair in result["strongPairs"].keys():
-            candidateGraph.add_edge(pair[0], pair[1], result["strongPairs"][pair])
+        for (pair,weight) in result["strongPairs"].items():
+            candidateGraph.add_edge(pair[0], pair[1], weight)
         
         # Iterate through using the Schwartz set heuristic
         result["actions"] = []

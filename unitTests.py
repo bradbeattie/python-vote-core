@@ -524,7 +524,7 @@ class TestSingleTransferableVote(unittest.TestCase):
 
     # IRV, no rounds
     def testIRVLandslide(self):
-        return
+        
         # Generate data
         input = [
             { "count":56, "ballot":["c1", "c2", "c3"] },

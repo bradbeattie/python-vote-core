@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #An example of a class
-import random
-class VotingSystem:
+import random, math
+class VotingSystem(object):
     
     @staticmethod
     def generateTieBreaker(candidates):
@@ -49,3 +49,10 @@ class VotingSystem:
         pair = VotingSystem.breakStrongestPairTie(tiedPairs, tieBreaker)
         tieBreaker.reverse() # Is this second reversal necessary?
         return pair
+    
+    @staticmethod
+    def droopQuota(ballots, seats):
+        quota = 0;
+        for ballot in ballots:
+            quota += ballot["count"]
+        return int(math.floor(quota / (seats + 1)) + 1)

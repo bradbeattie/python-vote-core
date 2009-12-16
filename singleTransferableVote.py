@@ -14,12 +14,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from votingSystem import VotingSystem
-import math, copy
+import copy
 class SingleTransferableVote(VotingSystem):
     
     @staticmethod
     def calculateWinner(ballots, requiredWinners = 1):
-        result = {"rounds": [], "winners": set()}
                 
         # We might need to split ballots into fractions
         for ballot in ballots:
@@ -36,49 +35,45 @@ class SingleTransferableVote(VotingSystem):
             return {"winners":candidates}
         
         # Determine the number of votes necessary to win (Droop Quota)
-        quota = 0;
-        for ballot in ballots:
-            quota += ballot["count"]
-        quota = int(math.floor(quota / (requiredWinners + 1)) + 1)
-        result["quota"] = quota
+        result = {
+            "quota": SingleTransferableVote.droopQuota(ballots, requiredWinners),
+            "rounds": [],
+            "winners": set(),
+        }
         
         # Generate tie breaker
         tieBreaker = SingleTransferableVote.generateTieBreaker(candidates)
         
-        # Loop until a candidate has obtained a majority of votes
+        # Loop until we have enough candidates or has obtained a majority of votes
         while len(result["winners"]) < requiredWinners and len(candidates) + len(result["winners"]) > requiredWinners:
-            round = {}
             
             # Remove any zero-strength ballots
-            tmpBallots = copy.deepcopy(ballots)
-            for ballot in tmpBallots:
+            for ballot in copy.deepcopy(ballots):
                 if len(ballot["ballot"]) == 0 or ballot["count"] == 0:
                     ballots.remove(ballot)
             
             # Sum up all votes for each candidate
-            tallies = dict.fromkeys(candidates, 0)
+            round = {"tallies": dict.fromkeys(candidates, 0)}
             for ballot in ballots:
-                tallies[ballot["ballot"][0]] += ballot["count"]
-            round["tallies"] = copy.deepcopy(tallies)
+                round["tallies"][ballot["ballot"][0]] += ballot["count"]
             
             # If any candidates meet or exceeds the quota
-            if max(tallies.values()) >= quota:
+            if max(round["tallies"].values()) >= result["quota"]:
                 
                 # Collect candidates as winners
                 round["winners"] = set()
-                for candidate in tallies.keys():
-                    if tallies[candidate] >= quota:
+                for (candidate,tally) in round["tallies"].items():
+                    if tally >= result["quota"]:
                         round["winners"].add(candidate)
-                        result["winners"].add(candidate)
+                result["winners"] |= round["winners"]
             
                 # Redistribute excess votes
                 for ballot in ballots:
                     if ballot["ballot"][0] in round["winners"]:
-                        ballot["count"] *= (tallies[ballot["ballot"][0]] - quota) / tallies[ballot["ballot"][0]]
+                        ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - result["quota"]) / round["tallies"][ballot["ballot"][0]]
         
                 # Remove candidates from remaining ballots
-                for candidate in round["winners"]:
-                    candidates.remove(candidate)
+                candidates -= round["winners"]
                 for ballot in ballots:
                     for candidate in round["winners"]:
                         if candidate in ballot["ballot"]:
@@ -88,11 +83,8 @@ class SingleTransferableVote(VotingSystem):
             else:
 
                 # Determine which candidates have the fewest votes
-                fewestVotes = min(tallies.values())
-                leastPreferredCandidates = set()
-                for candidate in tallies.keys():
-                    if tallies[candidate] == fewestVotes:
-                        leastPreferredCandidates.add(candidate)
+                fewestVotes = min(round["tallies"].values())
+                leastPreferredCandidates = set((candidate) for (candidate,votes) in round["tallies"].iteritems() if votes == fewestVotes)
                 if len(leastPreferredCandidates) > 1:
                     result["tieBreaker"] = tieBreaker
                     round["tiedLosers"] = leastPreferredCandidates

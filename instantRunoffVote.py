@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from votingSystem import VotingSystem
-import math, copy
+import copy
 class InstantRunoffVote(VotingSystem):
     
     @staticmethod
@@ -22,11 +22,7 @@ class InstantRunoffVote(VotingSystem):
         result = {"rounds": []}
         
         # Determine the number of votes necessary to win
-        quota = 0;
-        for ballot in ballots:
-            quota += ballot["count"]
-        quota = int(math.floor(quota / 2) + 1);
-        result["quota"] = quota
+        result["quota"] = InstantRunoffVote.droopQuota(ballots, 1)
         
         # Collect the list of candidates
         candidates = set()
@@ -38,7 +34,7 @@ class InstantRunoffVote(VotingSystem):
 
         # Loop until a candidate has obtained a majority of votes
         tallies = {}
-        while len(tallies) == 0 or max(tallies.values()) < quota or len(candidates) == 1:
+        while len(tallies) == 0 or max(tallies.values()) < result["quota"] or len(candidates) == 1:
             round = {}
             
             # Elimination step
