@@ -14,7 +14,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # This class implements Schulze STV, a proportional representation system
+from pygraph.classes.digraph import digraph
+from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 import itertools
+
 class SchulzeSTV:
     
     @staticmethod
@@ -35,14 +38,66 @@ class SchulzeSTV:
         for ballot in ballots:
             candidates = candidates.union(ballot["ballot"].keys())
         candidates = sorted(list(candidates))
-            
+        
+        managementGraph = digraph()
+        managementGraph.add_nodes(itertools.combinations(candidates, requiredWinners))
+        
         candidateSets = dict.fromkeys(itertools.combinations(candidates, requiredWinners + 1), 0)
         for candidateSet in candidateSets:
             for candidate in candidateSet:
                 otherCandidates = sorted(list(set(candidateSet) - set([candidate])))
                 completed = SchulzeSTV.__proportionalCompletion__(candidate, otherCandidates, ballots)
-                print candidate, otherCandidates, SchulzeSTV.__strengthOfVoteManagement__(completed)
+                weight = SchulzeSTV.__strengthOfVoteManagement__(completed)
+                for subset in itertools.combinations(otherCandidates, len(otherCandidates) - 1):
+                    managementGraph.add_edge(tuple(otherCandidates), tuple(sorted(list(subset) + [candidate])), weight)
         
+        edgesToRemove = []
+        for edge in managementGraph.edges():
+            if managementGraph.edge_weight(edge[0], edge[1]) <= managementGraph.edge_weight(edge[1], edge[0]):
+                edgesToRemove.append(edge)
+        for edge in edgesToRemove:
+            managementGraph.del_edge(edge[0], edge[1])
+        
+        result = {}
+        result["actions"] = []
+        candidates = managementGraph.nodes()
+        while len(managementGraph.edges()) > 0:
+            
+            # Remove nodes at the end of non-cycle paths
+            access = accessibility(managementGraph)
+            mutualAccess = mutual_accessibility(managementGraph)
+            candidatesToRemove = set()
+            for candidate in candidates:
+                candidatesToRemove = candidatesToRemove | (set(access[candidate]) - set(mutualAccess[candidate]))
+            if len(candidatesToRemove) > 0:
+                result["actions"].append(['nodes', candidatesToRemove])
+                for candidate in candidatesToRemove:
+                    managementGraph.del_node(candidate)
+                    candidates.remove(candidate)
+
+            # If none exist, remove the weakest edges
+            else:
+                lightestEdges = set([managementGraph.edges()[0]])
+                weight = managementGraph.edge_weight(managementGraph.edges()[0][0], managementGraph.edges()[0][1])
+                for edge in managementGraph.edges():
+                    if managementGraph.edge_weight(edge[0], edge[1]) < weight:
+                        weight = managementGraph.edge_weight(edge[0], edge[1])
+                        lightestEdges = set([edge])
+                    elif managementGraph.edge_weight(edge[0], edge[1]) == weight:
+                        lightestEdges.add(edge)
+                result["actions"].append(['edges', lightestEdges])
+                for edge in lightestEdges:
+                    managementGraph.del_edge(edge[0], edge[1])
+
+        # Mark the winner
+        if len(managementGraph.nodes()) == 1:
+            result["winners"] = managementGraph.nodes()[0]
+        else:
+            result["tiedWinners"] = set(managementGraph.nodes())
+            result["tieBreaker"] = SchulzeSTV.generateTieBreaker(result["candidates"])
+            result["winners"] = set([SchulzeSTV.breakWinnerTie(managementGraph.nodes(), result["tieBreaker"])])
+        
+        print set(result["winners"])
     
     @staticmethod
     def __proportionalCompletion__(candidate, otherCandidates, ballots):
