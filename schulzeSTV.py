@@ -38,22 +38,10 @@ class SchulzeSTV:
             
         candidateSets = dict.fromkeys(itertools.combinations(candidates, requiredWinners + 1), 0)
         for candidateSet in candidateSets:
-            print candidateSet
-            if set(candidateSet) == set(["a","b","c","d"]):
-                for candidate in candidateSet:
-                    if candidate == "a":
-                        otherCandidates = sorted(list(set(candidateSet) - set([candidate])))
-                        completed = SchulzeSTV.__proportionalCompletion__(candidate, otherCandidates, ballots)
-                        
-                        
-                        # CONVERT THE PROPORTIONAL COMPLETION TO THE VOTER PROFILE FORM BELOW.
-                        # IT CAN BE CLEANED UP LATER. WE'RE JUST TRYING TO OBTAIN PROPER FLOW FIRST.
-                        profile = []
-                        for (k,v) in completed.items():
-                            
-                            profile.append()
-                            print str(k)  + ": " + str(v)
-                        # Now calculate the strength of the vote management as per example below
+            for candidate in candidateSet:
+                otherCandidates = sorted(list(set(candidateSet) - set([candidate])))
+                completed = SchulzeSTV.__proportionalCompletion__(candidate, otherCandidates, ballots)
+                print candidate, otherCandidates, SchulzeSTV.__strengthOfVoteManagement__(completed)
         
     
     @staticmethod

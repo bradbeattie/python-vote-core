@@ -20,7 +20,7 @@ class TestSchulzeSTV(unittest.TestCase):
     
     # Schulze STV, example from Markus' part 2 of 5: Free Riding and Vote Management 
     def testSchulze2Example(self):
-        return
+        
         # Generate data
         input = [
             { "count":60, "ballot":[["a"], ["b"], ["c"], ["d"], ["e"]] },
