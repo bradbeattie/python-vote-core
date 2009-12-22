@@ -35,8 +35,25 @@ class SchulzeMethod(CondorcetSystem):
             candidateGraph.add_edge(pair[0], pair[1], weight)
         
         # Iterate through using the Schwartz set heuristic
-        result["actions"] = []
-        candidates = result["candidates"].copy()
+        candidateGraph, result["actions"] = SchulzeMethod.__schwartzSetHeuristic__(candidateGraph)
+        
+        # Mark the winner
+        if len(candidateGraph.nodes()) == 1:
+            result["winners"] = candidateGraph.nodes()[0]
+        else:
+            result["tiedWinners"] = set(candidateGraph.nodes())
+            result["tieBreaker"] = SchulzeMethod.generateTieBreaker(result["candidates"])
+            result["winners"] = set([SchulzeMethod.breakWinnerTie(candidateGraph.nodes(), result["tieBreaker"])])
+        
+        # Return the final result
+        return result
+    
+    @staticmethod
+    def __schwartzSetHeuristic__(candidateGraph):
+        
+        # Iterate through using the Schwartz set heuristic
+        actions = []
+        candidates = candidateGraph.nodes()
         while len(candidateGraph.edges()) > 0:
             
             # Remove nodes at the end of non-cycle paths
@@ -46,7 +63,7 @@ class SchulzeMethod(CondorcetSystem):
             for candidate in candidates:
                 candidatesToRemove = candidatesToRemove | (set(access[candidate]) - set(mutualAccess[candidate]))
             if len(candidatesToRemove) > 0:
-                result["actions"].append(['nodes', candidatesToRemove])
+                actions.append(['nodes', candidatesToRemove])
                 for candidate in candidatesToRemove:
                     candidateGraph.del_node(candidate)
                     candidates.remove(candidate)
@@ -61,17 +78,8 @@ class SchulzeMethod(CondorcetSystem):
                         lightestEdges = set([edge])
                     elif candidateGraph.edge_weight(edge[0], edge[1]) == weight:
                         lightestEdges.add(edge)
-                result["actions"].append(['edges', lightestEdges])
+                actions.append(['edges', lightestEdges])
                 for edge in lightestEdges:
                     candidateGraph.del_edge(edge[0], edge[1])
         
-        # Mark the winner
-        if len(candidateGraph.nodes()) == 1:
-            result["winners"] = candidateGraph.nodes()[0]
-        else:
-            result["tiedWinners"] = set(candidateGraph.nodes())
-            result["tieBreaker"] = SchulzeMethod.generateTieBreaker(result["candidates"])
-            result["winners"] = set([SchulzeMethod.breakWinnerTie(candidateGraph.nodes(), result["tieBreaker"])])
-        
-        # Return the final result
-        return result
+        return candidateGraph, actions

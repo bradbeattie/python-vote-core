@@ -15,7 +15,7 @@
 
 # This class implements Schulze STV, a proportional representation system
 from pygraph.classes.digraph import digraph
-from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
+from schulzeMethod import SchulzeMethod
 import itertools
 
 class SchulzeSTV:
@@ -59,35 +59,7 @@ class SchulzeSTV:
             managementGraph.del_edge(edge[0], edge[1])
         
         result = {}
-        result["actions"] = []
-        candidates = managementGraph.nodes()
-        while len(managementGraph.edges()) > 0:
-            
-            # Remove nodes at the end of non-cycle paths
-            access = accessibility(managementGraph)
-            mutualAccess = mutual_accessibility(managementGraph)
-            candidatesToRemove = set()
-            for candidate in candidates:
-                candidatesToRemove = candidatesToRemove | (set(access[candidate]) - set(mutualAccess[candidate]))
-            if len(candidatesToRemove) > 0:
-                result["actions"].append(['nodes', candidatesToRemove])
-                for candidate in candidatesToRemove:
-                    managementGraph.del_node(candidate)
-                    candidates.remove(candidate)
-
-            # If none exist, remove the weakest edges
-            else:
-                lightestEdges = set([managementGraph.edges()[0]])
-                weight = managementGraph.edge_weight(managementGraph.edges()[0][0], managementGraph.edges()[0][1])
-                for edge in managementGraph.edges():
-                    if managementGraph.edge_weight(edge[0], edge[1]) < weight:
-                        weight = managementGraph.edge_weight(edge[0], edge[1])
-                        lightestEdges = set([edge])
-                    elif managementGraph.edge_weight(edge[0], edge[1]) == weight:
-                        lightestEdges.add(edge)
-                result["actions"].append(['edges', lightestEdges])
-                for edge in lightestEdges:
-                    managementGraph.del_edge(edge[0], edge[1])
+        managementGraph, result["actions"] = SchulzeMethod.__schwartzSetHeuristic__(managementGraph)
 
         # Mark the winner
         if len(managementGraph.nodes()) == 1:
