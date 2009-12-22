@@ -55,7 +55,6 @@ class PluralityAtLarge(VotingSystem):
         
         # Determine which candidates win
         winningCandidates = set()
-        print requiredWinners
         while len(winningCandidates) < requiredWinners:
             
             # Find the remaining candidates with the most votes
