@@ -127,7 +127,6 @@ class SchulzeSTV:
                 patternWeights[pattern] = 0
             patternWeights[pattern] += addition
         return patternWeights
-        
 
     # This method converts the voter profile into a capacity graph and iterates
     # on the maximum flow using the Edmonds Karp algorithm. The end result is
@@ -137,10 +136,13 @@ class SchulzeSTV:
     @staticmethod
     def __strengthOfVoteManagement__(voterProfile):
         
-        numberOfCandidates = len(voterProfile[0]) - 1
-        numberOfPatterns = 2**numberOfCandidates - 1
+        
+        numberOfCandidates = len(voterProfile.keys()[0])
+        numberOfPatterns = len(voterProfile) - 1
         numberOfNodes = 1 + numberOfPatterns + numberOfCandidates + 1
-        r = [(sum((voterPattern[0]) for voterPattern in voterProfile) - voterProfile[numberOfPatterns][0]) / numberOfCandidates]
+        orderedPatterns = sorted(voterProfile.keys())
+        orderedPatterns.remove(tuple([3]*numberOfCandidates))
+        r = [(sum(voterProfile.values()) - voterProfile[tuple([3]*numberOfCandidates)]) / numberOfCandidates]
         
         # Generate a numberOfNodes x numberOfNodes matrix of zeroes
         C = []
@@ -148,14 +150,18 @@ class SchulzeSTV:
             C.append([0] * numberOfNodes)
             
         # Source to voters
-        for vertex in range(numberOfPatterns):
-            C[0][vertex+1] = voterProfile[vertex][0]
+        vertex = 0
+        for pattern in orderedPatterns:
+            C[0][vertex+1] = voterProfile[pattern]
+            vertex += 1
 
         # Voters to candidates
-        for vertex in range(numberOfPatterns):
+        vertex = 0
+        for pattern in orderedPatterns:
             for i in range(1,numberOfCandidates + 1):
-                if voterProfile[vertex][i] == 1:
-                    C[vertex+1][1 + numberOfPatterns + i - 1] = voterProfile[vertex][0]
+                if pattern[i-1] == 1:
+                    C[vertex+1][1 + numberOfPatterns + i - 1] = voterProfile[pattern]
+            vertex += 1
         
         # Iterate towards the limit
         loop = 0
