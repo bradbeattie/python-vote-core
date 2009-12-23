@@ -18,8 +18,10 @@ import unittest
 
 class TestSchulzeSTV(unittest.TestCase):
     
-    # Schulze STV, example from Markus' part 2 of 5: Free Riding and Vote Management 
-    def testSchulze2Example(self):
+    # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
+    # and Vote Management under Proportional Representation by the Single
+    # Transferable Vote, section 5.5). 
+    def testPart2of5Example(self):
         
         # Generate data
         input = [
@@ -47,11 +49,10 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV.calculateWinner(input, 3, "preferenceSets")
         
         # Run tests
+        self.assertEqual(output['winners'], set(['a', 'd', 'e']))
         
-    
-    # Schulze STV, example from Markus' part 3 of 5: Implementing the Schulze
-    # STV Method. See calcul01.pdf (Abstract: In this paper, we illustrate the
-    # concept of "proportional completion".) 
+    # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
+    # this paper, we illustrate the concept of "proportional completion"). 
     def testSchulzeSTVProportionalCompletion(self):
         input = [
             { "count":1, "ballot":{"A":  1, "B": 99, "C": 99, "D": 99, "E": 99, "F":  4, "G":  3, "H":  2, "I": 99, "J": 99}},
@@ -536,10 +537,9 @@ class TestSchulzeSTV(unittest.TestCase):
             (3, 3, 3, 3): 58.147937411095306
         })
         
-        
-    # Schulze STV, example from Markus' part 3 of 5: Implementing the Schulze
-    # STV Method. See calcul02.pdf (Abstract: In this paper we illustrate the
-    # calculation of the strengths of the vote managements.) 
+    # This example was detailed in Markus Schulze's calcul02.pdf (Abstract: In
+    # this paper we illustrate the calculation of the strengths of the vote
+    # managements). 
     def testSchulzeSTVVoteManagementStrengthCalculation(self):
         
         # Generate data

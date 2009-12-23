@@ -21,7 +21,7 @@ import itertools
 class SchulzeSTV:
     
     @staticmethod
-    def calculateWinner(ballots, requiredWinners, notation):
+    def calculateWinner(ballots, requiredWinners, notation=None):
         
         if notation == "preferenceSets":
             for ballot in ballots:
@@ -63,13 +63,13 @@ class SchulzeSTV:
 
         # Mark the winner
         if len(managementGraph.nodes()) == 1:
-            result["winners"] = managementGraph.nodes()[0]
+            result["winners"] = set(managementGraph.nodes()[0])
         else:
             result["tiedWinners"] = set(managementGraph.nodes())
             result["tieBreaker"] = SchulzeSTV.generateTieBreaker(result["candidates"])
-            result["winners"] = set([SchulzeSTV.breakWinnerTie(managementGraph.nodes(), result["tieBreaker"])])
+            result["winners"] = "Not yet sure how to break ties"
         
-        print set(result["winners"])
+        return result
     
     @staticmethod
     def __proportionalCompletion__(candidate, otherCandidates, ballots):
@@ -97,7 +97,6 @@ class SchulzeSTV:
             for j in range(0, i+1):
                 completionPatterns.append(list(set((pattern[0]) for pattern in itertools.groupby(itertools.permutations([2]*(numberOfOtherCandidates-i)+[1]*(j)+[3]*(i-j))))))
         completionPatterns = [item for innerlist in completionPatterns for item in innerlist]
-        #completionPatterns = [(2,2,2,2),(1,2,2,2),(2,1,2,2)]
         
         # Complete each pattern in order
         for completionPattern in completionPatterns:
@@ -136,7 +135,6 @@ class SchulzeSTV:
         
         # Reweight the remaining items
         for pattern in patternsToConsider.keys():
-            #print "Pattern: " + str(pattern) + ", to add " + str(patternsToConsider[pattern])
             addition = sum(patternWeights[consideredPattern] for consideredPattern in patternsToConsider[pattern]) * completionPatternWeight / denominator
             if pattern not in patternWeights:
                 patternWeights[pattern] = 0

@@ -34,7 +34,7 @@ class VotingSystem(object):
     def breakLoserTie(tiedCandidates, tieBreaker):
         tieBreaker.reverse()
         candidate = VotingSystem.breakWinnerTie(tiedCandidates, tieBreaker)
-        tieBreaker.reverse() # Is this second reversal necessary?
+        tieBreaker.reverse() # TODO: Is this second reversal necessary?
         return candidate
             
     @staticmethod
@@ -42,13 +42,14 @@ class VotingSystem(object):
         for candidate in tieBreaker:
             for pair in tiedPairs:
                 if pair[0] == candidate:
+                    # TODO: This tie breaker doesn't cover cases like AB,AC
                     return pair
 
     @staticmethod
     def breakWeakestPairTie(tiedPairs, tieBreaker):
         tieBreaker.reverse()
         pair = VotingSystem.breakStrongestPairTie(tiedPairs, tieBreaker)
-        tieBreaker.reverse() # Is this second reversal necessary?
+        tieBreaker.reverse() # TODO: Is this second reversal necessary?
         return pair
     
     @staticmethod
