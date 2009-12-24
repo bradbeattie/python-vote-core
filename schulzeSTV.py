@@ -178,7 +178,7 @@ class SchulzeSTV:
         
         # Iterate towards the limit
         loop = 0
-        while len(r) < 5 or r[loop-1] - r[loop] > 0.000001:
+        while len(r) < 2 or r[loop-1] - r[loop] > 0.000001:
             loop += 1
             for i in range(numberOfCandidates):
                 C[1 + numberOfPatterns + i][numberOfNodes - 1] = r[loop - 1]
@@ -186,7 +186,10 @@ class SchulzeSTV:
         return r[loop]
     
 
-    # http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm
+    # The Edmonds-Karp algorithm is an implementation of the Ford-Fulkerson
+    # method for computing the maximum flow in a flow network in O(VE^2).
+    #
+    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm
     @staticmethod
     def __edmonds_karp__(C, source, sink):
         n = len(C) # C is the capacity matrix
@@ -206,7 +209,12 @@ class SchulzeSTV:
                 
         return sum(F[source][i] for i in xrange(n))
     
-    # http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm    
+    # In graph theory, breadth-first search (BFS) is a graph search algorithm
+    # that begins at the root node and explores all the neighboring nodes. Then
+    # for each of those nearest nodes, it explores their unexplored neighbor
+    # nodes, and so on, until it finds the goal.
+    #
+    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm    
     @staticmethod
     def __bfs__(C, F, source, sink):
         queue = [source]                 
