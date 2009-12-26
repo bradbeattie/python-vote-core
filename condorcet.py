@@ -91,3 +91,13 @@ class CondorcetSystem(VotingSystem):
 
         # Return the final result
         return result
+
+    @staticmethod
+    def __removeWeakEdges__(candidateGraph):
+        edgesToRemove = []
+        for edge in candidateGraph.edges():
+            if candidateGraph.edge_weight(edge[0], edge[1]) <= candidateGraph.edge_weight(edge[1], edge[0]):
+                edgesToRemove.append(edge)
+        for edge in edgesToRemove:
+            candidateGraph.del_edge(edge[0], edge[1])
+        return candidateGraph

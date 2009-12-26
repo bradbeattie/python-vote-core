@@ -16,6 +16,7 @@
 # This class implements Schulze STV, a proportional representation system
 from pygraph.classes.digraph import digraph
 from schulzeMethod import SchulzeMethod
+from condorcet import CondorcetSystem
 import itertools
 
 class SchulzeSTV:
@@ -51,14 +52,8 @@ class SchulzeSTV:
                 for subset in itertools.combinations(otherCandidates, len(otherCandidates) - 1):
                     managementGraph.add_edge(tuple(otherCandidates), tuple(sorted(list(subset) + [candidate])), weight)
         
-        edgesToRemove = []
-        for edge in managementGraph.edges():
-            if managementGraph.edge_weight(edge[0], edge[1]) <= managementGraph.edge_weight(edge[1], edge[0]):
-                edgesToRemove.append(edge)
-        for edge in edgesToRemove:
-            managementGraph.del_edge(edge[0], edge[1])
-        
         result = {}
+        managementGraph = CondorcetSystem.__removeWeakEdges__(managementGraph)
         managementGraph, result["actions"] = SchulzeMethod.__schwartzSetHeuristic__(managementGraph)
 
         # Mark the winner
@@ -67,7 +62,7 @@ class SchulzeSTV:
         else:
             result["tiedWinners"] = set(managementGraph.nodes())
             result["tieBreaker"] = SchulzeSTV.generateTieBreaker(result["candidates"])
-            result["winners"] = "Not yet sure how to break ties"
+            result["winners"] = SchulzeSTV.breakTies(managementGraph.nodes(), result["tieBreaker"])
         
         return result
     
@@ -148,7 +143,6 @@ class SchulzeSTV:
     # the calculation of the strengths of the vote managements.").
     @staticmethod
     def __strengthOfVoteManagement__(voterProfile):
-        
         
         numberOfCandidates = len(voterProfile.keys()[0])
         numberOfPatterns = len(voterProfile) - 1

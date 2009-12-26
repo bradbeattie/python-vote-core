@@ -51,7 +51,7 @@ class InstantRunoffVote(VotingSystem):
                 if len(leastPreferredCandidates) > 1:
                     result["tieBreaker"] = tieBreaker
                     round["tiedLosers"] = leastPreferredCandidates
-                    loser = InstantRunoffVote.breakLoserTie(leastPreferredCandidates, tieBreaker)
+                    loser = InstantRunoffVote.breakTies(leastPreferredCandidates, tieBreaker, True)
                     
                 else:
                     loser = list(leastPreferredCandidates)[0]

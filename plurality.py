@@ -52,7 +52,7 @@ class Plurality(VotingSystem):
         else:
             result["tiedWinners"] = winners
             result["tieBreaker"] = tieBreaker
-            result["winners"] = set([Plurality.breakWinnerTie(winners, tieBreaker)])
+            result["winners"] = set([Plurality.breakTies(winners, tieBreaker)])
         
         # Return the final result
         return result

@@ -69,7 +69,7 @@ class PluralityAtLarge(VotingSystem):
                 result["tieBreaker"] = tieBreaker
                 result["tiedWinners"] = topCandidates.copy()
                 while len(topCandidates | winningCandidates) > requiredWinners:
-                    topCandidates.remove(PluralityAtLarge.breakLoserTie(topCandidates, tieBreaker))
+                    topCandidates.remove(PluralityAtLarge.breakTies(topCandidates, tieBreaker, True))
             
             # Move the top candidates into the winning pile
             winningCandidates |= topCandidates

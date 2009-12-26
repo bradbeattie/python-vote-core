@@ -93,7 +93,7 @@ class SingleTransferableVote(VotingSystem):
                 if len(leastPreferredCandidates) > 1:
                     result["tieBreaker"] = tieBreaker
                     round["tiedLosers"] = leastPreferredCandidates
-                    round["loser"] = SingleTransferableVote.breakLoserTie(leastPreferredCandidates, tieBreaker)
+                    round["loser"] = SingleTransferableVote.breakTies(leastPreferredCandidates, tieBreaker, True)
                 else:
                     round["loser"] = list(leastPreferredCandidates)[0]
                     

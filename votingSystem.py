@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import random, math
+import random, math, types
 
 # This class provides methods that most electoral systems make use of.
 class VotingSystem(object):
@@ -25,32 +25,36 @@ class VotingSystem(object):
         return tieBreaker
     
     @staticmethod
-    def breakWinnerTie(tiedCandidates, tieBreaker):
+    def __breakTiesSimple__(tiedCandidates, tieBreaker):
         for candidate in tieBreaker:
             if candidate in tiedCandidates:
                 return candidate
 
     @staticmethod
-    def breakLoserTie(tiedCandidates, tieBreaker):
-        tieBreaker.reverse()
-        candidate = VotingSystem.breakWinnerTie(tiedCandidates, tieBreaker)
-        tieBreaker.reverse() # TODO: Is this second reversal necessary?
-        return candidate
-            
-    @staticmethod
-    def breakStrongestPairTie(tiedPairs, tieBreaker):
-        for candidate in tieBreaker:
-            for pair in tiedPairs:
-                if pair[0] == candidate:
-                    # TODO: This tie breaker doesn't cover cases like AB,AC
-                    return pair
+    def breakTies(tiedObjects, tieBreaker, reverseOrder=False):
 
-    @staticmethod
-    def breakWeakestPairTie(tiedPairs, tieBreaker):
-        tieBreaker.reverse()
-        pair = VotingSystem.breakStrongestPairTie(tiedPairs, tieBreaker)
-        tieBreaker.reverse() # TODO: Is this second reversal necessary?
-        return pair
+        if reverseOrder:
+            tieBreaker.reverse()
+
+        # Fall back on a simpler tie breaker for strings
+        firstObject = list(tiedObjects)[0]
+        if type(firstObject) == types.StringType:
+            result = VotingSystem.__breakTiesSimple__(tiedObjects, tieBreaker)
+
+        # Iterate through the tied objects until there's only one
+        else:
+            maxColumns = len(firstObject)
+            inspectedColumn = 0
+            while len(tiedObjects) > 1 and inspectedColumn < maxColumns:
+                minIndex = min(tieBreaker.index(list(object)[inspectedColumn]) for object in tiedObjects)
+                tiedObjects = set(object for object in tiedObjects if tieBreaker.index(list(object)[inspectedColumn]) == minIndex)
+                inspectedColumn += 1
+            result = list(tiedObjects)[0]
+
+        if reverseOrder:
+            tieBreaker.reverse()
+
+        return result
     
     @staticmethod
     def droopQuota(ballots, seats):
