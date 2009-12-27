@@ -23,38 +23,42 @@ class VotingSystem(object):
         tieBreaker = list(candidates)
         random.shuffle(tieBreaker)
         return tieBreaker
-    
-    @staticmethod
-    def __breakTiesSimple__(tiedCandidates, tieBreaker):
-        for candidate in tieBreaker:
-            if candidate in tiedCandidates:
-                return candidate
 
+    
     @staticmethod
     def breakTies(tiedObjects, tieBreaker, reverseOrder=False):
 
         if reverseOrder:
             tieBreaker.reverse()
 
-        # Fall back on a simpler tie breaker for strings
-        firstObject = list(tiedObjects)[0]
-        if type(firstObject) == types.StringType:
+        if type(list(tiedObjects)[0]) == types.StringType:
             result = VotingSystem.__breakTiesSimple__(tiedObjects, tieBreaker)
-
-        # Iterate through the tied objects until there's only one
         else:
-            maxColumns = len(firstObject)
-            inspectedColumn = 0
-            while len(tiedObjects) > 1 and inspectedColumn < maxColumns:
-                minIndex = min(tieBreaker.index(list(object)[inspectedColumn]) for object in tiedObjects)
-                tiedObjects = set(object for object in tiedObjects if tieBreaker.index(list(object)[inspectedColumn]) == minIndex)
-                inspectedColumn += 1
-            result = list(tiedObjects)[0]
+            result = VotingSystem.__breakTiesComplex__(tiedObjects, tieBreaker)
 
         if reverseOrder:
             tieBreaker.reverse()
 
         return result
+
+
+    @staticmethod
+    def __breakTiesSimple__(tiedCandidates, tieBreaker):
+        for candidate in tieBreaker:
+            if candidate in tiedCandidates:
+                return candidate
+
+
+    @staticmethod
+    def __breakTiesComplex__(tiedObjects, tieBreaker):
+        maxColumns = len(list(tiedObjects)[0])
+        column = 0
+        while len(tiedObjects) > 1 and column < maxColumns:
+            minIndex = min(tieBreaker.index(list(object)[column]) for object in tiedObjects)
+            tiedObjects = VotingSystem.matchingKeys(tiedObjects, minIndex)
+            column += 1
+        return list(tiedObjects)[0]
+
     
     @staticmethod
     def droopQuota(ballots, seats):
@@ -62,3 +66,8 @@ class VotingSystem(object):
         for ballot in ballots:
             quota += ballot["count"]
         return int(math.floor(quota / (seats + 1)) + 1)
+
+
+    @staticmethod
+    def matchingKeys(dict, targetValue):
+        return set([key for key, value in dict.iteritems() if value == targetValue])

@@ -89,7 +89,7 @@ class SingleTransferableVote(VotingSystem):
 
                 # Determine which candidates have the fewest votes
                 fewestVotes = min(round["tallies"].values())
-                leastPreferredCandidates = set((candidate) for (candidate,votes) in round["tallies"].iteritems() if votes == fewestVotes)
+                leastPreferredCandidates = SingleTransferableVote.matchingKeys(round["tallies"], fewestVotes)
                 if len(leastPreferredCandidates) > 1:
                     result["tieBreaker"] = tieBreaker
                     round["tiedLosers"] = leastPreferredCandidates

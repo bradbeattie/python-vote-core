@@ -58,11 +58,8 @@ class PluralityAtLarge(VotingSystem):
         while len(winningCandidates) < requiredWinners:
             
             # Find the remaining candidates with the most votes
-            topCandidates = set()
             largestTally = max(tallies.values())
-            for candidate, tally in tallies.iteritems():
-                if tally == largestTally:
-                    topCandidates.add(candidate)
+            topCandidates = PluralityAtLarge.matchingKeys(tallies, largestTally)
             
             # Reduce the found candidates if there are too many
             if len(topCandidates | winningCandidates) > requiredWinners:

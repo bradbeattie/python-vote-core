@@ -42,10 +42,7 @@ class RankedPairs(CondorcetSystem):
             
             # Find the strongest pair
             largestStrength = max(remainingStrongPairs.values())
-            strongestPairs = set()
-            for pair in remainingStrongPairs.keys():
-                if remainingStrongPairs[pair] == largestStrength:
-                    strongestPairs.add(pair)
+            strongestPairs = RankedPairs.matchingKeys(remainingStrongPairs, largestStrength)
             if len(strongestPairs) > 1:
                 result["tieBreaker"] = tieBreaker
                 round["tiedPairs"] = strongestPairs

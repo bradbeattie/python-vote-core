@@ -21,15 +21,15 @@ class InstantRunoffVote(VotingSystem):
     
     @staticmethod
     def calculateWinner(ballots):
-        result = {"rounds": []}
         
         # Determine the number of votes necessary to win
-        result["quota"] = InstantRunoffVote.droopQuota(ballots, 1)
+        result = {
+            "quota": InstantRunoffVote.droopQuota(ballots, 1),
+            "rounds": []
+        }
         
         # Collect the list of candidates
-        candidates = set()
-        for ballot in ballots:
-            candidates.add(ballot["ballot"][0])
+        candidates = set([ballot["ballot"][0] for ballot in ballots])
         
         # Generate tie breaker
         tieBreaker = InstantRunoffVote.generateTieBreaker(candidates)
@@ -44,10 +44,7 @@ class InstantRunoffVote(VotingSystem):
 
                 # Determine which candidates have the fewest votes
                 fewestVotes = min(tallies.values())
-                leastPreferredCandidates = set()
-                for candidate in tallies.keys():
-                    if tallies[candidate] == fewestVotes:
-                        leastPreferredCandidates.add(candidate)
+                leastPreferredCandidates = InstantRunoffVote.matchingKeys(tallies, fewestVotes)
                 if len(leastPreferredCandidates) > 1:
                     result["tieBreaker"] = tieBreaker
                     round["tiedLosers"] = leastPreferredCandidates

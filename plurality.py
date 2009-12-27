@@ -36,15 +36,12 @@ class Plurality(VotingSystem):
         # Sum up all votes for each candidate
         tallies = dict.fromkeys(candidates, 0)
         for ballot in ballots:
-            tallies[ballot["ballot"]] +=  ballot["count"]
+            tallies[ballot["ballot"]] += ballot["count"]
         result["tallies"] = tallies
         
         # Determine who got the most votes
-        winners = set()
         mostVotes = max(tallies.values())
-        for candidate, votes in tallies.iteritems():
-            if votes == mostVotes:
-                winners.add(candidate)
+        winners = Plurality.matchingKeys(tallies, mostVotes)
         
         # Mark the winner
         if len(winners) == 1:
