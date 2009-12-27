@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pluralityAtLarge import PluralityAtLarge
+from plurality_at_large import PluralityAtLarge
 import unittest
 
 class TestPluralityAtLarge(unittest.TestCase):
@@ -28,7 +28,7 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        output = PluralityAtLarge.calculateWinner(input)
+        output = PluralityAtLarge.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -46,7 +46,7 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c2"] },
             { "count":23, "ballot":["c3"] }
         ]
-        output = PluralityAtLarge.calculateWinner(input)
+        output = PluralityAtLarge.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -64,7 +64,7 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":23, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        output = PluralityAtLarge.calculateWinner(input)
+        output = PluralityAtLarge.calculate_winner(input)
 
         # Run tests
         self.assertEqual(output, {
@@ -82,13 +82,13 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":26, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        output = PluralityAtLarge.calculateWinner(input)
+        output = PluralityAtLarge.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output["tallies"], {'c1':26, 'c2':26, 'c3':23})
-        self.assertEqual(output["tiedWinners"], set(['c1', 'c2']))
-        self.assert_(list(output["winners"])[0] in output["tiedWinners"])
-        self.assertEqual(len(output["tieBreaker"]), 3)
+        self.assertEqual(output["tied_winners"], set(['c1', 'c2']))
+        self.assert_(list(output["winners"])[0] in output["tied_winners"])
+        self.assertEqual(len(output["tie_breaker"]), 3)
 
     
     # Plurality at Large, no ties
@@ -100,7 +100,7 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c1", "c3"] },
             { "count":23, "ballot":["c2", "c3"] }
         ]
-        output = PluralityAtLarge.calculateWinner(input, 2)
+        output = PluralityAtLarge.calculate_winner(input, 2)
         
         # Run tests
         self.assertEqual(output, {
@@ -119,7 +119,7 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c2", "c3"] },
             { "count":11, "ballot":["c4", "c5"] }
         ]
-        output = PluralityAtLarge.calculateWinner(input, 2)
+        output = PluralityAtLarge.calculate_winner(input, 2)
         
         # Run tests
         self.assertEqual(output, {
@@ -139,12 +139,12 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":4, "ballot":["c4", "c1"] },
             { "count":8, "ballot":["c3", "c4"] },
         ]
-        output = PluralityAtLarge.calculateWinner(input, 2)
+        output = PluralityAtLarge.calculate_winner(input, 2)
 
         # Run tests
         self.assertEqual(output["tallies"], {'c3': 52, 'c2': 52, 'c1': 56, 'c4': 12})
-        self.assertEqual(len(output["tieBreaker"]), 4)
-        self.assertEqual(output["tiedWinners"], set(['c2','c3']))
+        self.assertEqual(len(output["tie_breaker"]), 4)
+        self.assertEqual(output["tied_winners"], set(['c2','c3']))
         self.assert_("c1" in output["winners"] and ("c2" in output["winners"] or "c3" in output["winners"]))
         self.assertEqual(len(output), 4)
 

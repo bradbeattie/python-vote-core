@@ -15,11 +15,11 @@
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from plurality import Plurality
-from pluralityAtLarge import PluralityAtLarge
-from instantRunoffVote import InstantRunoffVote
-from singleTransferableVote import SingleTransferableVote 
-from rankedPairs import RankedPairs
-from schulzeMethod import SchulzeMethod
+from plurality_at_large import PluralityAtLarge
+from irv import IRV
+from stv import STV 
+from ranked_pairs import RankedPairs
+from schulze_method import SchulzeMethod
 import json, types, StringIO, traceback
 
 # This class provides a basic server to listen for JSON requests. It then
@@ -29,7 +29,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 
 
     def do_GET(self):
-        response = '<html><body><h1>Election Web Service</h1><p>This server only responds to posts. Try sending something like this:</p><code>curl -d \'{"votingSystem": "stv", "ballots": [{"count": 4, "ballot": ["orange"]}, {"count": 2, "ballot": ["pear", "orange"]}, {"count": 8, "ballot": ["chocolate", "strawberry"]}, {"count": 4, "ballot": ["chocolate", "sweets"]}, {"count": 1, "ballot": ["strawberry"]}, {"count": 1, "ballot": ["sweets"]}], "winners": 3}\' http://vote.cognitivesandbox.com; echo;</code><p>For further documentation, see <a href="http://github.com/bradbeattie/Election-Web-Service">the GitHub project page</a>.</p></body></html>'
+        response = '<html><body><h1>Election Web Service</h1><p>This server only responds to posts. Try sending something like this:</p><code>curl -d \'{"voting_system": "stv", "ballots": [{"count": 4, "ballot": ["orange"]}, {"count": 2, "ballot": ["pear", "orange"]}, {"count": 8, "ballot": ["chocolate", "strawberry"]}, {"count": 4, "ballot": ["chocolate", "sweets"]}, {"count": 1, "ballot": ["strawberry"]}, {"count": 1, "ballot": ["sweets"]}], "winners": 3}\' http://vote.cognitivesandbox.com; echo;</code><p>For further documentation, see <a href="http://github.com/bradbeattie/Election-Web-Service">the GitHub project page</a>.</p></body></html>'
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.send_header("Content-length", str(len(response)))
@@ -57,19 +57,19 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             jsonData["ballots"] = newInput           
 
             # Send the data to the requested voting system
-            if jsonData["votingSystem"] in ["plurality", "fptp"]:
-                response = Plurality.calculateWinner(jsonData["ballots"])
-            elif jsonData["votingSystem"] in ["pluralityAtLarge", "blockVoting"]:
-                response = PluralityAtLarge.calculateWinner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["votingSystem"] in ["irv", "instantRunoff"]:
-                response = InstantRunoffVote.calculateWinner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["votingSystem"] in ["stv", "singleTransferableVote"]:
-                response = SingleTransferableVote.calculateWinner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["votingSystem"] in ["rankedPairs", "tideman"]:
-                response = RankedPairs.calculateWinner(jsonData["ballots"])
-            elif jsonData["votingSystem"] in ["schulzeMethod"]:
-                response = SchulzeMethod.calculateWinner(jsonData["ballots"])
-            elif jsonData["votingSystem"] in ["schulzeSTV"]:
+            if jsonData["voting_system"] in ["plurality", "fptp"]:
+                response = Plurality.calculate_winner(jsonData["ballots"])
+            elif jsonData["voting_system"] in ["pluralityAtLarge", "blockVoting"]:
+                response = PluralityAtLarge.calculate_winner(jsonData["ballots"], jsonData["winners"])
+            elif jsonData["voting_system"] in ["irv", "instantRunoff"]:
+                response = IRV.calculate_winner(jsonData["ballots"], jsonData["winners"])
+            elif jsonData["voting_system"] in ["stv", "singleTransferableVote"]:
+                response = STV.calculate_winner(jsonData["ballots"], jsonData["winners"])
+            elif jsonData["voting_system"] in ["rankedPairs", "tideman"]:
+                response = RankedPairs.calculate_winner(jsonData["ballots"])
+            elif jsonData["voting_system"] in ["schulzeMethod"]:
+                response = SchulzeMethod.calculate_winner(jsonData["ballots"])
+            elif jsonData["voting_system"] in ["schulzeSTV"]:
                 raise Exception("Not yet implemented")
             else:
                 raise
@@ -87,7 +87,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             
         finally:
-            response = json.dumps(self.__simplifyObject__(response))
+            response = json.dumps(self.__simplify_object__(response))
             self.send_header("Content-type", "application/json")
             self.send_header("Content-length", str(len(response)))
             self.end_headers()
@@ -95,12 +95,12 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 
 
     # json.dump() has a difficult time with certain object types
-    def __simplifyObject__(self, object):
+    def __simplify_object__(self, object):
         if type(object) == types.DictType:
             newDict = {}
             for key in object.keys():
-                value = self.__simplifyObject__(object[key])
-                key = self.__simplifyObject__(key)
+                value = self.__simplify_object__(object[key])
+                key = self.__simplify_object__(key)
                 newDict[key] = value
             return newDict
         elif type(object) == types.TupleType:
@@ -108,7 +108,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
         elif type(object) == type(set()) or type(object) == types.ListType:
             newList = []
             for element in object:
-                newList.append(self.__simplifyObject__(element))
+                newList.append(self.__simplify_object__(element))
             return newList
         else:
             return object

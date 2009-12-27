@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from singleTransferableVote import SingleTransferableVote 
+from stv import STV 
 import unittest
 
-class TestSingleTransferableVote(unittest.TestCase):
+class TestSTV(unittest.TestCase):
     
     # IRV, no ties
     def testIRVNoTies(self):
@@ -27,7 +27,7 @@ class TestSingleTransferableVote(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":23, "ballot":["c3", "c1", "c2"] }
         ]
-        output = SingleTransferableVote.calculateWinner(input)
+        output = STV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -49,18 +49,18 @@ class TestSingleTransferableVote(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = SingleTransferableVote.calculateWinner(input)
+        output = STV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output["quota"], 34)
         self.assertEqual(len(output["rounds"]), 2)
         self.assertEqual(len(output["rounds"][0]), 3)
         self.assertEqual(output["rounds"][0]["tallies"], {'c1': 26, 'c2': 20, 'c3': 20})
-        self.assertEqual(output["rounds"][0]["tiedLosers"], set(['c2','c3']))
-        self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tiedLosers"])
+        self.assertEqual(output["rounds"][0]["tied_losers"], set(['c2','c3']))
+        self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tied_losers"])
         self.assertEqual(len(output["rounds"][1]["tallies"]), 2)
         self.assertEqual(len(output["rounds"][1]["winners"]), 1)
-        self.assertEqual(len(output["tieBreaker"]), 3)
+        self.assertEqual(len(output["tie_breaker"]), 3)
 
 
     # IRV, no rounds
@@ -72,7 +72,7 @@ class TestSingleTransferableVote(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = SingleTransferableVote.calculateWinner(input)
+        output = STV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -94,7 +94,7 @@ class TestSingleTransferableVote(unittest.TestCase):
             { "count":40, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = SingleTransferableVote.calculateWinner(input, 2)
+        output = STV.calculate_winner(input, 2)
         
         # Run tests
         self.assertEqual(output, {
@@ -120,7 +120,7 @@ class TestSingleTransferableVote(unittest.TestCase):
             { "count":1, "ballot":["strawberry"] },
             { "count":1, "ballot":["sweets"] }
         ]
-        output = SingleTransferableVote.calculateWinner(input, 3)
+        output = STV.calculate_winner(input, 3)
         
         # Run tests
         self.assertEqual(output, {
@@ -131,7 +131,7 @@ class TestSingleTransferableVote(unittest.TestCase):
                 {'tallies': {'orange': 6.0, 'strawberry': 5.0, 'sweets': 3.0}, 'winners': set(['orange'])},
                 {'tallies': {'strawberry': 5.0, 'sweets': 3.0}, 'loser': 'sweets'}
             ],
-            'remainingCandidates': set(['strawberry']),
+            'remaining_candidates': set(['strawberry']),
             'winners': set(['orange', 'strawberry', 'chocolate'])
         })
 

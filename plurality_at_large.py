@@ -13,14 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from votingSystem import VotingSystem
+from voting_system import VotingSystem
 import copy, types
 
 # This class implements plurality at large (aka block voting).
 class PluralityAtLarge(VotingSystem):
     
     @staticmethod
-    def calculateWinner(ballots, requiredWinners = 1):
+    def calculate_winner(ballots, required_winners = 1):
         result = {}
         
         # Parse the incoming candidate list
@@ -32,7 +32,7 @@ class PluralityAtLarge(VotingSystem):
                 ballot["ballot"] = [ballot["ballot"]]
                 
             # Ensure no ballot has an excess of candidates
-            if len(ballot["ballot"]) > requiredWinners:
+            if len(ballot["ballot"]) > required_winners:
                 raise Exception("A ballot contained too many candidates")
             
             # Observe all mentioned candidates 
@@ -40,11 +40,11 @@ class PluralityAtLarge(VotingSystem):
                 candidates.add(candidate)
         
         # Ensure we have sufficient candidates
-        if len(candidates) < requiredWinners:
+        if len(candidates) < required_winners:
             raise Exception("Insufficient candidates to meet produce sufficient winners")
         
         # Generate tie breaker, which may or may not be used later
-        tieBreaker = PluralityAtLarge.generateTieBreaker(candidates)
+        tie_breaker = PluralityAtLarge.generate_tie_breaker(candidates)
 
         # Sum up all votes for each candidate
         tallies = dict.fromkeys(candidates, 0)
@@ -55,18 +55,18 @@ class PluralityAtLarge(VotingSystem):
         
         # Determine which candidates win
         winningCandidates = set()
-        while len(winningCandidates) < requiredWinners:
+        while len(winningCandidates) < required_winners:
             
             # Find the remaining candidates with the most votes
             largestTally = max(tallies.values())
-            topCandidates = PluralityAtLarge.matchingKeys(tallies, largestTally)
+            topCandidates = PluralityAtLarge.matching_keys(tallies, largestTally)
             
             # Reduce the found candidates if there are too many
-            if len(topCandidates | winningCandidates) > requiredWinners:
-                result["tieBreaker"] = tieBreaker
-                result["tiedWinners"] = topCandidates.copy()
-                while len(topCandidates | winningCandidates) > requiredWinners:
-                    topCandidates.remove(PluralityAtLarge.breakTies(topCandidates, tieBreaker, True))
+            if len(topCandidates | winningCandidates) > required_winners:
+                result["tie_breaker"] = tie_breaker
+                result["tied_winners"] = topCandidates.copy()
+                while len(topCandidates | winningCandidates) > required_winners:
+                    topCandidates.remove(PluralityAtLarge.break_ties(topCandidates, tie_breaker, True))
             
             # Move the top candidates into the winning pile
             winningCandidates |= topCandidates

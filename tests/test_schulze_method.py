@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from schulzeMethod import SchulzeMethod
+from schulze_method import SchulzeMethod
 import unittest
 
 class TestSchulzeMethod(unittest.TestCase):
@@ -30,7 +30,7 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
             { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
         ]
-        output = SchulzeMethod.calculateWinner(input)
+        output = SchulzeMethod.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -49,7 +49,7 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('D', 'B'): 21,
                 ('D', 'C'): 10
             },
-            'strongPairs': {
+            'strong_pairs': {
                 ('D', 'B'): 21,
                 ('C', 'D'): 20,
                 ('B', 'C'): 19,
@@ -82,7 +82,7 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]] },
             { "count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]] }
         ]
-        output = SchulzeMethod.calculateWinner(input)
+        output = SchulzeMethod.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -109,7 +109,7 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('E', 'C'): 21,
                 ('E', 'D'): 31
             },
-            'strongPairs': {
+            'strong_pairs': {
                 ('B', 'D'): 33,
                 ('E', 'D'): 31,
                 ('A', 'D'): 30,

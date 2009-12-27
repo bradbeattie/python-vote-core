@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from schulzeSTV import SchulzeSTV
+from schulze_stv import SchulzeSTV
 import unittest
 
 class TestSchulzeSTV(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":24, "ballot":[["e"], ["c"], ["a"], ["d"], ["b"]] },
             { "count":3,  "ballot":[["e"], ["d"], ["c"], ["b"], ["a"]] },
         ]
-        output = SchulzeSTV.calculateWinner(input, 3, "preferenceSets")
+        output = SchulzeSTV.calculate_winner(input, 3, "preferenceSets")
         
         # Run tests
         self.assertEqual(output['winners'], set(['a', 'd', 'e']))
@@ -517,7 +517,7 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":1, "ballot":{"A":  1, "B":  3, "C":  7, "D":  2, "E": 10, "F":  8, "G":  6, "H":  9, "I":  4, "J":  5}}
         ]
         
-        output = SchulzeSTV.__proportionalCompletion__("H", set(["A","C","D","I"]), input)
+        output = SchulzeSTV.__proportional_completion__("H", set(["A","C","D","I"]), input)
         self.assertEqual(output, {
             (1,1,1,1): 115.90588590649332,
             (1,1,1,3): 22.199966129399414,
@@ -561,7 +561,7 @@ class TestSchulzeSTV(unittest.TestCase):
             (3,3,3,1): 98.165759,
             (3,3,3,3): 129.66443
         }
-        output = SchulzeSTV.__strengthOfVoteManagement__(input)
+        output = SchulzeSTV.__strength_of_vote_management__(input)
         
         # Run tests
         self.assertAlmostEqual(output, 77.3899369763)

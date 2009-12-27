@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from instantRunoffVote import InstantRunoffVote
+from irv import IRV
 import unittest
 
 class TestInstantRunoff(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":23, "ballot":["c3", "c1", "c2"] }
         ]
-        output = InstantRunoffVote.calculateWinner(input)
+        output = IRV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -48,16 +48,16 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = InstantRunoffVote.calculateWinner(input)
+        output = IRV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output["quota"], 34)
         self.assertEqual(len(output["rounds"]), 1)
         self.assertEqual(len(output["rounds"][0]), 3)
         self.assertEqual(output["rounds"][0]["tallies"], {'c1': 26, 'c2': 20, 'c3': 20})
-        self.assertEqual(output["rounds"][0]["tiedLosers"], set(['c2','c3']))
-        self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tiedLosers"])
-        self.assertEqual(len(output["tieBreaker"]), 3)
+        self.assertEqual(output["rounds"][0]["tied_losers"], set(['c2','c3']))
+        self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tied_losers"])
+        self.assertEqual(len(output["tie_breaker"]), 3)
 
 
     # IRV, no rounds
@@ -69,7 +69,7 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = InstantRunoffVote.calculateWinner(input)
+        output = IRV.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {

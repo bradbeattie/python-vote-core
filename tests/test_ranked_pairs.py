@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from rankedPairs import RankedPairs
+from ranked_pairs import RankedPairs
 import unittest
 
 class TestRankedPairs(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3", "c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculateWinner(input)
+        output = RankedPairs.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -40,7 +40,7 @@ class TestRankedPairs(unittest.TestCase):
                 ('c3', 'c1'): 40,
                 ('c3', 'c2'): 40
             },
-            'strongPairs': {
+            'strong_pairs': {
                 ('c2', 'c3'): 130,
                 ('c1', 'c3'): 80,
                 ('c2', 'c1'): 50
@@ -58,7 +58,7 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3"], ["c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculateWinner(input)
+        output = RankedPairs.calculate_winner(input)
         
         # Run tests
         self.assertEqual(output, {
@@ -71,7 +71,7 @@ class TestRankedPairs(unittest.TestCase):
                 ('c3', 'c1'): 90,
                 ('c3', 'c2'): 40
             },
-            'strongPairs': {
+            'strong_pairs': {
                 ('c2', 'c3'): 130,
                 ('c1', 'c2'): 120,
                 ('c3', 'c1'): 90
@@ -84,6 +84,37 @@ class TestRankedPairs(unittest.TestCase):
             'winners': set(['c1'])
         })
 
+    # Strongest pairs tie
+    def test_tied_pairs(self):
+        
+        # Generate data
+        input = [
+            { "count":100, "ballot":[["chocolate"], ["vanilla"]] },
+            { "count":100, "ballot":[["vanilla"], ["strawberry"]] },
+            { "count":1, "ballot":[["strawberry"], ["chocolate"]] }
+        ]
+        output = RankedPairs.calculate_winner(input)
+
+        # Run tests
+        self.assertEqual(output["pairs"], {
+            ('vanilla', 'strawberry'): 200,
+            ('strawberry', 'vanilla'): 1,
+            ('chocolate', 'vanilla'): 101,
+            ('vanilla', 'chocolate'): 100,
+            ('strawberry', 'chocolate'): 101,
+            ('chocolate', 'strawberry'): 100
+        })
+
+        self.assertEqual(output["strong_pairs"], {
+            ('chocolate', 'vanilla'): 101,
+            ('vanilla', 'strawberry'): 200,
+            ('strawberry', 'chocolate'): 101
+        })
+
+        self.assertEqual(
+            output["rounds"][1]["tied_pairs"],
+            set([('chocolate', 'vanilla'), ('strawberry', 'chocolate')])
+        )
 
 if __name__ == "__main__":
     unittest.main()

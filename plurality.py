@@ -13,14 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from votingSystem import VotingSystem
+from voting_system import VotingSystem
 import types
 
 # This class implements Plurality (aka first past the post, fptp, etc).
 class Plurality(VotingSystem):
     
     @staticmethod
-    def calculateWinner(ballots):
+    def calculate_winner(ballots):
         result = {}
         
         # Collect the list of candidates
@@ -31,7 +31,7 @@ class Plurality(VotingSystem):
             candidates.add(ballot["ballot"])
             
         # Generate tie breaker
-        tieBreaker = Plurality.generateTieBreaker(candidates)
+        tie_breaker = Plurality.generate_tie_breaker(candidates)
 
         # Sum up all votes for each candidate
         tallies = dict.fromkeys(candidates, 0)
@@ -40,16 +40,16 @@ class Plurality(VotingSystem):
         result["tallies"] = tallies
         
         # Determine who got the most votes
-        mostVotes = max(tallies.values())
-        winners = Plurality.matchingKeys(tallies, mostVotes)
+        most_votes = max(tallies.values())
+        winners = Plurality.matching_keys(tallies, most_votes)
         
         # Mark the winner
         if len(winners) == 1:
             result["winners"] = winners
         else:
-            result["tiedWinners"] = winners
-            result["tieBreaker"] = tieBreaker
-            result["winners"] = set([Plurality.breakTies(winners, tieBreaker)])
+            result["tied_winners"] = winners
+            result["tie_breaker"] = tie_breaker
+            result["winners"] = set([Plurality.break_ties(winners, tie_breaker)])
         
         # Return the final result
         return result

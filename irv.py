@@ -13,18 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from votingSystem import VotingSystem
+from voting_system import VotingSystem
 import copy
 
 # This class implements instant-runoff voting (aka IRV, alternative vote, etc).
-class InstantRunoffVote(VotingSystem):
+class IRV(VotingSystem):
     
     @staticmethod
-    def calculateWinner(ballots):
+    def calculate_winner(ballots):
         
         # Determine the number of votes necessary to win
         result = {
-            "quota": InstantRunoffVote.droopQuota(ballots, 1),
+            "quota": IRV.droop_quota(ballots, 1),
             "rounds": []
         }
         
@@ -32,7 +32,7 @@ class InstantRunoffVote(VotingSystem):
         candidates = set([ballot["ballot"][0] for ballot in ballots])
         
         # Generate tie breaker
-        tieBreaker = InstantRunoffVote.generateTieBreaker(candidates)
+        tie_breaker = IRV.generate_tie_breaker(candidates)
 
         # Loop until a candidate has obtained a majority of votes
         tallies = {}
@@ -43,15 +43,15 @@ class InstantRunoffVote(VotingSystem):
             if len(tallies) > 0:
 
                 # Determine which candidates have the fewest votes
-                fewestVotes = min(tallies.values())
-                leastPreferredCandidates = InstantRunoffVote.matchingKeys(tallies, fewestVotes)
-                if len(leastPreferredCandidates) > 1:
-                    result["tieBreaker"] = tieBreaker
-                    round["tiedLosers"] = leastPreferredCandidates
-                    loser = InstantRunoffVote.breakTies(leastPreferredCandidates, tieBreaker, True)
+                fewest_votes = min(tallies.values())
+                least_preferred_candidates = IRV.matching_keys(tallies, fewest_votes)
+                if len(least_preferred_candidates) > 1:
+                    result["tie_breaker"] = tie_breaker
+                    round["tied_losers"] = least_preferred_candidates
+                    loser = IRV.break_ties(least_preferred_candidates, tie_breaker, True)
                     
                 else:
-                    loser = list(leastPreferredCandidates)[0]
+                    loser = list(least_preferred_candidates)[0]
                 round["loser"] = loser
                 
                 # Eliminate references to the lost candidate

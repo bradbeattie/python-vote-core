@@ -13,17 +13,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from votingSystem import VotingSystem
+from voting_system import VotingSystem
 import copy
 
 # This class implements the Single Transferable vote (aka STV) in its most
 # classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
 # Alternate counting methods such as Meek's and Warren's would be nice, but
 # would need to be covered in a separate class.
-class SingleTransferableVote(VotingSystem):
+class STV(VotingSystem):
     
     @staticmethod
-    def calculateWinner(ballots, requiredWinners = 1):
+    def calculate_winner(ballots, required_winners = 1):
                 
         # We might need to split ballots into fractions
         for ballot in ballots:
@@ -34,23 +34,23 @@ class SingleTransferableVote(VotingSystem):
         for ballot in ballots:
             for candidate in ballot["ballot"]:
                 candidates.add(candidate)
-        if len(candidates) < requiredWinners:
+        if len(candidates) < required_winners:
             raise Exception("Insufficient number of candidates")
-        elif len(candidates) == requiredWinners:
+        elif len(candidates) == required_winners:
             return {"winners":candidates}
         
         # Determine the number of votes necessary to win (Droop Quota)
         result = {
-            "quota": SingleTransferableVote.droopQuota(ballots, requiredWinners),
+            "quota": STV.droop_quota(ballots, required_winners),
             "rounds": [],
             "winners": set(),
         }
         
         # Generate tie breaker
-        tieBreaker = SingleTransferableVote.generateTieBreaker(candidates)
+        tie_breaker = STV.generate_tie_breaker(candidates)
         
         # Loop until we have enough candidates or has obtained a majority of votes
-        while len(result["winners"]) < requiredWinners and len(candidates) + len(result["winners"]) > requiredWinners:
+        while len(result["winners"]) < required_winners and len(candidates) + len(result["winners"]) > required_winners:
             
             # Remove any zero-strength ballots
             for ballot in copy.deepcopy(ballots):
@@ -88,14 +88,14 @@ class SingleTransferableVote(VotingSystem):
             else:
 
                 # Determine which candidates have the fewest votes
-                fewestVotes = min(round["tallies"].values())
-                leastPreferredCandidates = SingleTransferableVote.matchingKeys(round["tallies"], fewestVotes)
-                if len(leastPreferredCandidates) > 1:
-                    result["tieBreaker"] = tieBreaker
-                    round["tiedLosers"] = leastPreferredCandidates
-                    round["loser"] = SingleTransferableVote.breakTies(leastPreferredCandidates, tieBreaker, True)
+                fewest_votes = min(round["tallies"].values())
+                least_preferred_candidates = STV.matching_keys(round["tallies"], fewest_votes)
+                if len(least_preferred_candidates) > 1:
+                    result["tie_breaker"] = tie_breaker
+                    round["tied_losers"] = least_preferred_candidates
+                    round["loser"] = STV.break_ties(least_preferred_candidates, tie_breaker, True)
                 else:
-                    round["loser"] = list(leastPreferredCandidates)[0]
+                    round["loser"] = list(least_preferred_candidates)[0]
                     
                 
                 # Eliminate references to the lost candidate
@@ -107,8 +107,8 @@ class SingleTransferableVote(VotingSystem):
             result["rounds"].append(round)
 
         # Append the final winner and return
-        if len(result["winners"]) < requiredWinners:
-            result["remainingCandidates"] = candidates
+        if len(result["winners"]) < required_winners:
+            result["remaining_candidates"] = candidates
             for candidate in candidates:
                 result["winners"].add(candidate)
         return result

@@ -22,8 +22,8 @@ import copy
 class RankedPairs(CondorcetSystem):
     
     @staticmethod
-    def calculateWinner(ballots):
-        result = CondorcetSystem.calculateWinner(ballots)
+    def calculate_winner(ballots):
+        result = CondorcetSystem.calculate_winner(ballots)
         
         # If there's a Condorcet winner, return it
         if "winners" in result:
@@ -31,39 +31,39 @@ class RankedPairs(CondorcetSystem):
         
         # Initialize the candidate graph
         result["rounds"] = []
-        tieBreaker = RankedPairs.generateTieBreaker(result["candidates"])
-        candidateGraph = digraph()
-        candidateGraph.add_nodes(list(result["candidates"]))
+        tie_breaker = RankedPairs.generate_tie_breaker(result["candidates"])
+        candidate_graph = digraph()
+        candidate_graph.add_nodes(list(result["candidates"]))
         
         # Loop until we've considered all possible pairs
-        remainingStrongPairs = copy.deepcopy(result["strongPairs"])
-        while len(remainingStrongPairs) > 0:
+        remaining_strong_pairs = copy.deepcopy(result["strong_pairs"])
+        while len(remaining_strong_pairs) > 0:
             round = {}
             
             # Find the strongest pair
-            largestStrength = max(remainingStrongPairs.values())
-            strongestPairs = RankedPairs.matchingKeys(remainingStrongPairs, largestStrength)
-            if len(strongestPairs) > 1:
-                result["tieBreaker"] = tieBreaker
-                round["tiedPairs"] = strongestPairs
-                strongestPair = RankedPairs.breakStrongestPairTie(strongestPairs, tieBreaker)
+            largest_strength = max(remaining_strong_pairs.values())
+            strongest_pairs = RankedPairs.matching_keys(remaining_strong_pairs, largest_strength)
+            if len(strongest_pairs) > 1:
+                result["tie_breaker"] = tie_breaker
+                round["tied_pairs"] = strongest_pairs
+                strongest_pair = RankedPairs.break_ties(strongest_pairs, tie_breaker)
             else:
-                strongestPair = list(strongestPairs)[0]
-            round["pair"] = strongestPair
+                strongest_pair = list(strongest_pairs)[0]
+            round["pair"] = strongest_pair
             
             # If the pair would add a cycle, skip it
-            candidateGraph.add_edge(strongestPair[0], strongestPair[1])
-            if len(find_cycle(candidateGraph)) > 0:
+            candidate_graph.add_edge(strongest_pair[0], strongest_pair[1])
+            if len(find_cycle(candidate_graph)) > 0:
                 round["action"] = "skipped"
-                candidateGraph.del_edge(strongestPair[0], strongestPair[1])
+                candidate_graph.del_edge(strongest_pair[0], strongest_pair[1])
             else:
                 round["action"] = "added"
-            del remainingStrongPairs[strongestPair]
+            del remaining_strong_pairs[strongest_pair]
             result["rounds"].append(round)
         
         # The winner is any candidate with no losses (if there are 2+, use the tiebreaker)
         winners = result["candidates"].copy()
-        for edge in candidateGraph.edges():
+        for edge in candidate_graph.edges():
             if edge[1] in winners:
                 winners.remove(edge[1])
         
@@ -71,9 +71,9 @@ class RankedPairs(CondorcetSystem):
         if len(winners) == 1:
             result["winners"] = set([list(winners)[0]])
         else:
-            result["tiedWinners"] = winners
-            result["tieBreaker"] = tieBreaker
-            result["winners"] = set([RankedPairs.breakWinnerTie(winners, tieBreaker)])
+            result["tied_winners"] = winners
+            result["tie_breaker"] = tie_breaker
+            result["winners"] = set([RankedPairs.breakWinnerTie(winners, tie_breaker)])
         
         # Return the final result
         return result

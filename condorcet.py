@@ -13,14 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from votingSystem import VotingSystem
+from voting_system import VotingSystem
 import types, itertools
 
 # This class determines the Condorcet winner if one exists.
 class CondorcetSystem(VotingSystem):
     
     @staticmethod
-    def calculateWinner(ballots):
+    def calculate_winner(ballots):
         result = {}
         
         # Collect all candidates
@@ -75,15 +75,15 @@ class CondorcetSystem(VotingSystem):
         
         # Filter the pairs down to the strong pairs
         keys = filter(lambda pair: pairs[(pair[0],pair[1])] > pairs[(pair[1],pair[0])], pairs)
-        strongPairs = {}
+        strong_pairs = {}
         for key in keys:
-            strongPairs[key] = pairs[key]
-        result["strongPairs"] = strongPairs
+            strong_pairs[key] = pairs[key]
+        result["strong_pairs"] = strong_pairs
             
 
         # The winner is the single candidate that never loses
         losingCandidates = set()
-        for pair in strongPairs.keys():
+        for pair in strong_pairs.keys():
             losingCandidates.add(pair[1])
         winningCandidates = candidates - losingCandidates
         if len(winningCandidates) == 1:
@@ -93,11 +93,11 @@ class CondorcetSystem(VotingSystem):
         return result
 
     @staticmethod
-    def __removeWeakEdges__(candidateGraph):
+    def __remove_weak_edges__(candidate_graph):
         edgesToRemove = []
-        for edge in candidateGraph.edges():
-            if candidateGraph.edge_weight(edge[0], edge[1]) <= candidateGraph.edge_weight(edge[1], edge[0]):
+        for edge in candidate_graph.edges():
+            if candidate_graph.edge_weight(edge[0], edge[1]) <= candidate_graph.edge_weight(edge[1], edge[0]):
                 edgesToRemove.append(edge)
         for edge in edgesToRemove:
-            candidateGraph.del_edge(edge[0], edge[1])
-        return candidateGraph
+            candidate_graph.del_edge(edge[0], edge[1])
+        return candidate_graph
