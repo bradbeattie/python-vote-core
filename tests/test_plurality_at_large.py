@@ -18,9 +18,8 @@ import unittest
 
 class TestPluralityAtLarge(unittest.TestCase):
     
-    
     # Plurality, no ties
-    def testPluralityNoTies(self):
+    def test_plurality_no_ties(self):
         
         # Generate data
         input = [
@@ -38,7 +37,7 @@ class TestPluralityAtLarge(unittest.TestCase):
     
         
     # Plurality, alternate ballot format
-    def testPluralityAlternateBallotFormat(self):
+    def test_plurality_alternate_ballot_format(self):
         
         # Generate data
         input = [
@@ -56,7 +55,7 @@ class TestPluralityAtLarge(unittest.TestCase):
         
 
     # Plurality, irrelevant ties
-    def PluralitytestIrrelevantTies(self):
+    def test_plurality_irrelevant_ties(self):
         
         # Generate data
         input = [
@@ -74,7 +73,7 @@ class TestPluralityAtLarge(unittest.TestCase):
 
 
     # Plurality, relevant ties
-    def testPluralityRelevantTies(self):
+    def test_plurality_relevant_ties(self):
         
         # Generate data
         input = [
@@ -92,7 +91,7 @@ class TestPluralityAtLarge(unittest.TestCase):
 
     
     # Plurality at Large, no ties
-    def testPluralityAtLargeNoTies(self):
+    def test_plurality_at_large_no_ties(self):
         
         # Generate data
         input = [
@@ -110,7 +109,7 @@ class TestPluralityAtLarge(unittest.TestCase):
       
             
     # Plurality at Large, irrelevant ties
-    def testPluralityAtLargeIrrelevantTies(self):
+    def test_plurality_at_large_irrelevant_ties(self):
         
         # Generate data
         input = [
@@ -129,7 +128,7 @@ class TestPluralityAtLarge(unittest.TestCase):
         
             
     # Plurality at Large, irrelevant ties
-    def testPluralityAtLargeRelevantTies(self):
+    def test_plurality_at_large_relevant_ties(self):
         
         # Generate data
         input = [

@@ -21,7 +21,7 @@ class TestSchulzeSTV(unittest.TestCase):
     # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
     # and Vote Management under Proportional Representation by the Single
     # Transferable Vote, section 5.5). 
-    def testPart2of5Example(self):
+    def test_part_2_of_5_example(self):
         
         # Generate data
         input = [
@@ -46,14 +46,14 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":24, "ballot":[["e"], ["c"], ["a"], ["d"], ["b"]] },
             { "count":3,  "ballot":[["e"], ["d"], ["c"], ["b"], ["a"]] },
         ]
-        output = SchulzeSTV.calculate_winner(input, 3, "preferenceSets")
+        output = SchulzeSTV.calculate_winner(input, 3, "preference_sets")
         
         # Run tests
         self.assertEqual(output['winners'], set(['a', 'd', 'e']))
         
     # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
     # this paper, we illustrate the concept of "proportional completion"). 
-    def testSchulzeSTVProportionalCompletion(self):
+    def test_schulze_stv_proportional_completion(self):
         input = [
             { "count":1, "ballot":{"A":  1, "B": 99, "C": 99, "D": 99, "E": 99, "F":  4, "G":  3, "H":  2, "I": 99, "J": 99}},
             { "count":1, "ballot":{"A":  1, "B":  2, "C":  4, "D":  5, "E":  3, "F":  9, "G":  6, "H": 10, "I":  8, "J":  7}},
@@ -540,7 +540,7 @@ class TestSchulzeSTV(unittest.TestCase):
     # This example was detailed in Markus Schulze's calcul02.pdf (Abstract: In
     # this paper we illustrate the calculation of the strengths of the vote
     # managements). 
-    def testVoteManagementStrengthCalculation(self):
+    def test_vote_management_strength_calculation(self):
         
         # Generate data
         input = {

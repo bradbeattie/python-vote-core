@@ -54,25 +54,25 @@ class PluralityAtLarge(VotingSystem):
         result["tallies"] = copy.deepcopy(tallies)
         
         # Determine which candidates win
-        winningCandidates = set()
-        while len(winningCandidates) < required_winners:
+        winning_candidates = set()
+        while len(winning_candidates) < required_winners:
             
             # Find the remaining candidates with the most votes
-            largestTally = max(tallies.values())
-            topCandidates = PluralityAtLarge.matching_keys(tallies, largestTally)
+            largest_tally = max(tallies.values())
+            top_candidates = PluralityAtLarge.matching_keys(tallies, largest_tally)
             
             # Reduce the found candidates if there are too many
-            if len(topCandidates | winningCandidates) > required_winners:
+            if len(top_candidates | winning_candidates) > required_winners:
                 result["tie_breaker"] = tie_breaker
-                result["tied_winners"] = topCandidates.copy()
-                while len(topCandidates | winningCandidates) > required_winners:
-                    topCandidates.remove(PluralityAtLarge.break_ties(topCandidates, tie_breaker, True))
+                result["tied_winners"] = top_candidates.copy()
+                while len(top_candidates | winning_candidates) > required_winners:
+                    top_candidates.remove(PluralityAtLarge.break_ties(top_candidates, tie_breaker, True))
             
             # Move the top candidates into the winning pile
-            winningCandidates |= topCandidates
-            for candidate in topCandidates:
+            winning_candidates |= top_candidates
+            for candidate in top_candidates:
                 del tallies[candidate]
                 
         # Return the final result
-        result["winners"] = winningCandidates
+        result["winners"] = winning_candidates
         return result

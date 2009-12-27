@@ -34,43 +34,43 @@ class CondorcetSystem(VotingSystem):
         
         # Auto-complete each ballot (as they may omit least preferred candidates)
         for ballot in ballots:
-            orderBallot = []
+            order_ballot = []
             
             # Convert range ballots into ordered sets
             if type(ballot["ballot"]) is types.DictType:
                 while len(ballot["ballot"]) > 0:
-                    mostPreferred = max(ballot["ballot"].values())
-                    mostPreferredCandidates = set()
+                    most_preferred = max(ballot["ballot"].values())
+                    most_preferred_candidates = set()
                     for candidate in ballot["ballot"].keys():
-                        if ballot["ballot"][candidate] == mostPreferred:
-                            mostPreferredCandidates.add(candidate)
-                    orderBallot.append(mostPreferredCandidates)
-                    for candidate in mostPreferredCandidates:
+                        if ballot["ballot"][candidate] == most_preferred:
+                            most_preferred_candidates.add(candidate)
+                    order_ballot.append(most_preferred_candidates)
+                    for candidate in most_preferred_candidates:
                         del ballot["ballot"][candidate]
             
             # Convert ordered arrays into ordered sets
             else:
-                for candidateGroup in ballot["ballot"]:
-                    orderBallot.append(set(candidateGroup))
+                for candidate_group in ballot["ballot"]:
+                    order_ballot.append(set(candidate_group))
             
             # Append the unreferenced candidates to the end of the ballot
-            unreferencedCandidates = candidates.copy()
-            for candidateGroup in orderBallot:
-                unreferencedCandidates = unreferencedCandidates - candidateGroup
-            if len(unreferencedCandidates) > 0:
-                orderBallot.append(unreferencedCandidates)
-            ballot["ballot"] = orderBallot
+            unreferenced_candidates = candidates.copy()
+            for candidate_group in order_ballot:
+                unreferenced_candidates = unreferenced_candidates - candidate_group
+            if len(unreferenced_candidates) > 0:
+                order_ballot.append(unreferenced_candidates)
+            ballot["ballot"] = order_ballot
 
         # Generate the pairwise comparison tallies
         pairs = {}
         for pair in itertools.permutations(candidates, 2):
             pairs[pair] = 0
         for ballot in ballots:
-            for candidateGroup in ballot["ballot"]:
-                for subsequentCandidateGroup in ballot["ballot"][ballot["ballot"].index(candidateGroup)+1:]:
-                    for candidate in candidateGroup:
-                        for subsequentCandidate in subsequentCandidateGroup:
-                            pairs[(candidate, subsequentCandidate)] += ballot["count"]
+            for candidate_group in ballot["ballot"]:
+                for subsequent_candidate_group in ballot["ballot"][ballot["ballot"].index(candidate_group)+1:]:
+                    for candidate in candidate_group:
+                        for subsequent_candidate in subsequent_candidate_group:
+                            pairs[(candidate, subsequent_candidate)] += ballot["count"]
         result["pairs"] = pairs
         
         # Filter the pairs down to the strong pairs
@@ -82,22 +82,22 @@ class CondorcetSystem(VotingSystem):
             
 
         # The winner is the single candidate that never loses
-        losingCandidates = set()
+        losing_candidates = set()
         for pair in strong_pairs.keys():
-            losingCandidates.add(pair[1])
-        winningCandidates = candidates - losingCandidates
-        if len(winningCandidates) == 1:
-            result["winners"] = set([list(winningCandidates)[0]])
+            losing_candidates.add(pair[1])
+        winning_candidates = candidates - losing_candidates
+        if len(winning_candidates) == 1:
+            result["winners"] = set([list(winning_candidates)[0]])
 
         # Return the final result
         return result
 
     @staticmethod
     def __remove_weak_edges__(candidate_graph):
-        edgesToRemove = []
+        edges_to_remove = []
         for edge in candidate_graph.edges():
             if candidate_graph.edge_weight(edge[0], edge[1]) <= candidate_graph.edge_weight(edge[1], edge[0]):
-                edgesToRemove.append(edge)
-        for edge in edgesToRemove:
+                edges_to_remove.append(edge)
+        for edge in edges_to_remove:
             candidate_graph.del_edge(edge[0], edge[1])
         return candidate_graph

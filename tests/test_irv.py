@@ -19,7 +19,7 @@ import unittest
 class TestInstantRunoff(unittest.TestCase):
     
     # IRV, no ties
-    def testNoTies(self):
+    def test_no_ties(self):
         
         # Generate data
         input = [
@@ -40,7 +40,7 @@ class TestInstantRunoff(unittest.TestCase):
 
     
     # IRV, ties
-    def testTies(self):
+    def test_ties(self):
         
         # Generate data
         input = [
@@ -61,7 +61,7 @@ class TestInstantRunoff(unittest.TestCase):
 
 
     # IRV, no rounds
-    def testLandslide(self):
+    def test_landslide(self):
         
         # Generate data
         input = [

@@ -73,7 +73,7 @@ class RankedPairs(CondorcetSystem):
         else:
             result["tied_winners"] = winners
             result["tie_breaker"] = tie_breaker
-            result["winners"] = set([RankedPairs.breakWinnerTie(winners, tie_breaker)])
+            result["winners"] = set([RankedPairs.break_ties(winners, tie_breaker)])
         
         # Return the final result
         return result

@@ -19,7 +19,7 @@ import unittest
 class TestRankedPairs(unittest.TestCase):
     
     # Ranked Pairs, cycle
-    def testNoCycle(self):
+    def test_no_cycle(self):
         
         # Generate data
         input = [
@@ -50,7 +50,7 @@ class TestRankedPairs(unittest.TestCase):
         
 
     # Ranked Pairs, cycle
-    def testCycle(self):
+    def test_cycle(self):
         
         # Generate data
         input = [

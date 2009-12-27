@@ -19,7 +19,7 @@ import unittest
 class TestVotingSystem(unittest.TestCase):
     
     # Tie breaker generation
-    def testTieBreakerGeneration(self):
+    def test_tieBreakerGeneration(self):
         
         # Generate data
         input = [

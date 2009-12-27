@@ -43,7 +43,7 @@ class SchulzeMethod(CondorcetSystem):
         else:
             result["tied_winners"] = set(candidate_graph.nodes())
             result["tie_breaker"] = SchulzeMethod.generate_tie_breaker(result["candidates"])
-            result["winners"] = set([SchulzeMethod.breakWinnerTie(candidate_graph.nodes(), result["tie_breaker"])])
+            result["winners"] = set([SchulzeMethod.break_ties(candidate_graph.nodes(), result["tie_breaker"])])
         
         # Return the final result
         return result
@@ -58,13 +58,13 @@ class SchulzeMethod(CondorcetSystem):
             
             # Remove nodes at the end of non-cycle paths
             access = accessibility(candidate_graph)
-            mutualAccess = mutual_accessibility(candidate_graph)
-            candidatesToRemove = set()
+            mutual_access = mutual_accessibility(candidate_graph)
+            candidates_to_remove = set()
             for candidate in candidates:
-                candidatesToRemove = candidatesToRemove | (set(access[candidate]) - set(mutualAccess[candidate]))
-            if len(candidatesToRemove) > 0:
-                actions.append(['nodes', candidatesToRemove])
-                for candidate in candidatesToRemove:
+                candidates_to_remove = candidates_to_remove | (set(access[candidate]) - set(mutual_access[candidate]))
+            if len(candidates_to_remove) > 0:
+                actions.append(['nodes', candidates_to_remove])
+                for candidate in candidates_to_remove:
                     candidate_graph.del_node(candidate)
                     candidates.remove(candidate)
 

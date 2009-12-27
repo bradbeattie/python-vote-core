@@ -19,7 +19,7 @@ import unittest
 class TestPlurality(unittest.TestCase):
     
     # Plurality, no ties
-    def testNoTies(self):
+    def test_no_ties(self):
         
         # Generate data
         input = [
@@ -37,7 +37,7 @@ class TestPlurality(unittest.TestCase):
     
         
     # Plurality, alternate ballot format
-    def testAlternateBallotFormat(self):
+    def test_alternate_ballot_format(self):
         
         # Generate data
         input = [
@@ -55,7 +55,7 @@ class TestPlurality(unittest.TestCase):
         
 
     # Plurality, irrelevant ties
-    def testIrrelevantTies(self):
+    def test_irrelevant_ties(self):
         
         # Generate data
         input = [
@@ -73,7 +73,7 @@ class TestPlurality(unittest.TestCase):
 
 
     # Plurality, relevant ties
-    def testRelevantTies(self):
+    def test_relevant_ties(self):
         
         # Generate data
         input = [

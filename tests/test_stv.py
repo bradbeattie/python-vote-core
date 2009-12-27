@@ -19,7 +19,7 @@ import unittest
 class TestSTV(unittest.TestCase):
     
     # IRV, no ties
-    def testIRVNoTies(self):
+    def test_irv_no_ties(self):
         
         # Generate data
         input = [
@@ -41,7 +41,7 @@ class TestSTV(unittest.TestCase):
         
     
     # IRV, ties
-    def testIRVTies(self):
+    def test_irv_ties(self):
         
         # Generate data
         input = [
@@ -64,7 +64,7 @@ class TestSTV(unittest.TestCase):
 
 
     # IRV, no rounds
-    def testIRVLandslide(self):
+    def test_irv_landslide(self):
         
         # Generate data
         input = [
@@ -86,7 +86,7 @@ class TestSTV(unittest.TestCase):
 
 
     # STV, no rounds
-    def testSTVLandslide(self):
+    def test_stv_landslide(self):
         
         # Generate data
         input = [
@@ -109,7 +109,7 @@ class TestSTV(unittest.TestCase):
 
     # STV, example from Wikipedia
     # http://en.wikipedia.org/wiki/Single_transferable_vote#An_example
-    def testSTVWikiExample(self):
+    def test_stv_wiki_example(self):
 
         # Generate data
         input = [

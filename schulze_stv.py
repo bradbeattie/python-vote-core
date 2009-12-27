@@ -24,15 +24,15 @@ class SchulzeSTV:
     @staticmethod
     def calculate_winner(ballots, required_winners, notation=None):
         
-        if notation == "preferenceSets":
+        if notation == "preference_sets":
             for ballot in ballots:
-                newBallot = {}
+                new_ballot = {}
                 r = 0
                 for rank in ballot["ballot"]:
                     r += 1
                     for candidate in rank:
-                        newBallot[candidate] = r
-                ballot["ballot"] = newBallot
+                        new_ballot[candidate] = r
+                ballot["ballot"] = new_ballot
         
         # Collect all candidates
         candidates = set()
@@ -96,41 +96,41 @@ class SchulzeSTV:
         # Complete each pattern in order
         for completion_pattern in completion_patterns:
             if completion_pattern in pattern_weights:
-                pattern_weights = SchulzeSTV.__proportional_completionRound__(completion_pattern, pattern_weights)
+                pattern_weights = SchulzeSTV.__proportional_completion_round__(completion_pattern, pattern_weights)
         return pattern_weights
 
     @staticmethod
-    def __proportional_completionRound__(completion_pattern, pattern_weights):
+    def __proportional_completion_round__(completion_pattern, pattern_weights):
         
         # Remove pattern that contains indifference
         completion_pattern_weight = pattern_weights[completion_pattern]
         del pattern_weights[completion_pattern]
         
-        patternsToConsider = {}
+        patterns_to_consider = {}
         for pattern in pattern_weights.keys():
             append = False
-            appendTarget = []
+            append_target = []
             for i in range(len(completion_pattern)):
                 if completion_pattern[i] != 2:
-                    appendTarget.append(completion_pattern[i])
+                    append_target.append(completion_pattern[i])
                 else:
-                    appendTarget.append(pattern[i])
+                    append_target.append(pattern[i])
                 if completion_pattern[i] == 2 and pattern[i] != 2:
                     append = True
-            appendTarget = tuple(appendTarget)
+            append_target = tuple(append_target)
             if append == True:
-                if appendTarget not in patternsToConsider:
-                    patternsToConsider[appendTarget] = set()
-                patternsToConsider[appendTarget].add(pattern)
+                if append_target not in patterns_to_consider:
+                    patterns_to_consider[append_target] = set()
+                patterns_to_consider[append_target].add(pattern)
         
         denominator = 0
-        for (appendTarget, patterns) in patternsToConsider.items():
+        for (append_target, patterns) in patterns_to_consider.items():
             for pattern in patterns:
                 denominator += pattern_weights[pattern]
         
         # Reweight the remaining items
-        for pattern in patternsToConsider.keys():
-            addition = sum(pattern_weights[consideredPattern] for consideredPattern in patternsToConsider[pattern]) * completion_pattern_weight / denominator
+        for pattern in patterns_to_consider.keys():
+            addition = sum(pattern_weights[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
             if pattern not in pattern_weights:
                 pattern_weights[pattern] = 0
             pattern_weights[pattern] += addition

@@ -40,36 +40,36 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             # Parse the incoming data
-            jsonData = json.loads(self.rfile.read(int(self.headers["content-length"])))
+            json_data = json.loads(self.rfile.read(int(self.headers["content-length"])))
             
             # Assume we're looking for a single winner
-            if "winners" not in jsonData:
-                jsonData["winners"] = 1
+            if "winners" not in json_data:
+                json_data["winners"] = 1
                 
             # Assume each ballot represents a single voter's preference
-            newInput = []
-            for ballot in jsonData["ballots"]:
+            new_input = []
+            for ballot in json_data["ballots"]:
                 if type(ballot) is not types.DictType:
                     ballot = {"ballot":ballot}
                 if "count" not in ballot:
                     ballot["count"] = 1
-                newInput.append(ballot)
-            jsonData["ballots"] = newInput           
+                new_input.append(ballot)
+            json_data["ballots"] = new_input           
 
             # Send the data to the requested voting system
-            if jsonData["voting_system"] in ["plurality", "fptp"]:
-                response = Plurality.calculate_winner(jsonData["ballots"])
-            elif jsonData["voting_system"] in ["pluralityAtLarge", "blockVoting"]:
-                response = PluralityAtLarge.calculate_winner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["voting_system"] in ["irv", "instantRunoff"]:
-                response = IRV.calculate_winner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["voting_system"] in ["stv", "singleTransferableVote"]:
-                response = STV.calculate_winner(jsonData["ballots"], jsonData["winners"])
-            elif jsonData["voting_system"] in ["rankedPairs", "tideman"]:
-                response = RankedPairs.calculate_winner(jsonData["ballots"])
-            elif jsonData["voting_system"] in ["schulzeMethod"]:
-                response = SchulzeMethod.calculate_winner(jsonData["ballots"])
-            elif jsonData["voting_system"] in ["schulzeSTV"]:
+            if json_data["voting_system"] == "plurality":
+                response = Plurality.calculate_winner(json_data["ballots"])
+            elif json_data["voting_system"] == "plurality_at_large":
+                response = PluralityAtLarge.calculate_winner(json_data["ballots"], json_data["winners"])
+            elif json_data["voting_system"] == "irv":
+                response = IRV.calculate_winner(json_data["ballots"], json_data["winners"])
+            elif json_data["voting_system"] == "stv":
+                response = STV.calculate_winner(json_data["ballots"], json_data["winners"])
+            elif json_data["voting_system"] == "ranked_pairs":
+                response = RankedPairs.calculate_winner(json_data["ballots"])
+            elif json_data["voting_system"] == "schulze_method":
+                response = SchulzeMethod.calculate_winner(json_data["ballots"])
+            elif json_data["voting_system"] == "schulze_stv":
                 raise Exception("Not yet implemented")
             else:
                 raise
@@ -77,6 +77,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             # Ensure a response came back from the voting system
             if response == None:
                 raise Exception("No voting system specified")
+
         except:
             fp = StringIO.StringIO()
             traceback.print_exc(10,fp)
@@ -97,19 +98,19 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
     # json.dump() has a difficult time with certain object types
     def __simplify_object__(self, object):
         if type(object) == types.DictType:
-            newDict = {}
+            new_dict = {}
             for key in object.keys():
                 value = self.__simplify_object__(object[key])
                 key = self.__simplify_object__(key)
-                newDict[key] = value
-            return newDict
+                new_dict[key] = value
+            return new_dict
         elif type(object) == types.TupleType:
             return "|".join(object)
         elif type(object) == type(set()) or type(object) == types.ListType:
-            newList = []
+            new_list = []
             for element in object:
-                newList.append(self.__simplify_object__(element))
-            return newList
+                new_list.append(self.__simplify_object__(element))
+            return new_list
         else:
             return object
 

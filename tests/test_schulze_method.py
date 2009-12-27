@@ -20,7 +20,7 @@ class TestSchulzeMethod(unittest.TestCase):
     
     # Schulze Method, example from Wikipedia
     # http://en.wikipedia.org/wiki/Schulze_method#The_Schwartz_set_heuristic
-    def testWikiExample(self):
+    def test_wiki_example(self):
         
         # Generate data
         input = [
@@ -69,7 +69,7 @@ class TestSchulzeMethod(unittest.TestCase):
     
      
     # http://en.wikipedia.org/wiki/Schulze_method#Example
-    def testWikiExample2(self):
+    def test_wiki_example2(self):
 
         # Generate data
         input = [
