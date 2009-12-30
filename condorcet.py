@@ -77,9 +77,9 @@ class CondorcetSystem(VotingSystem):
     def convert_ballots(ballots, notation):
         
         if notation == "grouping":
+            if type(ballots[0]["ballot"][0]) != types.ListType:
+                raise Exception("Grouping notation expects double-nested lists")
             for ballot in ballots:
-                if type(ballot["ballot"][0]) != types.ListType:
-                    raise Exception("Grouping notation expects double-nested lists")
                 new_ballot = {}
                 r = 0
                 for rank in ballot["ballot"]:
