@@ -131,8 +131,7 @@ class SchulzeSTV(VotingSystem):
         number_of_patterns = len(voter_profile) - 1
         number_of_nodes = 1 + number_of_patterns + number_of_candidates + 1
         ordered_patterns = sorted(voter_profile.keys())
-        if tuple([3]*number_of_candidates) in ordered_patterns:
-            ordered_patterns.remove(tuple([3]*number_of_candidates))
+        ordered_patterns.remove(tuple([3]*number_of_candidates))
         r = [(sum(voter_profile.values()) - voter_profile[tuple([3]*number_of_candidates)]) / number_of_candidates]
         
         # Generate a number_of_nodes x number_of_nodes matrix of zeroes

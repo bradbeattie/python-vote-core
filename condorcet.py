@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from voting_system import VotingSystem
-import itertools
+import itertools, types
 
 # This class determines the Condorcet winner if one exists.
 class CondorcetSystem(VotingSystem):
@@ -78,6 +78,8 @@ class CondorcetSystem(VotingSystem):
         
         if notation == "grouping":
             for ballot in ballots:
+                if type(ballot["ballot"][0]) != types.ListType:
+                    raise Exception("Grouping notation expects double-nested lists")
                 new_ballot = {}
                 r = 0
                 for rank in ballot["ballot"]:
