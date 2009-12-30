@@ -65,34 +65,6 @@ class TestSchulzeSTV(unittest.TestCase):
         ]
         output = SchulzeSTV.calculate_winner(input, 2, "grouping")
         
-    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
-    def test_alternate_format_1(self):
-
-        # Generate data
-        input = [
-            { "count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3} },
-            { "count":26, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
-            { "count":12, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
-            { "count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3} },
-            { "count":27, "ballot":{"Brad":1} }
-        ]
-        output = SchulzeSTV.calculate_winner(input, 2, "ranking")
-        
-    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
-    def test_alternate_format_2(self):
-
-        # Generate data
-        input = [
-            { "count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3} },
-            { "count":26, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
-            { "count":12, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
-            { "count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3} },
-            { "count":27, "ballot":{"Brad":10} }
-        ]
-        output = SchulzeSTV.calculate_winner(input, 2, "rating")
-
-        # Run tests
-        
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV_2
     def test_wiki_example_2(self):
         pass
