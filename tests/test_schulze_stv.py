@@ -65,14 +65,32 @@ class TestSchulzeSTV(unittest.TestCase):
         ]
         output = SchulzeSTV.calculate_winner(input, 2, "grouping")
         
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['Carter', 'Brad', 'Andrea']),
+            'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
+            'winners': set([('Andrea', 'Brad')])
+        })
+        
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV_2
     def test_wiki_example_2(self):
-        pass
         
         # Generate data
+        input = [
+            { "count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]] },
+            { "count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]] },
+            { "count":12, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
+            { "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
+            { "count":27, "ballot":[["Brad"]] },
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "grouping")
         
         # Run tests
-        
+        self.assertEqual(output, {
+            'candidates': set(['Carter', 'Brad', 'Andrea']),
+            'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
+            'winners': set([('Andrea', 'Brad')])
+        })
             
     # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
     # this paper, we illustrate the concept of "proportional completion"). 
