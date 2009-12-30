@@ -27,7 +27,7 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3", "c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculate_winner(input)
+        output = RankedPairs.calculate_winner(input, "grouping")
         
         # Run tests
         self.assertEqual(output, {
@@ -58,7 +58,7 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3"], ["c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculate_winner(input)
+        output = RankedPairs.calculate_winner(input, "grouping")
         
         # Run tests
         self.assertEqual(output, {
@@ -93,7 +93,7 @@ class TestRankedPairs(unittest.TestCase):
             { "count":100, "ballot":[["vanilla"], ["strawberry"]] },
             { "count":1, "ballot":[["strawberry"], ["chocolate"]] }
         ]
-        output = RankedPairs.calculate_winner(input)
+        output = RankedPairs.calculate_winner(input, "grouping")
 
         # Run tests
         self.assertEqual(output["pairs"], {

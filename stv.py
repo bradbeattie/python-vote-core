@@ -49,7 +49,7 @@ class STV(VotingSystem):
         # Generate tie breaker
         tie_breaker = STV.generate_tie_breaker(candidates)
         
-        # Loop until we have enough candidates or has obtained a majority of votes
+        # Loop until we have enough candidates
         while len(result["winners"]) < required_winners and len(candidates) + len(result["winners"]) > required_winners:
             
             # Remove any zero-strength ballots
@@ -89,13 +89,13 @@ class STV(VotingSystem):
 
                 # Determine which candidates have the fewest votes
                 fewest_votes = min(round["tallies"].values())
-                least_preferred_candidates = STV.matching_keys(round["tallies"], fewest_votes)
-                if len(least_preferred_candidates) > 1:
+                losers = STV.matching_keys(round["tallies"], fewest_votes)
+                if len(losers) > 1:
                     result["tie_breaker"] = tie_breaker
-                    round["tied_losers"] = least_preferred_candidates
-                    round["loser"] = STV.break_ties(least_preferred_candidates, tie_breaker, True)
+                    round["tied_losers"] = losers
+                    round["loser"] = STV.break_ties(losers, tie_breaker, True)
                 else:
-                    round["loser"] = list(least_preferred_candidates)[0]
+                    round["loser"] = list(losers)[0]
                     
                 
                 # Eliminate references to the lost candidate

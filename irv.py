@@ -44,14 +44,14 @@ class IRV(VotingSystem):
 
                 # Determine which candidates have the fewest votes
                 fewest_votes = min(tallies.values())
-                least_preferred_candidates = IRV.matching_keys(tallies, fewest_votes)
-                if len(least_preferred_candidates) > 1:
+                losers = IRV.matching_keys(tallies, fewest_votes)
+                if len(losers) > 1:
                     result["tie_breaker"] = tie_breaker
-                    round["tied_losers"] = least_preferred_candidates
-                    loser = IRV.break_ties(least_preferred_candidates, tie_breaker, True)
+                    round["tied_losers"] = losers
+                    loser = IRV.break_ties(losers, tie_breaker, True)
                     
                 else:
-                    loser = list(least_preferred_candidates)[0]
+                    loser = list(losers)[0]
                 round["loser"] = loser
                 
                 # Eliminate references to the lost candidate

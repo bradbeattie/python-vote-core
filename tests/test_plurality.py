@@ -34,25 +34,6 @@ class TestPlurality(unittest.TestCase):
             'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
             'winners': set(['c1'])
         })
-    
-        
-    # Plurality, alternate ballot format
-    def test_alternate_ballot_format(self):
-        
-        # Generate data
-        input = [
-            { "count":26, "ballot":["c1"] },
-            { "count":22, "ballot":["c2"] },
-            { "count":23, "ballot":["c3"] }
-        ]
-        output = Plurality.calculate_winner(input)
-        
-        # Run tests
-        self.assertEqual(output, {
-            'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
-            'winners': set(['c1'])
-        })
-        
 
     # Plurality, irrelevant ties
     def test_irrelevant_ties(self):

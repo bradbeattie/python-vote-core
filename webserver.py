@@ -20,6 +20,7 @@ from irv import IRV
 from stv import STV 
 from ranked_pairs import RankedPairs
 from schulze_method import SchulzeMethod
+from schulze_stv import SchulzeSTV
 import json, types, StringIO, traceback
 
 # This class provides a basic server to listen for JSON requests. It then
@@ -40,43 +41,47 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             # Parse the incoming data
-            json_data = json.loads(self.rfile.read(int(self.headers["content-length"])))
+            request = json.loads(self.rfile.read(int(self.headers["content-length"])))
             
             # Assume we're looking for a single winner
-            if "winners" not in json_data:
-                json_data["winners"] = 1
+            if "winners" not in request:
+                request["winners"] = 1
                 
             # Assume each ballot represents a single voter's preference
             new_input = []
-            for ballot in json_data["ballots"]:
+            for ballot in request["ballots"]:
                 if type(ballot) is not types.DictType:
                     ballot = {"ballot":ballot}
                 if "count" not in ballot:
                     ballot["count"] = 1
                 new_input.append(ballot)
-            json_data["ballots"] = new_input           
+            request["ballots"] = new_input
+            
+            # Default the notation to ranking
+            if "notation" not in request:
+                request["notation"] = "ranking"
 
             # Send the data to the requested voting system
-            if json_data["voting_system"] == "plurality":
-                response = Plurality.calculate_winner(json_data["ballots"])
-            elif json_data["voting_system"] == "plurality_at_large":
-                response = PluralityAtLarge.calculate_winner(json_data["ballots"], json_data["winners"])
-            elif json_data["voting_system"] == "irv":
-                response = IRV.calculate_winner(json_data["ballots"], json_data["winners"])
-            elif json_data["voting_system"] == "stv":
-                response = STV.calculate_winner(json_data["ballots"], json_data["winners"])
-            elif json_data["voting_system"] == "ranked_pairs":
-                response = RankedPairs.calculate_winner(json_data["ballots"])
-            elif json_data["voting_system"] == "schulze_method":
-                response = SchulzeMethod.calculate_winner(json_data["ballots"])
-            elif json_data["voting_system"] == "schulze_stv":
-                raise Exception("Not yet implemented")
+            if request["voting_system"] == "plurality":
+                response = Plurality.calculate_winner(request["ballots"])
+            elif request["voting_system"] == "plurality_at_large":
+                response = PluralityAtLarge.calculate_winner(request["ballots"], request["winners"])
+            elif request["voting_system"] == "irv":
+                response = IRV.calculate_winner(request["ballots"], request["winners"])
+            elif request["voting_system"] == "stv":
+                response = STV.calculate_winner(request["ballots"], request["winners"])
+            elif request["voting_system"] == "ranked_pairs":
+                response = RankedPairs.calculate_winner(request["ballots"], request["notation"])
+            elif request["voting_system"] == "schulze_method":
+                response = SchulzeMethod.calculate_winner(request["ballots"], request["notation"])
+            elif request["voting_system"] == "schulze_stv":
+                response = SchulzeSTV.calculate_winner(request["ballots"], request["winners"], request["notation"])
             else:
-                raise
+                raise Exception("No voting system specified")
             
             # Ensure a response came back from the voting system
             if response == None:
-                raise Exception("No voting system specified")
+                raise
 
         except:
             fp = StringIO.StringIO()

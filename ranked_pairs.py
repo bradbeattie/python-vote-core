@@ -22,18 +22,18 @@ import copy
 class RankedPairs(CondorcetSystem):
     
     @staticmethod
-    def calculate_winner(ballots):
-        result = CondorcetSystem.calculate_winner(ballots)
+    def calculate_winner(ballots, notation="ranking"):
         
-        # If there's a Condorcet winner, return it
+        # Try to determine a Condorcet winner
+        result = CondorcetSystem.condorcet_winner(ballots, notation)
         if "winners" in result:
             return result
         
         # Initialize the candidate graph
         result["rounds"] = []
         tie_breaker = RankedPairs.generate_tie_breaker(result["candidates"])
-        candidate_graph = digraph()
-        candidate_graph.add_nodes(list(result["candidates"]))
+        graph = digraph()
+        graph.add_nodes(list(result["candidates"]))
         
         # Loop until we've considered all possible pairs
         remaining_strong_pairs = copy.deepcopy(result["strong_pairs"])
@@ -52,28 +52,14 @@ class RankedPairs(CondorcetSystem):
             round["pair"] = strongest_pair
             
             # If the pair would add a cycle, skip it
-            candidate_graph.add_edge(strongest_pair[0], strongest_pair[1])
-            if len(find_cycle(candidate_graph)) > 0:
+            graph.add_edge(strongest_pair[0], strongest_pair[1])
+            if len(find_cycle(graph)) > 0:
                 round["action"] = "skipped"
-                candidate_graph.del_edge(strongest_pair[0], strongest_pair[1])
+                graph.del_edge(strongest_pair[0], strongest_pair[1])
             else:
                 round["action"] = "added"
             del remaining_strong_pairs[strongest_pair]
             result["rounds"].append(round)
         
-        # The winner is any candidate with no losses (if there are 2+, use the tiebreaker)
-        winners = result["candidates"].copy()
-        for edge in candidate_graph.edges():
-            if edge[1] in winners:
-                winners.remove(edge[1])
-        
         # Mark the winner
-        if len(winners) == 1:
-            result["winners"] = set([list(winners)[0]])
-        else:
-            result["tied_winners"] = winners
-            result["tie_breaker"] = tie_breaker
-            result["winners"] = set([RankedPairs.break_ties(winners, tie_breaker)])
-        
-        # Return the final result
-        return result
+        return CondorcetSystem.graph_winner(graph, result)

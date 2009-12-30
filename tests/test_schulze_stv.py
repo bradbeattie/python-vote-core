@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from schulze_stv import SchulzeSTV
+from condorcet import CondorcetSystem
 import unittest
 
 class TestSchulzeSTV(unittest.TestCase):
@@ -46,11 +47,61 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":24, "ballot":[["e"], ["c"], ["a"], ["d"], ["b"]] },
             { "count":3,  "ballot":[["e"], ["d"], ["c"], ["b"], ["a"]] },
         ]
-        output = SchulzeSTV.calculate_winner(input, 3, "preference_sets")
+        output = SchulzeSTV.calculate_winner(input, 3, "grouping")
         
         # Run tests
-        self.assertEqual(output['winners'], set(['a', 'd', 'e']))
+        self.assertEqual(output['winners'], set([('a', 'd', 'e')]))
+            
+    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
+    def test_wiki_example_1(self):
+
+        # Generate data
+        input = [
+            { "count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]] },
+            { "count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]] },
+            { "count":12, "ballot":[["Andrea"], ["Carter"], ["Brad"]] },
+            { "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
+            { "count":27, "ballot":[["Brad"]] },
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "grouping")
         
+    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
+    def test_alternate_format_1(self):
+
+        # Generate data
+        input = [
+            { "count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3} },
+            { "count":26, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
+            { "count":12, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
+            { "count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3} },
+            { "count":27, "ballot":{"Brad":1} }
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "ranking")
+        
+    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
+    def test_alternate_format_2(self):
+
+        # Generate data
+        input = [
+            { "count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3} },
+            { "count":26, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
+            { "count":12, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
+            { "count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3} },
+            { "count":27, "ballot":{"Brad":10} }
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "rating")
+
+        # Run tests
+        
+    # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV_2
+    def test_wiki_example_2(self):
+        pass
+        
+        # Generate data
+        
+        # Run tests
+        
+            
     # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
     # this paper, we illustrate the concept of "proportional completion"). 
     def test_schulze_stv_proportional_completion(self):
@@ -516,6 +567,7 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":1, "ballot":{"A":  1, "B": 99, "C":  3, "D":  2, "E": 99, "F": 99, "G": 99, "H": 99, "I": 99, "J": 99}},
             { "count":1, "ballot":{"A":  1, "B":  3, "C":  7, "D":  2, "E": 10, "F":  8, "G":  6, "H":  9, "I":  4, "J":  5}}
         ]
+        input = CondorcetSystem.convert_ballots(input, "ranking")
         
         output = SchulzeSTV.__proportional_completion__("H", set(["A","C","D","I"]), input)
         self.assertEqual(output, {

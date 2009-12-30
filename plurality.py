@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from voting_system import VotingSystem
-import types
 
 # This class implements Plurality (aka first past the post, fptp, etc).
 class Plurality(VotingSystem):
@@ -24,12 +23,8 @@ class Plurality(VotingSystem):
         result = {}
         
         # Collect the list of candidates
-        candidates = set()
-        for ballot in ballots:
-            if type(ballot["ballot"]) == types.ListType:
-                ballot["ballot"] = ballot["ballot"][0] 
-            candidates.add(ballot["ballot"])
-            
+        candidates = set([ballot["ballot"] for ballot in ballots])
+        
         # Generate tie breaker
         tie_breaker = Plurality.generate_tie_breaker(candidates)
 

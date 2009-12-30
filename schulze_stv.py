@@ -17,31 +17,22 @@
 from pygraph.classes.digraph import digraph
 from schulze_method import SchulzeMethod
 from condorcet import CondorcetSystem
+from voting_system import VotingSystem
 import itertools
 
-class SchulzeSTV:
+class SchulzeSTV(VotingSystem):
     
     @staticmethod
-    def calculate_winner(ballots, required_winners, notation=None):
+    def calculate_winner(ballots, required_winners, notation="ranking"):
         
-        if notation == "preference_sets":
-            for ballot in ballots:
-                new_ballot = {}
-                r = 0
-                for rank in ballot["ballot"]:
-                    r += 1
-                    for candidate in rank:
-                        new_ballot[candidate] = r
-                ballot["ballot"] = new_ballot
+        ballots = CondorcetSystem.convert_ballots(ballots, notation)
+        candidates = CondorcetSystem.obtain_candidates(ballots)
+        ballots = CondorcetSystem.complete_ballots(ballots, candidates)
+        result = {"candidates": candidates}
         
-        # Collect all candidates
-        candidates = set()
-        for ballot in ballots:
-            candidates = candidates.union(ballot["ballot"].keys())
-        candidates = sorted(list(candidates))
-        
-        management_graph = digraph()
-        management_graph.add_nodes(itertools.combinations(candidates, required_winners))
+        graph = digraph()
+        for candidate_set in itertools.combinations(candidates, required_winners):
+            graph.add_nodes([tuple(sorted(list(candidate_set)))])
         
         candidate_sets = dict.fromkeys(itertools.combinations(candidates, required_winners + 1), 0)
         for candidate_set in candidate_sets:
@@ -50,21 +41,13 @@ class SchulzeSTV:
                 completed = SchulzeSTV.__proportional_completion__(candidate, other_candidates, ballots)
                 weight = SchulzeSTV.__strength_of_vote_management__(completed)
                 for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
-                    management_graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
+                    graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
         
-        result = {}
-        management_graph = CondorcetSystem.__remove_weak_edges__(management_graph)
-        management_graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(management_graph)
+        graph = CondorcetSystem.__remove_weak_edges__(graph)
+        graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(graph)
 
         # Mark the winner
-        if len(management_graph.nodes()) == 1:
-            result["winners"] = set(management_graph.nodes()[0])
-        else:
-            result["tied_winners"] = set(management_graph.nodes())
-            result["tie_breaker"] = SchulzeSTV.generate_tie_breaker(result["candidates"])
-            result["winners"] = SchulzeSTV.break_ties(management_graph.nodes(), result["tie_breaker"])
-        
-        return result
+        return CondorcetSystem.graph_winner(graph, result)
     
     @staticmethod
     def __proportional_completion__(candidate, other_candidates, ballots):

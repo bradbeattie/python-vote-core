@@ -21,65 +21,57 @@ from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 class SchulzeMethod(CondorcetSystem):
     
     @staticmethod
-    def calculate_winner(ballots):
-        result = CondorcetSystem.calculate_winner(ballots)
+    def calculate_winner(ballots, notation="ranking"):
         
-        # If there's a Condorcet winner, return it
+        # Try to determine a Condorcet winner
+        result = CondorcetSystem.condorcet_winner(ballots, notation)
         if "winners" in result:
             return result
         
         # Initialize the candidate graph
-        candidate_graph = digraph()
-        candidate_graph.add_nodes(list(result["candidates"]))
+        graph = digraph()
+        graph.add_nodes(list(result["candidates"]))
         for (pair,weight) in result["strong_pairs"].items():
-            candidate_graph.add_edge(pair[0], pair[1], weight)
+            graph.add_edge(pair[0], pair[1], weight)
         
         # Iterate through using the Schwartz set heuristic
-        candidate_graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(candidate_graph)
+        graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(graph)
         
         # Mark the winner
-        if len(candidate_graph.nodes()) == 1:
-            result["winners"] = candidate_graph.nodes()[0]
-        else:
-            result["tied_winners"] = set(candidate_graph.nodes())
-            result["tie_breaker"] = SchulzeMethod.generate_tie_breaker(result["candidates"])
-            result["winners"] = set([SchulzeMethod.break_ties(candidate_graph.nodes(), result["tie_breaker"])])
-        
-        # Return the final result
-        return result
+        return CondorcetSystem.graph_winner(graph, result)
     
     @staticmethod
-    def __schwartz_set_heuristic__(candidate_graph):
+    def __schwartz_set_heuristic__(graph):
         
         # Iterate through using the Schwartz set heuristic
         actions = []
-        candidates = candidate_graph.nodes()
-        while len(candidate_graph.edges()) > 0:
+        candidates = graph.nodes()
+        while len(graph.edges()) > 0:
             
             # Remove nodes at the end of non-cycle paths
-            access = accessibility(candidate_graph)
-            mutual_access = mutual_accessibility(candidate_graph)
+            access = accessibility(graph)
+            mutual_access = mutual_accessibility(graph)
             candidates_to_remove = set()
             for candidate in candidates:
                 candidates_to_remove = candidates_to_remove | (set(access[candidate]) - set(mutual_access[candidate]))
             if len(candidates_to_remove) > 0:
                 actions.append(['nodes', candidates_to_remove])
                 for candidate in candidates_to_remove:
-                    candidate_graph.del_node(candidate)
+                    graph.del_node(candidate)
                     candidates.remove(candidate)
 
             # If none exist, remove the weakest edges
             else:
-                lightest_edges = set([candidate_graph.edges()[0]])
-                weight = candidate_graph.edge_weight(candidate_graph.edges()[0][0], candidate_graph.edges()[0][1])
-                for edge in candidate_graph.edges():
-                    if candidate_graph.edge_weight(edge[0], edge[1]) < weight:
-                        weight = candidate_graph.edge_weight(edge[0], edge[1])
+                lightest_edges = set([graph.edges()[0]])
+                weight = graph.edge_weight(graph.edges()[0][0], graph.edges()[0][1])
+                for edge in graph.edges():
+                    if graph.edge_weight(edge[0], edge[1]) < weight:
+                        weight = graph.edge_weight(edge[0], edge[1])
                         lightest_edges = set([edge])
-                    elif candidate_graph.edge_weight(edge[0], edge[1]) == weight:
+                    elif graph.edge_weight(edge[0], edge[1]) == weight:
                         lightest_edges.add(edge)
                 actions.append(['edges', lightest_edges])
                 for edge in lightest_edges:
-                    candidate_graph.del_edge(edge[0], edge[1])
+                    graph.del_edge(edge[0], edge[1])
         
-        return candidate_graph, actions
+        return graph, actions
