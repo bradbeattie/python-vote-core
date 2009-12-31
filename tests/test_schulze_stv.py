@@ -91,7 +91,7 @@ class TestSchulzeSTV(unittest.TestCase):
             'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
             'winners': set([('Andrea', 'Brad')])
         })
-            
+        
     # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
     # this paper, we illustrate the concept of "proportional completion"). 
     def test_schulze_stv_proportional_completion(self):

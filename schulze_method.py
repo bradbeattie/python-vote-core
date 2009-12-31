@@ -51,9 +51,10 @@ class SchulzeMethod(CondorcetSystem):
                 connected_nodes.add(edge[0])
                 connected_nodes.add(edge[1])
             lone_nodes = set(graph.nodes()) - connected_nodes
-            actions.append(['nodes', lone_nodes])
-            for node in lone_nodes:
-                graph.del_node(node)
+            if len(lone_nodes) > 0:
+                actions.append(['nodes', lone_nodes])
+                for node in lone_nodes:
+                    graph.del_node(node)
         
         # Iterate through using the Schwartz set heuristic
         candidates = graph.nodes()
