@@ -607,7 +607,7 @@ class TestSchulzeSTV(unittest.TestCase):
         
         # Run tests
         self.assertAlmostEqual(output, 77.3899369763)
-
+    
     def test_single_voter(self):
         
         # Generate data
@@ -617,7 +617,7 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV.calculate_winner(input, 1, "rating")
         
         # Run tests
-        self.assertEqual(output['winners'], set(["a"]))
+        self.assertEqual(output['winners'], set([("c",)]))
            
 
 if __name__ == "__main__":
