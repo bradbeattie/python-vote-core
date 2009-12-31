@@ -42,9 +42,20 @@ class SchulzeMethod(CondorcetSystem):
     
     @staticmethod
     def __schwartz_set_heuristic__(graph):
+        actions = []
+        
+        # Remove any lone candidates
+        if len(graph.edges()) > 0:
+            connected_nodes = set()
+            for edge in graph.edges():
+                connected_nodes.add(edge[0])
+                connected_nodes.add(edge[1])
+            lone_nodes = set(graph.nodes()) - connected_nodes
+            actions.append(['nodes', lone_nodes])
+            for node in lone_nodes:
+                graph.del_node(node)
         
         # Iterate through using the Schwartz set heuristic
-        actions = []
         candidates = graph.nodes()
         while len(graph.edges()) > 0:
             

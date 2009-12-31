@@ -46,6 +46,8 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             # Assume we're looking for a single winner
             if "winners" not in request:
                 request["winners"] = 1
+            else:
+                request["winners"] = int(request["winners"])
                 
             # Assume each ballot represents a single voter's preference
             new_input = []
