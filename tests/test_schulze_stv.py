@@ -50,7 +50,7 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV.calculate_winner(input, 3, "grouping")
         
         # Run tests
-        self.assertEqual(output['winners'], set([('a', 'd', 'e')]))
+        self.assertEqual(output['winners'], set(['a', 'd', 'e']))
             
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
     def test_wiki_example_1(self):
@@ -69,7 +69,7 @@ class TestSchulzeSTV(unittest.TestCase):
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
-            'winners': set([('Andrea', 'Brad')])
+            'winners': set(['Andrea', 'Brad'])
         })
         
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV_2
@@ -89,7 +89,7 @@ class TestSchulzeSTV(unittest.TestCase):
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
-            'winners': set([('Andrea', 'Brad')])
+            'winners': set(['Andrea', 'Brad'])
         })
         
     # This example was detailed in Markus Schulze's calcul01.pdf (Abstract: In
@@ -618,7 +618,7 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV.calculate_winner(input, 1, "rating")
         
         # Run tests
-        self.assertEqual(output['winners'], set([("c",)]))
+        self.assertEqual(output['winners'], set(["c"]))
     
     # This example ensures that the proportional completion round correctly
     # accounts for sparse pattern weights.
@@ -641,7 +641,7 @@ class TestSchulzeSTV(unittest.TestCase):
                 ('Plastic', 'Wood'),
                 ('Metal', 'Wood')
             ])]],
-            "winners": set([('Paper', 'Wood')]),
+            "winners": set(['Paper', 'Wood']),
         })      
 
 if __name__ == "__main__":

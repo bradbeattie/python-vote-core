@@ -71,6 +71,8 @@ class CondorcetSystem(VotingSystem):
             result["tied_winners"] = set(graph.nodes())
             result["tie_breaker"] = CondorcetSystem.generate_tie_breaker(result["candidates"])
             result["winners"] = set([CondorcetSystem.break_ties(winning_candidates, result["tie_breaker"])])
+        if type(list(result["winners"])[0]) == types.TupleType:
+            result["winners"] = set([item for innerlist in result["winners"] for item in innerlist])
         return result
     
     @staticmethod
