@@ -51,9 +51,16 @@ class SchulzeSTV(VotingSystem):
     
     @staticmethod
     def __proportional_completion__(candidate, other_candidates, ballots):
-
-        # Initial tally
+        
+        # Ensure each pattern is represented
         pattern_weights = {}
+        number_of_other_candidates = len(other_candidates)
+        for i in range(0,number_of_other_candidates + 1):
+            for pattern in itertools.permutations([1]*(number_of_other_candidates-i)+[3]*(i)):
+                if pattern not in pattern_weights:
+                    pattern_weights[pattern] = 0
+                    
+        # Initial tally
         for ballot in ballots:
             pattern = []
             for other_candidate in other_candidates:
@@ -92,6 +99,9 @@ class SchulzeSTV(VotingSystem):
     @staticmethod
     def __proportional_completion_round__(completion_pattern, pattern_weights):
         
+        if completion_pattern == (2,1):
+            pass
+        
         # Remove pattern that contains indifference
         completion_pattern_weight = pattern_weights[completion_pattern]
         del pattern_weights[completion_pattern]
@@ -120,10 +130,13 @@ class SchulzeSTV(VotingSystem):
         
         # Reweight the remaining items
         for pattern in patterns_to_consider.keys():
-            addition = sum(pattern_weights[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
-            if pattern not in pattern_weights:
-                pattern_weights[pattern] = 0
-            pattern_weights[pattern] += addition
+            if denominator == 0:
+                pattern_weights[pattern] += completion_pattern_weight / len(pattern_weights)
+            else:
+                addition = sum(pattern_weights[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
+                if pattern not in pattern_weights:
+                    pattern_weights[pattern] = 0
+                pattern_weights[pattern] += addition
         return pattern_weights
 
     # This method converts the voter profile into a capacity graph and iterates

@@ -608,6 +608,7 @@ class TestSchulzeSTV(unittest.TestCase):
         # Run tests
         self.assertAlmostEqual(output, 77.3899369763)
     
+    #
     def test_single_voter(self):
         
         # Generate data
@@ -618,7 +619,30 @@ class TestSchulzeSTV(unittest.TestCase):
         
         # Run tests
         self.assertEqual(output['winners'], set([("c",)]))
-           
+    
+    # This example ensures that the proportional completion round correctly
+    # accounts for sparse pattern weights.
+    def test_small_set(self):
+        
+        # Generate data
+        input = [
+            { "count":1, "ballot":{"Metal":2, "Paper":1, "Plastic":2, "Wood":2 }},
+            { "count":1, "ballot":{"Metal":2, "Paper":2, "Plastic":2, "Wood":1 }}
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "ranking")
+        
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(['Metal', 'Wood', 'Plastic', 'Paper']),
+            "actions": [['nodes', set([
+                ('Paper', 'Plastic'),
+                ('Metal', 'Plastic'),
+                ('Metal', 'Paper'),
+                ('Plastic', 'Wood'),
+                ('Metal', 'Wood')
+            ])]],
+            "winners": set([('Paper', 'Wood')]),
+        })      
 
 if __name__ == "__main__":
     unittest.main()
