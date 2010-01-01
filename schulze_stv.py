@@ -99,9 +99,6 @@ class SchulzeSTV(VotingSystem):
     @staticmethod
     def __proportional_completion_round__(completion_pattern, pattern_weights):
         
-        if completion_pattern == (2,1):
-            pass
-        
         # Remove pattern that contains indifference
         completion_pattern_weight = pattern_weights[completion_pattern]
         del pattern_weights[completion_pattern]
