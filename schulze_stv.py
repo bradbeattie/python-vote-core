@@ -57,8 +57,7 @@ class SchulzeSTV(VotingSystem):
         number_of_other_candidates = len(other_candidates)
         for i in range(0,number_of_other_candidates + 1):
             for pattern in itertools.permutations([1]*(number_of_other_candidates-i)+[3]*(i)):
-                if pattern not in pattern_weights:
-                    pattern_weights[pattern] = 0
+                pattern_weights[pattern] = 0
                     
         # Initial tally
         for ballot in ballots:
@@ -88,12 +87,6 @@ class SchulzeSTV(VotingSystem):
             if completion_pattern in pattern_weights:
                 pattern_weights = SchulzeSTV.__proportional_completion_round__(completion_pattern, pattern_weights)
         
-        # Ensure each pattern is represented
-        for i in range(0,number_of_other_candidates + 1):
-            for pattern in itertools.permutations([1]*(number_of_other_candidates-i)+[3]*(i)):
-                if pattern not in pattern_weights:
-                    pattern_weights[pattern] = 0
-                    
         return pattern_weights
 
     @staticmethod
