@@ -121,7 +121,7 @@ class SchulzeSTV(VotingSystem):
         # Reweight the remaining items
         for pattern in patterns_to_consider.keys():
             if denominator == 0:
-                pattern_weights[pattern] += completion_pattern_weight / len(pattern_weights)
+                pattern_weights[pattern] += completion_pattern_weight / len(patterns_to_consider[pattern])
             else:
                 addition = sum(pattern_weights[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
                 if pattern not in pattern_weights:
@@ -142,7 +142,8 @@ class SchulzeSTV(VotingSystem):
         number_of_nodes = 1 + number_of_patterns + number_of_candidates + 1
         ordered_patterns = sorted(voter_profile.keys())
         ordered_patterns.remove(tuple([3]*number_of_candidates))
-        r = [(sum(voter_profile.values()) - voter_profile[tuple([3]*number_of_candidates)]) / number_of_candidates]
+        
+        r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*number_of_candidates)]) / number_of_candidates]
         
         # Generate a number_of_nodes x number_of_nodes matrix of zeroes
         C = []
