@@ -606,7 +606,7 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV.__strength_of_vote_management__(input)
         
         # Run tests
-        self.assertAlmostEqual(output, 77.3899369763)
+        self.assertAlmostEqual(output, 77.3899, 4)
     
     #
     def test_one_ballot_one_winner(self):

@@ -35,13 +35,16 @@ class SchulzeMethod(CondorcetSystem):
             graph.add_edge(pair[0], pair[1], weight)
         
         # Iterate through using the Schwartz set heuristic
-        graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(graph)
+        graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
         
         # Mark the winner
         return CondorcetSystem.graph_winner(graph, result)
     
     @staticmethod
-    def __schwartz_set_heuristic__(graph):
+    def schwartz_set_heuristic(graph):
+        
+        # Remove any weak edges
+        graph = CondorcetSystem.remove_weak_edges(graph)
         
         # Iterate through using the Schwartz set heuristic
         actions = []

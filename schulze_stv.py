@@ -21,45 +21,44 @@ from voting_system import VotingSystem
 import itertools
 
 class SchulzeSTV(VotingSystem):
-    
+
     @staticmethod
     def calculate_winner(ballots, required_winners, notation="ranking"):
         
+        # Standardize the incoming data
         ballots = CondorcetSystem.convert_ballots(ballots, notation)
         candidates = CondorcetSystem.obtain_candidates(ballots)
         ballots = CondorcetSystem.complete_ballots(ballots, candidates)
         result = {"candidates": candidates}
         
+        # Build the graph of possible winners
         graph = digraph()
         for candidate_set in itertools.combinations(candidates, required_winners):
             graph.add_nodes([tuple(sorted(list(candidate_set)))])
         
-        candidate_sets = dict.fromkeys(itertools.combinations(candidates, required_winners + 1), 0)
-        for candidate_set in candidate_sets:
+        # Generate the edges between nodes
+        for candidate_set in itertools.combinations(candidates, required_winners + 1):
             for candidate in candidate_set:
                 other_candidates = sorted(list(set(candidate_set) - set([candidate])))
                 completed = SchulzeSTV.__proportional_completion__(candidate, other_candidates, ballots)
                 weight = SchulzeSTV.__strength_of_vote_management__(completed)
                 for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
                     graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
-        
-        graph = CondorcetSystem.__remove_weak_edges__(graph)
-        graph, result["actions"] = SchulzeMethod.__schwartz_set_heuristic__(graph)
-
-        # Mark the winner
+                
+        # Determine the winner through the Schwartz set heuristic
+        graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
         return CondorcetSystem.graph_winner(graph, result)
     
     @staticmethod
     def __proportional_completion__(candidate, other_candidates, ballots):
         
         # Ensure each pattern is represented
-        pattern_weights = {}
-        number_of_other_candidates = len(other_candidates)
-        for i in range(0,number_of_other_candidates + 1):
-            for pattern in itertools.permutations([1]*(number_of_other_candidates-i)+[3]*(i)):
-                pattern_weights[pattern] = 0
+        profile = {}
+        for i in range(0,len(other_candidates) + 1):
+            for pattern in itertools.permutations([1]*(len(other_candidates)-i)+[3]*(i)):
+                profile[pattern] = 0
                     
-        # Initial tally
+        # Obtain an initial tally from the ballots
         for ballot in ballots:
             pattern = []
             for other_candidate in other_candidates:
@@ -70,34 +69,34 @@ class SchulzeSTV(VotingSystem):
                 else:
                     pattern.append(3)
             pattern = tuple(pattern)
-            if pattern not in pattern_weights:
-                pattern_weights[pattern] = 0.0
-            pattern_weights[pattern] += ballot["count"]
+            if pattern not in profile:
+                profile[pattern] = 0.0
+            profile[pattern] += ballot["count"]
             
         # Generate the list of patterns we need to complete
         completion_patterns = []
-        number_of_other_candidates = len(other_candidates)
-        for i in range(0,number_of_other_candidates):
+        for i in range(0,len(other_candidates)):
             for j in range(0, i+1):
-                completion_patterns.append(list(set((pattern[0]) for pattern in itertools.groupby(itertools.permutations([2]*(number_of_other_candidates-i)+[1]*(j)+[3]*(i-j))))))
+                completion_patterns.append(list(set((pattern[0]) for pattern in itertools.groupby(itertools.permutations([2]*(len(other_candidates)-i)+[1]*(j)+[3]*(i-j))))))
+        print completion_patterns
         completion_patterns = [item for innerlist in completion_patterns for item in innerlist]
         
         # Complete each pattern in order
-        for completion_pattern in completion_patterns:
-            if completion_pattern in pattern_weights:
-                pattern_weights = SchulzeSTV.__proportional_completion_round__(completion_pattern, pattern_weights)
+        for pattern in completion_patterns:
+            if pattern in profile:
+                profile = SchulzeSTV.__proportional_completion_round__(pattern, profile)
         
-        return pattern_weights
+        return profile
 
     @staticmethod
-    def __proportional_completion_round__(completion_pattern, pattern_weights):
+    def __proportional_completion_round__(completion_pattern, profile):
         
         # Remove pattern that contains indifference
-        completion_pattern_weight = pattern_weights[completion_pattern]
-        del pattern_weights[completion_pattern]
+        completion_pattern_weight = profile[completion_pattern]
+        del profile[completion_pattern]
         
         patterns_to_consider = {}
-        for pattern in pattern_weights.keys():
+        for pattern in profile.keys():
             append = False
             append_target = []
             for i in range(len(completion_pattern)):
@@ -116,18 +115,17 @@ class SchulzeSTV(VotingSystem):
         denominator = 0
         for (append_target, patterns) in patterns_to_consider.items():
             for pattern in patterns:
-                denominator += pattern_weights[pattern]
+                denominator += profile[pattern]
         
         # Reweight the remaining items
         for pattern in patterns_to_consider.keys():
             if denominator == 0:
-                pattern_weights[pattern] += completion_pattern_weight / len(patterns_to_consider[pattern])
+                profile[pattern] += completion_pattern_weight / len(patterns_to_consider[pattern])
             else:
-                addition = sum(pattern_weights[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
-                if pattern not in pattern_weights:
-                    pattern_weights[pattern] = 0
-                pattern_weights[pattern] += addition
-        return pattern_weights
+                if pattern not in profile:
+                    profile[pattern] = 0
+                profile[pattern] += sum(profile[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
+        return profile
 
     # This method converts the voter profile into a capacity graph and iterates
     # on the maximum flow using the Edmonds Karp algorithm. The end result is
@@ -165,13 +163,11 @@ class SchulzeSTV(VotingSystem):
             vertex += 1
         
         # Iterate towards the limit
-        loop = 0
-        while len(r) < 2 or r[loop-1] - r[loop] > 0.000001:
-            loop += 1
+        while len(r) < 2 or r[-2] - r[-1] > 0.0000001:
             for i in range(number_of_candidates):
-                C[1 + number_of_patterns + i][number_of_nodes - 1] = r[loop - 1]
+                C[1 + number_of_patterns + i][number_of_nodes - 1] = r[-1]
             r.append(SchulzeSTV.__edmonds_karp__(C,0,number_of_nodes-1)/number_of_candidates)
-        return r[loop]
+        return r[-1]
     
 
     # The Edmonds-Karp algorithm is an implementation of the Ford-Fulkerson

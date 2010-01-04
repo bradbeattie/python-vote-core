@@ -117,11 +117,11 @@ class CondorcetSystem(VotingSystem):
         return ballots
 
     @staticmethod
-    def __remove_weak_edges__(candidate_graph):
-        edges_to_remove = []
-        for edge in candidate_graph.edges():
-            if candidate_graph.edge_weight(edge[0], edge[1]) <= candidate_graph.edge_weight(edge[1], edge[0]):
-                edges_to_remove.append(edge)
-        for edge in edges_to_remove:
-            candidate_graph.del_edge(edge[0], edge[1])
-        return candidate_graph
+    def remove_weak_edges(graph):
+        remove = []
+        for edge in graph.edges():
+            if (edge[1], edge[0]) in graph.edges() and graph.edge_weight(edge[0], edge[1]) <= graph.edge_weight(edge[1], edge[0]):
+                remove.append(edge)
+        for edge in remove:
+            graph.del_edge(edge[0], edge[1])
+        return graph
