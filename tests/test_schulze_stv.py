@@ -68,7 +68,12 @@ class TestSchulzeSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
-            'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
+            'actions': [
+                ['edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])],
+                ['nodes', set([('Brad', 'Carter')])],
+                ['edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])],
+                ['nodes', set([('Andrea', 'Carter')])]
+            ],
             'winners': set(['Andrea', 'Brad'])
         })
         
@@ -88,7 +93,12 @@ class TestSchulzeSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
-            'actions': [['nodes', set([('Brad', 'Carter'), ('Andrea', 'Carter')])]],
+            'actions': [
+                ['edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])],
+                ['nodes', set([('Brad', 'Carter')])],
+                ['edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])],
+                ['nodes', set([('Andrea', 'Carter')])]
+            ],
             'winners': set(['Andrea', 'Brad'])
         })
         
@@ -667,6 +677,21 @@ class TestSchulzeSTV(unittest.TestCase):
             "winners": set(['Paper', 'Wood']),
         })      
 
+    # 
+    def test_happenstance_example(self):
+        
+        # Generate data
+        input = [
+            { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2 }},
+            { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9 }},
+            { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9 }}
+        ]
+        output = SchulzeSTV.calculate_winner(input, 2, "ranking")
+        
+        # Run tests
+        self.assertEqual(output["tied_winners"],
+             set([('D', 'E'), ('B', 'E'), ('C', 'E'), ('B', 'D')])
+        )
 
 if __name__ == "__main__":
     unittest.main()

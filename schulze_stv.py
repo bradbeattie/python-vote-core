@@ -42,9 +42,10 @@ class SchulzeSTV(VotingSystem):
                 other_candidates = sorted(list(set(candidate_set) - set([candidate])))
                 completed = SchulzeSTV.__proportional_completion__(candidate, other_candidates, ballots)
                 weight = SchulzeSTV.__strength_of_vote_management__(completed)
-                for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
-                    graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
-                
+                if weight > 0:
+                    for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
+                        graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
+
         # Determine the winner through the Schwartz set heuristic
         graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
         return CondorcetSystem.graph_winner(graph, result)
@@ -162,11 +163,11 @@ class SchulzeSTV(VotingSystem):
             vertex += 1
         
         # Iterate towards the limit
-        while len(r) < 2 or r[-2] - r[-1] > 0.0000001:
+        while len(r) < 2 or r[-2] - r[-1] > 0.0000000001:
             for i in range(number_of_candidates):
                 C[1 + number_of_patterns + i][number_of_nodes - 1] = r[-1]
             r.append(SchulzeSTV.__edmonds_karp__(C,0,number_of_nodes-1)/number_of_candidates)
-        return r[-1]
+        return round(r[-1],9)
     
 
     # The Edmonds-Karp algorithm is an implementation of the Ford-Fulkerson

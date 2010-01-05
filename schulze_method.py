@@ -43,9 +43,6 @@ class SchulzeMethod(CondorcetSystem):
     @staticmethod
     def schwartz_set_heuristic(graph):
         
-        # Remove any weak edges
-        graph = CondorcetSystem.remove_weak_edges(graph)
-        
         # Iterate through using the Schwartz set heuristic
         actions = []
         while len(graph.edges()) > 0:

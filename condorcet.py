@@ -115,13 +115,3 @@ class CondorcetSystem(VotingSystem):
             for candidate in candidates - set(ballot["ballot"].keys()):
                 ballot["ballot"][candidate] = lowest_preference
         return ballots
-
-    @staticmethod
-    def remove_weak_edges(graph):
-        remove = []
-        for edge in graph.edges():
-            if (edge[1], edge[0]) in graph.edges() and graph.edge_weight(edge[0], edge[1]) <= graph.edge_weight(edge[1], edge[0]):
-                remove.append(edge)
-        for edge in remove:
-            graph.del_edge(edge[0], edge[1])
-        return graph
