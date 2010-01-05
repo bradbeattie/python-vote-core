@@ -78,7 +78,6 @@ class SchulzeSTV(VotingSystem):
         for i in range(0,len(other_candidates)):
             for j in range(0, i+1):
                 completion_patterns.append(list(set((pattern[0]) for pattern in itertools.groupby(itertools.permutations([2]*(len(other_candidates)-i)+[1]*(j)+[3]*(i-j))))))
-        print completion_patterns
         completion_patterns = [item for innerlist in completion_patterns for item in innerlist]
         
         # Complete each pattern in order
