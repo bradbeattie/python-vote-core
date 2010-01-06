@@ -112,7 +112,10 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
                 new_dict[key] = value
             return new_dict
         elif type(object) == types.TupleType:
-            return "|".join(object)
+            new_list = []
+            for element in object:
+                new_list.append(self.__simplify_object__(element))
+            return "(" + "|".join(new_list) + ")"
         elif type(object) == type(set()) or type(object) == types.ListType:
             new_list = []
             for element in object:
