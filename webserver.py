@@ -56,6 +56,8 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
                     ballot = {"ballot":ballot}
                 if "count" not in ballot:
                     ballot["count"] = 1
+                else:
+                    ballot["count"] = float(ballot["count"])
                 new_input.append(ballot)
             request["ballots"] = new_input
             
