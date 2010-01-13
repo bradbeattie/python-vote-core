@@ -31,7 +31,7 @@ class VotingSystem(object):
         if reverse_order:
             tie_breaker.reverse()
 
-        if type(list(tied_objects)[0]) == types.StringType:
+        if type(list(tied_objects)[0]) in [types.UnicodeType, types.StringType]:
             result = VotingSystem.__break_ties_simple__(tied_objects, tie_breaker)
         else:
             result = VotingSystem.__break_ties_complex__(tied_objects, tie_breaker)
