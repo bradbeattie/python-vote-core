@@ -40,7 +40,7 @@ class TestSchulzeSTV(unittest.TestCase):
     # of time. As the algorithm is improved, we might want to tighten this test
     # from two seconds down to something lower.
     def test_10_candidates_9_winners(self):
-        return
+        return # Need to get the first test working before moving on to this
     
         startTime = time.time()
         
@@ -60,7 +60,7 @@ class TestSchulzeSTV(unittest.TestCase):
     # of time. As the algorithm is improved, we might want to tighten this test
     # from two seconds down to something lower.
     def test_10_candidates_10_winners(self):
-        return
+        return # Need to get the first test working before moving on to this
     
         startTime = time.time()
         
