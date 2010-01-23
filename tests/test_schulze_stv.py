@@ -15,7 +15,7 @@
 
 from schulze_stv import SchulzeSTV
 from condorcet import CondorcetSystem
-import unittest
+import unittest, time
 
 class TestSchulzeSTV(unittest.TestCase):
     
@@ -692,6 +692,23 @@ class TestSchulzeSTV(unittest.TestCase):
         self.assertEqual(output["tied_winners"],
              set([('D', 'E'), ('B', 'E'), ('C', 'E'), ('B', 'D')])
         )
+
+    # This test ensures that complex calculations take under a certain threshold
+    # of time. As the algorithm is improved, we might want to tighten this test
+    # from two seconds down to something lower.
+    def test_large_run(self):
+        startTime = time.time()
+        
+        # Generate data
+        input = [
+            { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
+            { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
+            { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
+        ]
+        SchulzeSTV.calculate_winner(input, 5, "ranking")
+        
+        # Run tests
+        self.assert_(time.time() - startTime < 2)
 
 if __name__ == "__main__":
     unittest.main()
