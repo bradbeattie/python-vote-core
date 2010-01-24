@@ -18,9 +18,8 @@ import unittest, time
 
 class TestSchulzeSTV(unittest.TestCase):
 
-    # This test ensures that complex calculations take under a certain threshold
-    # of time. As the algorithm is improved, we might want to tighten this test
-    # from two seconds down to something lower.
+    # This test considers a case in which there are 10 choose 5 (252) possible
+    # outcomes and 252 choose 2 (31626) possible edges between them.
     def test_10_candidates_5_winners(self):
         
         # Generate data
@@ -33,12 +32,11 @@ class TestSchulzeSTV(unittest.TestCase):
         SchulzeSTV.calculate_winner(input, 5, "ranking")
         
         # Run tests
-        print time.time() - startTime
         self.assert_(time.time() - startTime < 2)
         
-    # This test ensures that complex calculations take under a certain threshold
-    # of time. As the algorithm is improved, we might want to tighten this test
-    # from two seconds down to something lower.
+    # This test looks at few graph notes, but large completion patterns. With
+    # 10 candidates and 9 winners, we're looking at 3^9 (19683) patterns to
+    # consider.
     def test_10_candidates_9_winners(self):
         
         # Generate data
@@ -51,7 +49,6 @@ class TestSchulzeSTV(unittest.TestCase):
         SchulzeSTV.calculate_winner(input, 9, "ranking")
         
         # Run tests
-        print time.time() - startTime
         self.assert_(time.time() - startTime < 2)
         
     # This test ensures that if you request the same number of winners as there
