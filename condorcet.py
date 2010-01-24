@@ -23,7 +23,7 @@ class CondorcetSystem(VotingSystem):
     def condorcet_winner(ballots, notation=None):
 
         ballots = CondorcetSystem.convert_ballots(ballots, notation)
-        candidates = CondorcetSystem.obtain_candidates(ballots)
+        candidates = CondorcetSystem.obtain_candidates(ballots, 1)
         ballots = CondorcetSystem.complete_ballots(ballots, candidates)
         
         # Generate the pairwise comparison tallies
@@ -102,10 +102,12 @@ class CondorcetSystem(VotingSystem):
 
         
     @staticmethod
-    def obtain_candidates(ballots):
+    def obtain_candidates(ballots, required_winners):
         candidates = set()
         for ballot in ballots:
             candidates |= set(ballot["ballot"].keys())
+        if required_winners > len(candidates):
+            raise Exception("Insufficient candidates")
         return candidates
     
     @staticmethod

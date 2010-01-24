@@ -27,9 +27,14 @@ class SchulzeSTV(VotingSystem):
         
         # Standardize the incoming data
         ballots = CondorcetSystem.convert_ballots(ballots, notation)
-        candidates = CondorcetSystem.obtain_candidates(ballots)
+        candidates = CondorcetSystem.obtain_candidates(ballots, required_winners)
         ballots = CondorcetSystem.complete_ballots(ballots, candidates)
         result = {"candidates": candidates}
+        
+        # Return the winners if everyone wins
+        if required_winners == len(candidates):
+            result["winners"] = candidates
+            return result
         
         # Generate the list of patterns we need to complete
         completion_patterns = SchulzeSTV.completion_patterns(required_winners)

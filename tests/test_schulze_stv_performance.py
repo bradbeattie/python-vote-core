@@ -22,9 +22,9 @@ class TestSchulzeSTV(unittest.TestCase):
     # of time. As the algorithm is improved, we might want to tighten this test
     # from two seconds down to something lower.
     def test_10_candidates_5_winners(self):
-        startTime = time.time()
         
         # Generate data
+        startTime = time.time()
         input = [
             { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
             { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
@@ -40,11 +40,9 @@ class TestSchulzeSTV(unittest.TestCase):
     # of time. As the algorithm is improved, we might want to tighten this test
     # from two seconds down to something lower.
     def test_10_candidates_9_winners(self):
-        return # Need to get the first test working before moving on to this
-    
-        startTime = time.time()
         
         # Generate data
+        startTime = time.time()
         input = [
             { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
             { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
@@ -56,25 +54,25 @@ class TestSchulzeSTV(unittest.TestCase):
         print time.time() - startTime
         self.assert_(time.time() - startTime < 2)
         
-    # This test ensures that complex calculations take under a certain threshold
-    # of time. As the algorithm is improved, we might want to tighten this test
-    # from two seconds down to something lower.
+    # This test ensures that if you request the same number of winners as there
+    # are candidates, the system doesn't take the long route to calculate them.
     def test_10_candidates_10_winners(self):
-        return # Need to get the first test working before moving on to this
-    
-        startTime = time.time()
         
         # Generate data
+        startTime = time.time()
         input = [
             { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
             { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
             { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
         ]
-        SchulzeSTV.calculate_winner(input, 10, "ranking")
+        output = SchulzeSTV.calculate_winner(input, 10, "ranking")
         
         # Run tests
-        print time.time() - startTime
-        self.assert_(time.time() - startTime < 2)
+        self.assertAlmostEqual(startTime, time.time(), 1)
+        self.assertEqual(output, {
+            'winners': set(['A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'J']),
+            'candidates': set(['A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'J'])
+        })
 
 if __name__ == "__main__":
     unittest.main()
