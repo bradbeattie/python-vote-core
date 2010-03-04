@@ -38,7 +38,7 @@ class SchulzeSTV(VotingSystem):
         
         # Generate the list of patterns we need to complete
         completion_patterns = SchulzeSTV.completion_patterns(required_winners)
-        
+    
         # Build the graph of possible winners
         graph = digraph()
         for candidate_set in itertools.combinations(candidates, required_winners):
@@ -64,10 +64,20 @@ class SchulzeSTV(VotingSystem):
         completion_patterns = []
         for i in range(0,required_winners):
             for j in range(0, i+1):
-                completion_patterns.append(list(set((pattern[0]) for pattern in itertools.groupby(itertools.permutations([2]*(required_winners-i)+[1]*(j)+[3]*(i-j))))))
+                completion_patterns.append(list(set((tuple(pattern)) for pattern in SchulzeSTV.__unique_permutations__([2]*(required_winners-i)+[1]*(j)+[3]*(i-j)))))
         return [item for innerlist in completion_patterns for item in innerlist]
-         
     
+    @staticmethod
+    def __unique_permutations__(xs):
+        if len(xs)<2: yield xs
+        else:
+            h = []
+            for x in xs:
+                h.append(x)
+                if x in h[:-1]: continue
+                ts = xs[:]; ts.remove(x)
+                for ps in SchulzeSTV.__unique_permutations__(ts):
+                    yield [x]+ps
     
     @staticmethod
     def __proportional_completion__(candidate, other_candidates, ballots, completion_patterns):
@@ -75,7 +85,8 @@ class SchulzeSTV(VotingSystem):
         # Ensure each pattern is represented
         profile = {}
         for i in range(0,len(other_candidates) + 1):
-            for pattern in itertools.permutations([1]*(len(other_candidates)-i)+[3]*(i)):
+            for pattern in SchulzeSTV.__unique_permutations__([1]*(len(other_candidates)-i)+[3]*(i)):
+                pattern = tuple(pattern)
                 profile[pattern] = 0
                 
         # Obtain an initial tally from the ballots
