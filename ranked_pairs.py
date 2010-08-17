@@ -52,10 +52,10 @@ class RankedPairs(CondorcetSystem):
             round["pair"] = strongest_pair
             
             # If the pair would add a cycle, skip it
-            graph.add_edge(strongest_pair[0], strongest_pair[1])
+            graph.add_edge((strongest_pair[0], strongest_pair[1]))
             if len(find_cycle(graph)) > 0:
                 round["action"] = "skipped"
-                graph.del_edge(strongest_pair[0], strongest_pair[1])
+                graph.del_edge((strongest_pair[0], strongest_pair[1]))
             else:
                 round["action"] = "added"
             del remaining_strong_pairs[strongest_pair]

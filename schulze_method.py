@@ -32,7 +32,7 @@ class SchulzeMethod(CondorcetSystem):
         graph = digraph()
         graph.add_nodes(list(result["candidates"]))
         for (pair,weight) in result["strong_pairs"].items():
-            graph.add_edge(pair[0], pair[1], weight)
+            graph.add_edge((pair[0], pair[1]), weight)
         
         # Iterate through using the Schwartz set heuristic
         graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
@@ -61,15 +61,15 @@ class SchulzeMethod(CondorcetSystem):
             # If none exist, remove the weakest edges
             else:
                 lightest_edges = set([graph.edges()[0]])
-                weight = graph.edge_weight(graph.edges()[0][0], graph.edges()[0][1])
+                weight = graph.edge_weight((graph.edges()[0][0], graph.edges()[0][1]))
                 for edge in graph.edges():
-                    if graph.edge_weight(edge[0], edge[1]) < weight:
-                        weight = graph.edge_weight(edge[0], edge[1])
+                    if graph.edge_weight((edge[0], edge[1])) < weight:
+                        weight = graph.edge_weight((edge[0], edge[1]))
                         lightest_edges = set([edge])
-                    elif graph.edge_weight(edge[0], edge[1]) == weight:
+                    elif graph.edge_weight((edge[0], edge[1])) == weight:
                         lightest_edges.add(edge)
                 actions.append(['edges', lightest_edges])
                 for edge in lightest_edges:
-                    graph.del_edge(edge[0], edge[1])
+                    graph.del_edge((edge[0], edge[1]))
         
         return graph, actions

@@ -52,7 +52,7 @@ class SchulzeSTV(VotingSystem):
                 weight = SchulzeSTV.__strength_of_vote_management__(completed)
                 if weight > 0:
                     for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
-                        graph.add_edge(tuple(other_candidates), tuple(sorted(list(subset) + [candidate])), weight)
+                        graph.add_edge((tuple(other_candidates), tuple(sorted(list(subset) + [candidate]))), weight)
 
         # Determine the winner through the Schwartz set heuristic
         graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
@@ -81,7 +81,7 @@ class SchulzeSTV(VotingSystem):
     
     @staticmethod
     def __proportional_completion__(candidate, other_candidates, ballots, completion_patterns):
-        
+
         # Ensure each pattern is represented
         profile = {}
         for i in range(0,len(other_candidates) + 1):
@@ -113,7 +113,7 @@ class SchulzeSTV(VotingSystem):
 
     @staticmethod
     def __proportional_completion_round__(completion_pattern, profile):
-        
+
         # Remove pattern that contains indifference
         completion_pattern_weight = profile[completion_pattern]
         del profile[completion_pattern]
