@@ -20,46 +20,52 @@ import copy
 
 # This class implements Tideman's Ranked Pairs
 class RankedPairs(CondorcetSystem):
-    
-    @staticmethod
-    def calculate_winner(ballots, notation="ranking"):
+
+    def __init__(self, ballots, notation = None):
+        CondorcetSystem.__init__(self, ballots, notation)
+        
+    def calculate_results(self):
         
         # Try to determine a Condorcet winner
-        result = CondorcetSystem.condorcet_winner(ballots, notation)
-        if "winners" in result:
-            return result
+        super(RankedPairs,self).calculate_results()
+        if hasattr(self, 'winners'):
+            return
         
         # Initialize the candidate graph
-        result["rounds"] = []
-        tie_breaker = RankedPairs.generate_tie_breaker(result["candidates"])
-        graph = digraph()
-        graph.add_nodes(list(result["candidates"]))
+        self.rounds = []
+        self.graph = digraph()
+        self.graph.add_nodes(list(self.candidates))
         
         # Loop until we've considered all possible pairs
-        remaining_strong_pairs = copy.deepcopy(result["strong_pairs"])
+        remaining_strong_pairs = copy.deepcopy(self.strong_pairs)
         while len(remaining_strong_pairs) > 0:
             round = {}
             
             # Find the strongest pair
             largest_strength = max(remaining_strong_pairs.values())
-            strongest_pairs = RankedPairs.matching_keys(remaining_strong_pairs, largest_strength)
+            strongest_pairs = self.matching_keys(remaining_strong_pairs, largest_strength)
             if len(strongest_pairs) > 1:
-                result["tie_breaker"] = tie_breaker
                 round["tied_pairs"] = strongest_pairs
-                strongest_pair = RankedPairs.break_ties(strongest_pairs, tie_breaker)
+                strongest_pair = self.break_ties(strongest_pairs)
             else:
                 strongest_pair = list(strongest_pairs)[0]
             round["pair"] = strongest_pair
             
             # If the pair would add a cycle, skip it
-            graph.add_edge((strongest_pair[0], strongest_pair[1]))
-            if len(find_cycle(graph)) > 0:
+            self.graph.add_edge((strongest_pair[0], strongest_pair[1]))
+            if len(find_cycle(self.graph)) > 0:
                 round["action"] = "skipped"
-                graph.del_edge((strongest_pair[0], strongest_pair[1]))
+                self.graph.del_edge((strongest_pair[0], strongest_pair[1]))
             else:
                 round["action"] = "added"
             del remaining_strong_pairs[strongest_pair]
-            result["rounds"].append(round)
+            self.rounds.append(round)
         
         # Mark the winner
-        return CondorcetSystem.graph_winner(graph, result)
+        self.graph_winner()
+        
+    def results(self):
+        results = super(RankedPairs,self).results()
+        if hasattr(self, 'rounds'):
+            results["rounds"] = self.rounds
+        return results

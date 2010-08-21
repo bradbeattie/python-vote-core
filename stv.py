@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from voting_system import VotingSystem
+import math
 import copy
 
 # This class implements the Single Transferable vote (aka STV) in its most
@@ -22,93 +23,105 @@ import copy
 # would need to be covered in a separate class.
 class STV(VotingSystem):
     
-    @staticmethod
-    def calculate_winner(ballots, required_winners = 1):
-                
-        # We might need to split ballots into fractions
+    def __init__(self, ballots, required_winners = 1):
+        self.ballots = ballots
+        self.candidates = STV.viable_candidates(ballots)
+        self.quota = STV.droop_quota(ballots, required_winners)
+        self.required_winners = required_winners
         for ballot in ballots:
             ballot["count"] = float(ballot["count"])
-            
-        # Collect the list of candidates
-        candidates = set()
-        for ballot in ballots:
-            for candidate in ballot["ballot"]:
-                candidates.add(candidate)
-        if len(candidates) < required_winners:
-            raise Exception("Insufficient number of candidates")
-        elif len(candidates) == required_winners:
-            return {"winners":candidates}
+        VotingSystem.__init__(self)
+    
+    def calculate_results(self):
         
-        # Determine the number of votes necessary to win (Droop Quota)
-        result = {
-            "quota": STV.droop_quota(ballots, required_winners),
-            "rounds": [],
-            "winners": set(),
-        }
-        
-        # Generate tie breaker
-        tie_breaker = STV.generate_tie_breaker(candidates)
+        self.rounds = []
+        self.winners = set()
+        candidates = copy.deepcopy(self.candidates)
+        ballots = copy.deepcopy(self.ballots)
         
         # Loop until we have enough candidates
-        while len(result["winners"]) < required_winners and len(candidates) + len(result["winners"]) > required_winners:
+        while len(self.winners) < self.required_winners and len(candidates) + len(self.winners) > self.required_winners:
             
-            # Remove any zero-strength ballots
-            for ballot in copy.deepcopy(ballots):
-                if len(ballot["ballot"]) == 0 or ballot["count"] == 0:
-                    ballots.remove(ballot)
             
             # Sum up all votes for each candidate
-            round = {"tallies": dict.fromkeys(candidates, 0)}
-            for ballot in ballots:
-                round["tallies"][ballot["ballot"][0]] += ballot["count"]
+            round = {"tallies": STV.tallies(ballots)}
             
             # If any candidates meet or exceeds the quota
-            if max(round["tallies"].values()) >= result["quota"]:
+            if max(round["tallies"].values()) >= self.quota:
                 
                 # Collect candidates as winners
                 round["winners"] = set()
                 for (candidate,tally) in round["tallies"].items():
-                    if tally >= result["quota"]:
+                    if tally >= self.quota:
                         round["winners"].add(candidate)
-                result["winners"] |= round["winners"]
+                self.winners |= round["winners"]
             
                 # Redistribute excess votes
                 for ballot in ballots:
                     if ballot["ballot"][0] in round["winners"]:
-                        ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - result["quota"]) / round["tallies"][ballot["ballot"][0]]
+                        ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - self.quota) / round["tallies"][ballot["ballot"][0]]
         
                 # Remove candidates from remaining ballots
                 candidates -= round["winners"]
-                for ballot in ballots:
-                    for candidate in round["winners"]:
-                        if candidate in ballot["ballot"]:
-                            ballot["ballot"].remove(candidate)
+                ballots = STV.remove_candidates_from_ballots(round["winners"], ballots)
         
             # If no ballots were redistributed
             else:
-
-                # Determine which candidates have the fewest votes
-                fewest_votes = min(round["tallies"].values())
-                losers = STV.matching_keys(round["tallies"], fewest_votes)
-                if len(losers) > 1:
-                    result["tie_breaker"] = tie_breaker
-                    round["tied_losers"] = losers
-                    round["loser"] = STV.break_ties(losers, tie_breaker, True)
-                else:
-                    round["loser"] = list(losers)[0]
-                    
-                
-                # Eliminate references to the lost candidate
+                # Eliminate references to the losing candidate
+                round.update(self.loser(round["tallies"]))
                 candidates.remove(round["loser"])
-                for ballot in ballots:
-                    if round["loser"] in ballot["ballot"]:
-                        ballot["ballot"].remove(round["loser"])
+                ballots = STV.remove_candidates_from_ballots([round["loser"]], ballots)
             
-            result["rounds"].append(round)
+            self.rounds.append(round)
 
         # Append the final winner and return
-        if len(result["winners"]) < required_winners:
-            result["remaining_candidates"] = candidates
+        if len(self.winners) < self.required_winners:
+            self.remaining_candidates = candidates
             for candidate in candidates:
-                result["winners"].add(candidate)
-        return result
+                self.winners.add(candidate)
+
+    def loser(self, tallies):
+        losers = self.matching_keys(tallies, min(tallies.values()))
+        if len(losers) == 1:
+            return {"loser": list(losers)[0]}
+        else:
+            return {
+                "tied_losers": losers,
+                "loser": self.break_ties(losers, True)
+            }
+            
+    @staticmethod
+    def remove_candidates_from_ballots(candidates, ballots):
+        for ballot in ballots:
+            for candidate in candidates:
+                if candidate in ballot["ballot"]:
+                    ballot["ballot"].remove(candidate)
+        return ballots
+            
+    @staticmethod
+    def viable_candidates(ballots):
+        return set([ballot["ballot"][0] for ballot in ballots if len(ballot["ballot"]) > 0])
+    
+    @staticmethod
+    def tallies(ballots):
+        tallies = dict.fromkeys(STV.viable_candidates(ballots), 0)
+        for ballot in ballots:
+            if len(ballot["ballot"]) > 0:
+                tallies[ballot["ballot"][0]] += ballot["count"]
+        return tallies
+    
+    @staticmethod
+    def droop_quota(ballots, seats = 1):
+        quota = 0;
+        for ballot in ballots:
+            quota += ballot["count"]
+        return int(math.floor(quota / (seats + 1)) + 1)
+
+    def results(self):
+        results = VotingSystem.results(self)
+        results["quota"] = self.quota
+        if hasattr(self, 'rounds'):
+            results["rounds"] = self.rounds
+        if hasattr(self, 'remaining_candidates'):
+            results["remaining_candidates"] = self.remaining_candidates
+        return results

@@ -18,7 +18,7 @@ import unittest
 
 class TestRankedPairs(unittest.TestCase):
     
-    # Ranked Pairs, cycle
+    # Ranked Pairs, no cycle
     def test_no_cycle(self):
         
         # Generate data
@@ -27,7 +27,8 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3", "c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculate_winner(input, "grouping")
+        ranked_pairs = RankedPairs(input, "grouping")
+        output = ranked_pairs.results()
         
         # Run tests
         self.assertEqual(output, {
@@ -58,7 +59,8 @@ class TestRankedPairs(unittest.TestCase):
             { "count":50, "ballot":[["c2"], ["c3"], ["c1"]] },
             { "count":40, "ballot":[["c3"], ["c1"], ["c2"]] }
         ]
-        output = RankedPairs.calculate_winner(input, "grouping")
+        ranked_pairs = RankedPairs(input, "grouping")
+        output = ranked_pairs.results()
         
         # Run tests
         self.assertEqual(output, {
@@ -93,7 +95,8 @@ class TestRankedPairs(unittest.TestCase):
             { "count":100, "ballot":[["vanilla"], ["strawberry"]] },
             { "count":1, "ballot":[["strawberry"], ["chocolate"]] }
         ]
-        output = RankedPairs.calculate_winner(input, "grouping")
+        ranked_pairs = RankedPairs(input, "grouping")
+        output = ranked_pairs.results()
 
         # Run tests
         self.assertEqual(output["pairs"], {

@@ -17,9 +17,9 @@ from irv import IRV
 import unittest
 
 class TestInstantRunoff(unittest.TestCase):
-    
+     
     # IRV, no ties
-    def test_no_ties(self):
+    def test_irv_no_ties(self):
         
         # Generate data
         input = [
@@ -27,20 +27,22 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":23, "ballot":["c3", "c1", "c2"] }
         ]
-        output = IRV.calculate_winner(input)
+        stv = IRV(input)
+        output = stv.results()
         
         # Run tests
         self.assertEqual(output, {
             'quota': 35,
+            'winners': set(['c3']),
             'rounds': [
-                {'tallies': {'c3': 23, 'c2': 20, 'c1': 26}, 'loser': 'c2'}
-            ],
-            'winners': set(['c3'])
+                {'tallies': {'c3': 23.0, 'c2': 20.0, 'c1': 26.0}, 'loser': 'c2'},
+                {'tallies': {'c3': 43.0, 'c1': 26.0}, 'winners': set(['c3'])}
+            ]
         })
-
+        
     
     # IRV, ties
-    def test_ties(self):
+    def test_irv_ties(self):
         
         # Generate data
         input = [
@@ -48,20 +50,23 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = IRV.calculate_winner(input)
+        stv = IRV(input)
+        output = stv.results()
         
         # Run tests
         self.assertEqual(output["quota"], 34)
-        self.assertEqual(len(output["rounds"]), 1)
+        self.assertEqual(len(output["rounds"]), 2)
         self.assertEqual(len(output["rounds"][0]), 3)
         self.assertEqual(output["rounds"][0]["tallies"], {'c1': 26, 'c2': 20, 'c3': 20})
         self.assertEqual(output["rounds"][0]["tied_losers"], set(['c2','c3']))
         self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tied_losers"])
+        self.assertEqual(len(output["rounds"][1]["tallies"]), 2)
+        self.assertEqual(len(output["rounds"][1]["winners"]), 1)
         self.assertEqual(len(output["tie_breaker"]), 3)
 
 
     # IRV, no rounds
-    def test_landslide(self):
+    def test_irv_landslide(self):
         
         # Generate data
         input = [
@@ -69,15 +74,18 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        output = IRV.calculate_winner(input)
+        stv = IRV(input)
+        output = stv.results()
         
         # Run tests
         self.assertEqual(output, {
             'quota': 49,
-            'rounds': [],
-            'winners': set(['c1'])
+            'winners': set(['c1']),
+            'rounds': [{
+                'tallies': {'c3': 20.0, 'c2': 20.0, 'c1': 56.0},
+                'winners': set(['c1'])
+            }]
         })
-
-
+        
 if __name__ == "__main__":
     unittest.main()

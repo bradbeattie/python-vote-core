@@ -19,64 +19,58 @@ import itertools, types
 # This class determines the Condorcet winner if one exists.
 class CondorcetSystem(VotingSystem):
     
-    @staticmethod
-    def condorcet_winner(ballots, notation=None):
-
-        ballots = CondorcetSystem.convert_ballots(ballots, notation)
-        candidates = CondorcetSystem.obtain_candidates(ballots, 1)
-        ballots = CondorcetSystem.complete_ballots(ballots, candidates)
+    def __init__(self, ballots, notation = None):
+        self.convert_ballots(ballots, notation)
+        VotingSystem.__init__(self)
+    
+    def calculate_results(self):
         
         # Generate the pairwise comparison tallies
-        pairs = {}
-        for pair in itertools.permutations(candidates, 2):
-            pairs[pair] = 0
-        for ballot in ballots:
+        self.pairs = {}
+        for pair in itertools.permutations(self.candidates, 2):
+            self.pairs[pair] = 0
+        for ballot in self.ballots:
             for c1, r1 in ballot["ballot"].iteritems():
                 for c2, r2 in ballot["ballot"].iteritems():
                     if r1 < r2:
-                        pairs[(c1, c2)] += ballot["count"]
+                        self.pairs[(c1, c2)] += ballot["count"]
 
         # Filter the pairs down to the strong pairs
-        keys = filter(lambda pair: pairs[(pair[0],pair[1])] > pairs[(pair[1],pair[0])], pairs)
-        strong_pairs = {}
+        keys = filter(lambda pair: self.pairs[(pair[0],pair[1])] > self.pairs[(pair[1],pair[0])], self.pairs)
+        self.strong_pairs = {}
         for key in keys:
-            strong_pairs[key] = pairs[key]
+            self.strong_pairs[key] = self.pairs[key]
           
-        # Prepare the result to return
-        result = {
-            "candidates": candidates,
-            "pairs": pairs,
-            "strong_pairs": strong_pairs
-        }
-
         # The winner is the single candidate that never loses
-        losing_candidates = set([pair[1] for pair in strong_pairs.keys()])
-        winning_candidates = candidates - losing_candidates
+        losing_candidates = set([pair[1] for pair in self.strong_pairs.keys()])
+        winning_candidates = self.candidates - losing_candidates
         if len(winning_candidates) == 1:
-            result["winners"] = set([list(winning_candidates)[0]])
-        
-        # Return the final result
-        return result
+            self.winners = set([list(winning_candidates)[0]])
+
+    def results(self):
+        results = {
+            "candidates": self.candidates,
+            "pairs": self.pairs,
+            "strong_pairs": self.strong_pairs,
+            "winners": self.winners,
+        }
+        return results
     
-    @staticmethod
-    def graph_winner(graph, result):
+    def graph_winner(self):
         losing_candidates = set()
-        for edge in graph.edges():
+        for edge in self.graph.edges():
             losing_candidates.add(edge[1])
-        winning_candidates = set(graph.nodes()) - losing_candidates
+        winning_candidates = set(self.graph.nodes()) - losing_candidates
         
         if len(winning_candidates) == 1:
-            result["winners"] = set([list(winning_candidates)[0]])
+            self.winners = set([list(winning_candidates)[0]])
         else:
-            result["tied_winners"] = set(graph.nodes())
-            result["tie_breaker"] = CondorcetSystem.generate_tie_breaker(result["candidates"])
-            result["winners"] = set([CondorcetSystem.break_ties(winning_candidates, result["tie_breaker"])])
-        if type(list(result["winners"])[0]) == types.TupleType:
-            result["winners"] = set([item for innerlist in result["winners"] for item in innerlist])
-        return result
+            self.tied_winners = set(self.graph.nodes())
+            self.winners = set([self.break_ties(winning_candidates)])
+        if type(list(self.winners)[0]) == types.TupleType:
+            self.winners = set([item for innerlist in self.winners for item in innerlist])
     
-    @staticmethod
-    def convert_ballots(ballots, notation):
+    def convert_ballots(self, ballots, notation):
         
         if notation == "grouping":
             if type(ballots[0]["ballot"][0]) != types.ListType:
@@ -97,23 +91,14 @@ class CondorcetSystem(VotingSystem):
 
         elif notation != "ranking":
             raise Exception("Unknown notation specified")
-            
-        return ballots
-
         
-    @staticmethod
-    def obtain_candidates(ballots, required_winners):
-        candidates = set()
+        self.candidates = set()
         for ballot in ballots:
-            candidates |= set(ballot["ballot"].keys())
-        if required_winners > len(candidates):
-            raise Exception("Insufficient candidates")
-        return candidates
-    
-    @staticmethod
-    def complete_ballots(ballots, candidates):
+            self.candidates |= set(ballot["ballot"].keys())
+        
         for ballot in ballots:
             lowest_preference = max(ballot["ballot"].values()) + 1
-            for candidate in candidates - set(ballot["ballot"].keys()):
+            for candidate in self.candidates - set(ballot["ballot"].keys()):
                 ballot["ballot"][candidate] = lowest_preference
-        return ballots
+        
+        self.ballots = ballots

@@ -13,38 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from voting_system import VotingSystem
+from plurality_at_large import PluralityAtLarge
 
 # This class implements Plurality (aka first past the post, fptp, etc).
-class Plurality(VotingSystem):
+class Plurality(PluralityAtLarge):
     
-    @staticmethod
-    def calculate_winner(ballots):
-        result = {}
-        
-        # Collect the list of candidates
-        candidates = set([ballot["ballot"] for ballot in ballots])
-        
-        # Generate tie breaker
-        tie_breaker = Plurality.generate_tie_breaker(candidates)
-
-        # Sum up all votes for each candidate
-        tallies = dict.fromkeys(candidates, 0)
-        for ballot in ballots:
-            tallies[ballot["ballot"]] += ballot["count"]
-        result["tallies"] = tallies
-        
-        # Determine who got the most votes
-        most_votes = max(tallies.values())
-        winners = Plurality.matching_keys(tallies, most_votes)
-        
-        # Mark the winner
-        if len(winners) == 1:
-            result["winners"] = winners
-        else:
-            result["tied_winners"] = winners
-            result["tie_breaker"] = tie_breaker
-            result["winners"] = set([Plurality.break_ties(winners, tie_breaker)])
-        
-        # Return the final result
-        return result
+    def __init__(self, ballots):
+        PluralityAtLarge.__init__(self, ballots)

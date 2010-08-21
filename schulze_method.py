@@ -20,56 +20,59 @@ from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 # This class implements the Schulze Method (aka the beatpath method)
 class SchulzeMethod(CondorcetSystem):
     
-    @staticmethod
-    def calculate_winner(ballots, notation="ranking"):
+    def __init__(self, ballots, notation = None):
+        CondorcetSystem.__init__(self, ballots, notation)
         
+    def calculate_results(self):
+
         # Try to determine a Condorcet winner
-        result = CondorcetSystem.condorcet_winner(ballots, notation)
-        if "winners" in result:
-            return result
+        CondorcetSystem.calculate_results(self)
+        if hasattr(self, 'winners'):
+            return
         
         # Initialize the candidate graph
-        graph = digraph()
-        graph.add_nodes(list(result["candidates"]))
-        for (pair,weight) in result["strong_pairs"].items():
-            graph.add_edge((pair[0], pair[1]), weight)
+        self.graph = digraph()
+        self.graph.add_nodes(list(self.candidates))
+        for (pair,weight) in self.strong_pairs.items():
+            self.graph.add_edge((pair[0], pair[1]), weight)
         
         # Iterate through using the Schwartz set heuristic
-        graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
-        
-        # Mark the winner
-        return CondorcetSystem.graph_winner(graph, result)
+        self.schwartz_set_heuristic()
+        self.graph_winner()
+
+    def results(self):
+        results = super(SchulzeMethod,self).results()
+        if hasattr(self, 'actions'):
+            results["actions"] = self.actions
+        return results
     
-    @staticmethod
-    def schwartz_set_heuristic(graph):
+    def schwartz_set_heuristic(self):
         
         # Iterate through using the Schwartz set heuristic
-        actions = []
-        while len(graph.edges()) > 0:
+        self.actions = []
+        while len(self.graph.edges()) > 0:
             
             # Remove nodes at the end of non-cycle paths
-            access = accessibility(graph)
-            mutual_access = mutual_accessibility(graph)
+            access = accessibility(self.graph)
+            mutual_access = mutual_accessibility(self.graph)
             candidates_to_remove = set()
-            for candidate in graph.nodes():
+            for candidate in self.graph.nodes():
                 candidates_to_remove = candidates_to_remove | (set(access[candidate]) - set(mutual_access[candidate]))
             if len(candidates_to_remove) > 0:
-                actions.append(['nodes', candidates_to_remove])
+                self.actions.append(['nodes', candidates_to_remove])
                 for candidate in candidates_to_remove:
-                    graph.del_node(candidate)
+                    self.graph.del_node(candidate)
 
             # If none exist, remove the weakest edges
             else:
-                lightest_edges = set([graph.edges()[0]])
-                weight = graph.edge_weight((graph.edges()[0][0], graph.edges()[0][1]))
-                for edge in graph.edges():
-                    if graph.edge_weight((edge[0], edge[1])) < weight:
-                        weight = graph.edge_weight((edge[0], edge[1]))
+                lightest_edges = set([self.graph.edges()[0]])
+                weight = self.graph.edge_weight((self.graph.edges()[0][0], self.graph.edges()[0][1]))
+                for edge in self.graph.edges():
+                    if self.graph.edge_weight((edge[0], edge[1])) < weight:
+                        weight = self.graph.edge_weight((edge[0], edge[1]))
                         lightest_edges = set([edge])
-                    elif graph.edge_weight((edge[0], edge[1])) == weight:
+                    elif self.graph.edge_weight((edge[0], edge[1])) == weight:
                         lightest_edges.add(edge)
-                actions.append(['edges', lightest_edges])
+                self.actions.append(['edges', lightest_edges])
                 for edge in lightest_edges:
-                    graph.del_edge((edge[0], edge[1]))
-        
-        return graph, actions
+                    self.graph.del_edge((edge[0], edge[1]))

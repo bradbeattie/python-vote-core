@@ -30,7 +30,8 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
             { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
         ]
-        output = SchulzeMethod.calculate_winner(input, "grouping")
+        ranked_pairs = SchulzeMethod(input, "grouping")
+        output = ranked_pairs.results()
         
         # Run tests
         self.assertEqual(output, {
@@ -82,7 +83,8 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]] },
             { "count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]] }
         ]
-        output = SchulzeMethod.calculate_winner(input, "grouping")
+        ranked_pairs = SchulzeMethod(input, "grouping")
+        output = ranked_pairs.results()
         
         # Run tests
         self.assertEqual(output, {

@@ -18,78 +18,6 @@ import unittest
 
 class TestPluralityAtLarge(unittest.TestCase):
     
-    # Plurality, no ties
-    def test_plurality_no_ties(self):
-        
-        # Generate data
-        input = [
-            { "count":26, "ballot":"c1" },
-            { "count":22, "ballot":"c2" },
-            { "count":23, "ballot":"c3" }
-        ]
-        output = PluralityAtLarge.calculate_winner(input)
-        
-        # Run tests
-        self.assertEqual(output, {
-            'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
-            'winners': set(['c1'])
-        })
-    
-        
-    # Plurality, alternate ballot format
-    def test_plurality_alternate_ballot_format(self):
-        
-        # Generate data
-        input = [
-            { "count":26, "ballot":["c1"] },
-            { "count":22, "ballot":["c2"] },
-            { "count":23, "ballot":["c3"] }
-        ]
-        output = PluralityAtLarge.calculate_winner(input)
-        
-        # Run tests
-        self.assertEqual(output, {
-            'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
-            'winners': set(['c1'])
-        })
-        
-
-    # Plurality, irrelevant ties
-    def test_plurality_irrelevant_ties(self):
-        
-        # Generate data
-        input = [
-            { "count":26, "ballot":"c1" },
-            { "count":23, "ballot":"c2" },
-            { "count":23, "ballot":"c3" }
-        ]
-        output = PluralityAtLarge.calculate_winner(input)
-
-        # Run tests
-        self.assertEqual(output, {
-            'tallies': {'c3': 23, 'c2': 23, 'c1': 26},
-            'winners': set(['c1'])
-        })
-
-
-    # Plurality, relevant ties
-    def test_plurality_relevant_ties(self):
-        
-        # Generate data
-        input = [
-            { "count":26, "ballot":"c1" },
-            { "count":26, "ballot":"c2" },
-            { "count":23, "ballot":"c3" }
-        ]
-        output = PluralityAtLarge.calculate_winner(input)
-        
-        # Run tests
-        self.assertEqual(output["tallies"], {'c1':26, 'c2':26, 'c3':23})
-        self.assertEqual(output["tied_winners"], set(['c1', 'c2']))
-        self.assert_(list(output["winners"])[0] in output["tied_winners"])
-        self.assertEqual(len(output["tie_breaker"]), 3)
-
-    
     # Plurality at Large, no ties
     def test_plurality_at_large_no_ties(self):
         
@@ -99,7 +27,8 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c1", "c3"] },
             { "count":23, "ballot":["c2", "c3"] }
         ]
-        output = PluralityAtLarge.calculate_winner(input, 2)
+        plurality_at_large = PluralityAtLarge(input, 2)
+        output = plurality_at_large.results()
         
         # Run tests
         self.assertEqual(output, {
@@ -118,7 +47,8 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c2", "c3"] },
             { "count":11, "ballot":["c4", "c5"] }
         ]
-        output = PluralityAtLarge.calculate_winner(input, 2)
+        plurality_at_large = PluralityAtLarge(input, 2)
+        output = plurality_at_large.results()
         
         # Run tests
         self.assertEqual(output, {
@@ -138,7 +68,8 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":4, "ballot":["c4", "c1"] },
             { "count":8, "ballot":["c3", "c4"] },
         ]
-        output = PluralityAtLarge.calculate_winner(input, 2)
+        plurality_at_large = PluralityAtLarge(input, 2)
+        output = plurality_at_large.results()
 
         # Run tests
         self.assertEqual(output["tallies"], {'c3': 52, 'c2': 52, 'c1': 56, 'c4': 12})

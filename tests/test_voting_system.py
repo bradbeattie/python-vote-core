@@ -21,30 +21,23 @@ class TestVotingSystem(unittest.TestCase):
     # Tie breaker generation
     def test_tie_breaker_generation(self):
         
+        votingSystem = VotingSystem()
+        votingSystem.tie_breaker = ['a','b','c','d'] 
+        
         self.assertEqual(
-            VotingSystem.break_ties(
-                set(['b','c']),
-                ['a','b','c','d']
-            ),
+            votingSystem.break_ties(set(['b','c'])),
             'b'
         )
 
         self.assertEqual(
-            VotingSystem.break_ties(
-                set([('c','a'),('b','d'),('c','b')]),
-                ['a','b','c','d']
-            ),
+            votingSystem.break_ties(set([('c','a'),('b','d'),('c','b')])),
             ('b','d')
         )
         
         self.assertEqual(
-            VotingSystem.break_ties(
-                set([('c','a'),('c','d'),('d','a')]),
-                ['a','b','c','d']
-            ),
+            votingSystem.break_ties(set([('c','a'),('c','d'),('d','a')])),
             ('c','a')
         )
 
-        
 if __name__ == "__main__":
     unittest.main()

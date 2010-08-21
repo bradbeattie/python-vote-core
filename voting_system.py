@@ -13,44 +13,51 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import random, math, types
+import random, types
 
 # This class provides methods that most electoral systems make use of.
 class VotingSystem(object):
-    
-    @staticmethod
-    def generate_tie_breaker(candidates):
-        tie_breaker = list(candidates)
-        random.shuffle(tie_breaker)
-        return tie_breaker
 
+    required_winners = 1
     
-    @staticmethod
-    def break_ties(tied_objects, tie_breaker, reverse_order=False):
+    def __init__(self):
+        self.calculate_results()
+        
+    def calculate_results(self):
+        pass
+        
+    def results(self):
+        results = {
+            "winners": self.winners
+        }
+        if hasattr(self, 'tie_breaker'):
+            results["tie_breaker"] = self.tie_breaker
+        return results
 
+    def break_ties(self, tied_objects, reverse_order=False):
+        tie_breaker = self.__generate_tie_breaker__()
         if reverse_order:
             tie_breaker.reverse()
-
         if type(list(tied_objects)[0]) in [types.UnicodeType, types.StringType]:
-            result = VotingSystem.__break_ties_simple__(tied_objects, tie_breaker)
+            result = self.__break_ties_simple__(tied_objects, tie_breaker)
         else:
-            result = VotingSystem.__break_ties_complex__(tied_objects, tie_breaker)
-
+            result = self.__break_ties_complex__(tied_objects, tie_breaker)
         if reverse_order:
-            tie_breaker.reverse()
-
+            tie_breaker.reverse() # TODO: Check to see if this is necessary
         return result
 
-
-    @staticmethod
-    def __break_ties_simple__(tied_candidates, tie_breaker):
+    def __break_ties_simple__(self, tied_candidates, tie_breaker):
         for candidate in tie_breaker:
             if candidate in tied_candidates:
                 return candidate
 
+    def __generate_tie_breaker__(self):
+        if hasattr(self, 'tie_breaker') == False: 
+            self.tie_breaker = list(self.candidates)
+            random.shuffle(self.tie_breaker)
+        return self.tie_breaker
 
-    @staticmethod
-    def __break_ties_complex__(tied_objects, tie_breaker):
+    def __break_ties_complex__(self, tied_objects, tie_breaker):
         max_columns = len(list(tied_objects)[0])
         column = 0
         while len(tied_objects) > 1 and column < max_columns:
@@ -58,15 +65,6 @@ class VotingSystem(object):
             tied_objects = set([object for object in tied_objects if object[column] == tie_breaker[min_index]])
             column += 1
         return list(tied_objects)[0]
-
-    
-    @staticmethod
-    def droop_quota(ballots, seats):
-        quota = 0;
-        for ballot in ballots:
-            quota += ballot["count"]
-        return int(math.floor(quota / (seats + 1)) + 1)
-
 
     @staticmethod
     def matching_keys(dict, target_value):

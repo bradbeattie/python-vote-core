@@ -15,82 +15,106 @@
 
 # This class implements Schulze STV, a proportional representation system
 from pygraph.classes.digraph import digraph
+from pygraph.algorithms.minmax import maximum_flow
 from schulze_method import SchulzeMethod
-from condorcet import CondorcetSystem
-from voting_system import VotingSystem
 import itertools
 
-class SchulzeSTV(VotingSystem):
+class SchulzeSTV(SchulzeMethod):
     
-    @staticmethod
-    def calculate_winner(ballots, required_winners, notation="ranking"):
+    def __init__(self, ballots, required_winners, notation = None):
+        self.required_winners = required_winners
+        SchulzeMethod.__init__(self, ballots, notation)
         
-        # Standardize the incoming data
-        ballots = CondorcetSystem.convert_ballots(ballots, notation)
-        candidates = CondorcetSystem.obtain_candidates(ballots, required_winners)
-        ballots = CondorcetSystem.complete_ballots(ballots, candidates)
-        result = {"candidates": candidates}
+    def results(self):
+        results = {
+            "candidates": self.candidates,
+            "winners": self.winners
+        }
+        if hasattr(self, 'actions'):
+            results["actions"] = self.actions
+        if hasattr(self, 'tied_winners'):
+            results["tied_winners"] = self.tied_winners
+            results["tie_breaker"] = self.tie_breaker
+        return results
+        
+    def calculate_results(self):
         
         # Return the winners if everyone wins
-        if required_winners == len(candidates):
-            result["winners"] = candidates
-            return result
+        if self.required_winners == len(self.candidates):
+            self.winners = self.candidates
+            return
         
         # Generate the list of patterns we need to complete
-        completion_patterns = SchulzeSTV.completion_patterns(required_winners)
+        self.__generate_completion_patterns__()
+        self.__generate_completed_patterns__()
     
         # Build the graph of possible winners
-        graph = digraph()
-        for candidate_set in itertools.combinations(candidates, required_winners):
-            graph.add_nodes([tuple(sorted(list(candidate_set)))])
+        self.graph = digraph()
+        for candidate_set in itertools.combinations(self.candidates, self.required_winners):
+            self.graph.add_nodes([tuple(sorted(list(candidate_set)))])
+        
+        # Prepare the vote management graph
+        self.vote_management_graph = digraph()
+        self.vote_management_graph.add_nodes(self.completed_patterns)
+        self.vote_management_graph.del_node(tuple([3]*self.required_winners))
+        self.pattern_nodes = self.vote_management_graph.nodes()
+        self.vote_management_graph.add_nodes(["source","sink"])
+        for pattern_node in self.pattern_nodes:
+            self.vote_management_graph.add_edge(("source", pattern_node))
+        for i in range(self.required_winners):
+            self.vote_management_graph.add_node(i)
+        for pattern_node in self.pattern_nodes:
+            for i in range(self.required_winners):
+                if pattern_node[i] == 1:
+                    self.vote_management_graph.add_edge((pattern_node, i))
+        for i in range(self.required_winners):        
+            self.vote_management_graph.add_edge((i, "sink"))
         
         # Generate the edges between nodes
-        for candidate_set in itertools.combinations(candidates, required_winners + 1):
+        for candidate_set in itertools.combinations(self.candidates, self.required_winners + 1):
             for candidate in candidate_set:
                 other_candidates = sorted(list(set(candidate_set) - set([candidate])))
-                completed = SchulzeSTV.__proportional_completion__(candidate, other_candidates, ballots, completion_patterns)
-                weight = SchulzeSTV.__strength_of_vote_management__(completed)
+                completed = self.__proportional_completion__(candidate, other_candidates)
+                weight = self.__strength_of_vote_management__(completed)
                 if weight > 0:
                     for subset in itertools.combinations(other_candidates, len(other_candidates) - 1):
-                        graph.add_edge((tuple(other_candidates), tuple(sorted(list(subset) + [candidate]))), weight)
+                        self.graph.add_edge((tuple(other_candidates), tuple(sorted(list(subset) + [candidate]))), weight)
 
         # Determine the winner through the Schwartz set heuristic
-        graph, result["actions"] = SchulzeMethod.schwartz_set_heuristic(graph)
-        return CondorcetSystem.graph_winner(graph, result)
+        self.schwartz_set_heuristic()
+        self.graph_winner()
     
-    @staticmethod
-    def completion_patterns(required_winners):
-        # Generate the list of patterns we need to complete
-        completion_patterns = []
-        for i in range(0,required_winners):
+    def __generate_completion_patterns__(self):
+        self.completion_patterns = []
+        for i in range(0,self.required_winners):
             for j in range(0, i+1):
-                completion_patterns.append(list(set((tuple(pattern)) for pattern in SchulzeSTV.__unique_permutations__([2]*(required_winners-i)+[1]*(j)+[3]*(i-j)))))
-        return [item for innerlist in completion_patterns for item in innerlist]
+                for pattern in self.__unique_permutations__([2]*(self.required_winners-i)+[1]*(j)+[3]*(i-j)):
+                    self.completion_patterns.append(tuple(pattern))
+        
+    def __generate_completed_patterns__(self):
+        self.completed_patterns = []
+        for i in range(0,self.required_winners + 1):
+            for pattern in self.__unique_permutations__([1]*(self.required_winners-i)+[3]*(i)):
+                self.completed_patterns.append(tuple(pattern))
     
-    @staticmethod
-    def __unique_permutations__(xs):
-        if len(xs)<2: yield xs
+    def __unique_permutations__(self, xs):
+        if len(xs)<2:
+            yield xs
         else:
             h = []
             for x in xs:
                 h.append(x)
-                if x in h[:-1]: continue
+                if x in h[:-1]:
+                    continue
                 ts = xs[:]; ts.remove(x)
-                for ps in SchulzeSTV.__unique_permutations__(ts):
+                for ps in self.__unique_permutations__(ts):
                     yield [x]+ps
     
-    @staticmethod
-    def __proportional_completion__(candidate, other_candidates, ballots, completion_patterns):
-
-        # Ensure each pattern is represented
-        profile = {}
-        for i in range(0,len(other_candidates) + 1):
-            for pattern in SchulzeSTV.__unique_permutations__([1]*(len(other_candidates)-i)+[3]*(i)):
-                pattern = tuple(pattern)
-                profile[pattern] = 0
-                
+    def __proportional_completion__(self, candidate, other_candidates):
+        profile = dict(zip(self.completed_patterns, [0]*len(self.completed_patterns)))
+        
         # Obtain an initial tally from the ballots
-        for ballot in ballots:
+        for ballot in self.ballots:
             pattern = []
             for other_candidate in other_candidates:
                 if ballot["ballot"][candidate] > ballot["ballot"][other_candidate]:
@@ -105,14 +129,13 @@ class SchulzeSTV(VotingSystem):
             profile[pattern] += ballot["count"]
 
         # Complete each pattern in order
-        for pattern in completion_patterns:
+        for pattern in self.completion_patterns:
             if pattern in profile:
-                profile = SchulzeSTV.__proportional_completion_round__(pattern, profile)
-        
+                profile = self.__proportional_completion_round__(pattern, profile)
+
         return profile
 
-    @staticmethod
-    def __proportional_completion_round__(completion_pattern, profile):
+    def __proportional_completion_round__(self, completion_pattern, profile):
 
         # Remove pattern that contains indifference
         completion_pattern_weight = profile[completion_pattern]
@@ -148,6 +171,7 @@ class SchulzeSTV(VotingSystem):
                 if pattern not in profile:
                     profile[pattern] = 0
                 profile[pattern] += sum(profile[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
+
         return profile
 
     # This method converts the voter profile into a capacity graph and iterates
@@ -155,83 +179,23 @@ class SchulzeSTV(VotingSystem):
     # the limit of the strength of the voter management as per Markus Schulze's
     # Calcul02.pdf (draft, 28 March 2008, abstract: "In this paper we illustrate
     # the calculation of the strengths of the vote managements.").
-    @staticmethod
-    def __strength_of_vote_management__(voter_profile):
+    def __strength_of_vote_management__(self, voter_profile):
         
-        number_of_candidates = len(voter_profile.keys()[0])
-        number_of_patterns = len(voter_profile) - 1
-        number_of_nodes = 1 + number_of_patterns + number_of_candidates + 1
-        ordered_patterns = sorted(voter_profile.keys())
-        ordered_patterns.remove(tuple([3]*number_of_candidates))
-        
-        r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*number_of_candidates)]) / number_of_candidates]
-        
-        # Generate a number_of_nodes x number_of_nodes matrix of zeroes
-        C = []
-        for i in range(number_of_nodes):
-            C.append([0] * number_of_nodes)
-            
-        # Source to voters
-        vertex = 0
-        for pattern in ordered_patterns:
-            C[0][vertex+1] = voter_profile[pattern]
-            vertex += 1
-
-        # Voters to candidates
-        vertex = 0
-        for pattern in ordered_patterns:
-            for i in range(1,number_of_candidates + 1):
-                if pattern[i-1] == 1:
-                    C[vertex+1][1 + number_of_patterns + i - 1] = voter_profile[pattern]
-            vertex += 1
+        # Initialize the graph weights
+        for pattern in self.pattern_nodes:
+            self.vote_management_graph.set_edge_weight(("source", pattern), voter_profile[pattern])
+            for i in range(self.required_winners):
+                if pattern[i] == 1:
+                    self.vote_management_graph.set_edge_weight((pattern, i), voter_profile[pattern])
         
         # Iterate towards the limit
+        r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*self.required_winners)]) / self.required_winners]
         while len(r) < 2 or r[-2] - r[-1] > 0.0000000001:
-            for i in range(number_of_candidates):
-                C[1 + number_of_patterns + i][number_of_nodes - 1] = r[-1]
-            r.append(SchulzeSTV.__edmonds_karp__(C,0,number_of_nodes-1)/number_of_candidates)
+            for i in range(self.required_winners):
+                self.vote_management_graph.set_edge_weight((i, "sink"), r[-1])
+            max_flow = maximum_flow(self.vote_management_graph, "source", "sink")
+            sink_sum = sum(v for k,v in max_flow[0].iteritems() if k[1] == "sink")
+            r.append(sink_sum/self.required_winners)
+        
+        # Return the final max flow
         return round(r[-1],9)
-    
-
-    # The Edmonds-Karp algorithm is an implementation of the Ford-Fulkerson
-    # method for computing the maximum flow in a flow network in O(VE^2).
-    #
-    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm
-    @staticmethod
-    def __edmonds_karp__(C, source, sink):
-        n = len(C) # C is the capacity matrix
-        F = [[0] * n for i in xrange(n)]
-        # residual capacity from u to v is C[u][v] - F[u][v]
-
-        while True:
-            path = SchulzeSTV.__bfs__(C, F, source, sink)
-            if not path:
-                break
-            # traverse path to find smallest capacity
-            flow = min(C[u][v] - F[u][v] for u,v in path)
-            # traverse path to update flow
-            for u,v in path:
-                F[u][v] += flow
-                F[v][u] -= flow
-                
-        return sum(F[source][i] for i in xrange(n))
-    
-    # In graph theory, breadth-first search (BFS) is a graph search algorithm
-    # that begins at the root node and explores all the neighboring nodes. Then
-    # for each of those nearest nodes, it explores their unexplored neighbor
-    # nodes, and so on, until it finds the goal.
-    #
-    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm    
-    @staticmethod
-    def __bfs__(C, F, source, sink):
-        queue = [source]                 
-        paths = {source: []}
-        while queue:
-            u = queue.pop(0)
-            for v in xrange(len(C)):
-                if C[u][v] - F[u][v] > 0 and v not in paths:
-                    paths[v] = paths[u] + [(u,v)]
-                    if v == sink:
-                        return paths[v]
-                    queue.append(v)
-        return None

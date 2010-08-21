@@ -67,21 +67,22 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 
             # Send the data to the requested voting system
             if request["voting_system"] == "plurality":
-                response = Plurality.calculate_winner(request["ballots"])
+                system = Plurality(request["ballots"])
             elif request["voting_system"] == "plurality_at_large":
-                response = PluralityAtLarge.calculate_winner(request["ballots"], request["winners"])
+                system = PluralityAtLarge(request["ballots"], request["winners"])
             elif request["voting_system"] == "irv":
-                response = IRV.calculate_winner(request["ballots"], request["winners"])
+                system = IRV(request["ballots"], request["winners"])
             elif request["voting_system"] == "stv":
-                response = STV.calculate_winner(request["ballots"], request["winners"])
+                system = STV(request["ballots"], request["winners"])
             elif request["voting_system"] == "ranked_pairs":
-                response = RankedPairs.calculate_winner(request["ballots"], request["notation"])
+                system = RankedPairs(request["ballots"], request["notation"])
             elif request["voting_system"] == "schulze_method":
-                response = SchulzeMethod.calculate_winner(request["ballots"], request["notation"])
+                system = SchulzeMethod(request["ballots"], request["notation"])
             elif request["voting_system"] == "schulze_stv":
-                response = SchulzeSTV.calculate_winner(request["ballots"], request["winners"], request["notation"])
+                system = SchulzeSTV(request["ballots"], request["winners"], request["notation"])
             else:
                 raise Exception("No voting system specified")
+            response = system.results()
             
             # Ensure a response came back from the voting system
             if response == None:

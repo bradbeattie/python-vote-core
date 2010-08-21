@@ -19,12 +19,20 @@ import copy, types
 # This class implements plurality at large (aka block voting).
 class PluralityAtLarge(VotingSystem):
     
-    @staticmethod
-    def calculate_winner(ballots, required_winners = 1):
-        result = {}
+    def __init__(self, ballots, required_winners = 1):
+        self.required_winners = required_winners
+        self.convert_ballots(ballots)
+        
+        # Ensure we have sufficient candidates
+        if len(self.candidates) < required_winners:
+            raise Exception("Insufficient candidates to meet produce sufficient winners")
+        
+        VotingSystem.__init__(self)
+        
+    def convert_ballots(self, ballots):
         
         # Parse the incoming candidate list
-        candidates = set()
+        self.candidates = set()
         for ballot in ballots:
             
             # Convert single candidate ballots into ballot lists
@@ -32,41 +40,38 @@ class PluralityAtLarge(VotingSystem):
                 ballot["ballot"] = [ballot["ballot"]]
                 
             # Ensure no ballot has an excess of candidates
-            if len(ballot["ballot"]) > required_winners:
+            if len(ballot["ballot"]) > self.required_winners:
                 raise Exception("A ballot contained too many candidates")
             
             # Observe all mentioned candidates 
             for candidate in ballot["ballot"]:
-                candidates.add(candidate)
-        
-        # Ensure we have sufficient candidates
-        if len(candidates) < required_winners:
-            raise Exception("Insufficient candidates to meet produce sufficient winners")
-        
-        # Generate tie breaker, which may or may not be used later
-        tie_breaker = PluralityAtLarge.generate_tie_breaker(candidates)
+                self.candidates.add(candidate)
 
+        self.ballots = ballots
+
+
+    def calculate_results(self):
+        
         # Sum up all votes for each candidate
-        tallies = dict.fromkeys(candidates, 0)
-        for ballot in ballots:
+        tallies = dict.fromkeys(self.candidates, 0)
+        for ballot in self.ballots:
             for candidate in ballot["ballot"]:
                 tallies[candidate] += ballot["count"]
-        result["tallies"] = copy.deepcopy(tallies)
+        self.tallies = copy.deepcopy(tallies)
         
         # Determine which candidates win
         winning_candidates = set()
-        while len(winning_candidates) < required_winners:
+        while len(winning_candidates) < self.required_winners:
             
             # Find the remaining candidates with the most votes
             largest_tally = max(tallies.values())
-            top_candidates = PluralityAtLarge.matching_keys(tallies, largest_tally)
+            top_candidates = self.matching_keys(tallies, largest_tally)
             
             # Reduce the found candidates if there are too many
-            if len(top_candidates | winning_candidates) > required_winners:
-                result["tie_breaker"] = tie_breaker
-                result["tied_winners"] = top_candidates.copy()
-                while len(top_candidates | winning_candidates) > required_winners:
-                    top_candidates.remove(PluralityAtLarge.break_ties(top_candidates, tie_breaker, True))
+            if len(top_candidates | winning_candidates) > self.required_winners:
+                self.tied_winners = top_candidates.copy()
+                while len(top_candidates | winning_candidates) > self.required_winners:
+                    top_candidates.remove(self.break_ties(top_candidates, True))
             
             # Move the top candidates into the winning pile
             winning_candidates |= top_candidates
@@ -74,5 +79,11 @@ class PluralityAtLarge(VotingSystem):
                 del tallies[candidate]
                 
         # Return the final result
-        result["winners"] = winning_candidates
-        return result
+        self.winners =  winning_candidates
+
+    def results(self):
+        results = VotingSystem.results(self)
+        results["tallies"] = self.tallies
+        if hasattr(self, 'tied_winners'):
+            results["tied_winners"] = self.tied_winners
+        return results
