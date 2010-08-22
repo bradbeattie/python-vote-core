@@ -21,7 +21,6 @@ class TestSchulzeSTV(unittest.TestCase):
     # This test considers a case in which there are 10 choose 5 (252) possible
     # outcomes and 252 choose 2 (31626) possible edges between them.
     def test_10_candidates_5_winners(self):
-        return
 
         # Generate data
         startTime = time.time()
@@ -40,7 +39,6 @@ class TestSchulzeSTV(unittest.TestCase):
     # 10 candidates and 9 winners, we're looking at 3^9 (19683) patterns to
     # consider.
     def test_10_candidates_9_winners(self):
-        return
 
         # Generate data
         startTime = time.time()

@@ -71,10 +71,10 @@ class TestSchulzeSTV(unittest.TestCase):
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [
-                ['edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])],
-                ['nodes', set([('Brad', 'Carter')])],
-                ['edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])],
-                ['nodes', set([('Andrea', 'Carter')])]
+                ('edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])),
+                ('nodes', set([('Brad', 'Carter')])),
+                ('edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])),
+                ('nodes', set([('Andrea', 'Carter')]))
             ],
             'winners': set(['Andrea', 'Brad'])
         })
@@ -97,10 +97,10 @@ class TestSchulzeSTV(unittest.TestCase):
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [
-                ['edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])],
-                ['nodes', set([('Brad', 'Carter')])],
-                ['edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])],
-                ['nodes', set([('Andrea', 'Carter')])]
+                ('edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])),
+                ('nodes', set([('Brad', 'Carter')])),
+                ('edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])),
+                ('nodes', set([('Andrea', 'Carter')]))
             ],
             'winners': set(['Andrea', 'Brad'])
         })
@@ -132,13 +132,13 @@ class TestSchulzeSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Paper', 'Wood', 'Metal', 'Plastic']),
-            'actions': [['nodes', set([
+            'actions': [('nodes', set([
                 ('Paper', 'Plastic'),
                 ('Metal', 'Plastic'),
                 ('Paper', 'Wood'),
                 ('Metal', 'Wood'),
                 ('Plastic', 'Wood')
-            ])]],
+            ]))],
             'winners': set(['Paper', 'Metal'])
         })
     
@@ -157,13 +157,13 @@ class TestSchulzeSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output, {
             "candidates": set(['Metal', 'Wood', 'Plastic', 'Paper']),
-            "actions": [['nodes', set([
+            "actions": [('nodes', set([
                 ('Paper', 'Plastic'),
                 ('Metal', 'Plastic'),
                 ('Metal', 'Paper'),
                 ('Plastic', 'Wood'),
                 ('Metal', 'Wood')
-            ])]],
+            ]))],
             "winners": set(['Paper', 'Wood']),
         })      
 
