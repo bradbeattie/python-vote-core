@@ -22,42 +22,29 @@ class PluralityAtLarge(VotingSystem):
     def __init__(self, ballots, required_winners = 1):
         self.required_winners = required_winners
         self.convert_ballots(ballots)
-        
-        # Ensure we have sufficient candidates
-        if len(self.candidates) < required_winners:
-            raise Exception("Insufficient candidates to meet produce sufficient winners")
-        
+        self.candidates = PluralityAtLarge.viable_candidates(ballots)
         VotingSystem.__init__(self)
         
     def convert_ballots(self, ballots):
         
         # Parse the incoming candidate list
-        self.candidates = set()
-        for ballot in ballots:
+        self.ballots = ballots
+        for ballot in self.ballots:
             
             # Convert single candidate ballots into ballot lists
             if type(ballot["ballot"]) != types.ListType:
                 ballot["ballot"] = [ballot["ballot"]]
                 
-            # Ensure no ballot has an excess of candidates
+            # Ensure no ballot has an excess of votes
             if len(ballot["ballot"]) > self.required_winners:
                 raise Exception("A ballot contained too many candidates")
-            
-            # Observe all mentioned candidates 
-            for candidate in ballot["ballot"]:
-                self.candidates.add(candidate)
-
-        self.ballots = ballots
-
 
     def calculate_results(self):
         
         # Sum up all votes for each candidate
-        tallies = dict.fromkeys(self.candidates, 0)
-        for ballot in self.ballots:
-            for candidate in ballot["ballot"]:
-                tallies[candidate] += ballot["count"]
-        self.tallies = copy.deepcopy(tallies)
+        self.tallies = PluralityAtLarge.tallies(self.ballots)
+        self.candidates = self.tallies.keys()
+        tallies = copy.deepcopy(self.tallies)
         
         # Determine which candidates win
         winning_candidates = set()
@@ -80,6 +67,22 @@ class PluralityAtLarge(VotingSystem):
                 
         # Return the final result
         self.winners =  winning_candidates
+    
+    @staticmethod
+    def tallies(ballots):
+        tallies = dict.fromkeys(PluralityAtLarge.viable_candidates(ballots), 0)
+        for ballot in ballots:
+            for candidate in ballot["ballot"]:
+                tallies[candidate] += ballot["count"]
+        return tallies
+    
+    @staticmethod
+    def viable_candidates(ballots):
+        candidates = set()
+        for ballot in ballots:
+            for candidate in ballot["ballot"]:
+                candidates.add(candidate)
+        return candidates
 
     def results(self):
         results = VotingSystem.results(self)

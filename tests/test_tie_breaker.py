@@ -13,29 +13,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from voting_system import VotingSystem
+from tie_breaker import TieBreaker
 import unittest
 
-class TestVotingSystem(unittest.TestCase):
+class TestTieBreaker(unittest.TestCase):
     
     # Tie breaker generation
     def test_tie_breaker_generation(self):
         
-        votingSystem = VotingSystem()
-        votingSystem.tie_breaker = ['a','b','c','d'] 
+        tieBreaker = TieBreaker(['a','b','c','d'])
+        tieBreaker.random_ordering = ['a','b','c','d'] 
         
         self.assertEqual(
-            votingSystem.break_ties(set(['b','c'])),
+            tieBreaker.break_ties(set(['b','c'])),
             'b'
         )
 
         self.assertEqual(
-            votingSystem.break_ties(set([('c','a'),('b','d'),('c','b')])),
+            tieBreaker.break_ties(set([('c','a'),('b','d'),('c','b')])),
             ('b','d')
         )
         
         self.assertEqual(
-            votingSystem.break_ties(set([('c','a'),('c','d'),('d','a')])),
+            tieBreaker.break_ties(set([('c','a'),('c','d'),('d','a')])),
             ('c','a')
         )
 

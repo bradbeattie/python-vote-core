@@ -14,8 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from voting_system import VotingSystem
-import math
-import copy
+import math, copy
 
 # This class implements the Single Transferable vote (aka STV) in its most
 # classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
@@ -33,52 +32,48 @@ class STV(VotingSystem):
         VotingSystem.__init__(self)
     
     def calculate_results(self):
-        
         self.rounds = []
         self.winners = set()
-        candidates = copy.deepcopy(self.candidates)
+        remaining_candidates = copy.deepcopy(self.candidates)
         ballots = copy.deepcopy(self.ballots)
         
         # Loop until we have enough candidates
-        while len(self.winners) < self.required_winners and len(candidates) + len(self.winners) > self.required_winners:
+        while len(self.winners) < self.required_winners and len(remaining_candidates) + len(self.winners) > self.required_winners:
             
-            
-            # Sum up all votes for each candidate
+            # If any candidates meet or exceeds the quota, they're a winner
             round = {"tallies": STV.tallies(ballots)}
-            
-            # If any candidates meet or exceeds the quota
             if max(round["tallies"].values()) >= self.quota:
                 
                 # Collect candidates as winners
-                round["winners"] = set()
-                for (candidate,tally) in round["tallies"].items():
-                    if tally >= self.quota:
-                        round["winners"].add(candidate)
+                round["winners"] = set([
+                    candidate
+                    for candidate, tally in round["tallies"].items()
+                    if tally >= self.quota
+                ])
                 self.winners |= round["winners"]
+                remaining_candidates -= round["winners"]
             
                 # Redistribute excess votes
                 for ballot in ballots:
                     if ballot["ballot"][0] in round["winners"]:
                         ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - self.quota) / round["tallies"][ballot["ballot"][0]]
-        
+
                 # Remove candidates from remaining ballots
-                candidates -= round["winners"]
                 ballots = STV.remove_candidates_from_ballots(round["winners"], ballots)
         
-            # If no ballots were redistributed
+            # If no candidate exceeds the quota, elimiate the least preferred
             else:
-                # Eliminate references to the losing candidate
                 round.update(self.loser(round["tallies"]))
-                candidates.remove(round["loser"])
+                remaining_candidates.remove(round["loser"])
                 ballots = STV.remove_candidates_from_ballots([round["loser"]], ballots)
             
+            # Record this round's actions
             self.rounds.append(round)
 
         # Append the final winner and return
         if len(self.winners) < self.required_winners:
-            self.remaining_candidates = candidates
-            for candidate in candidates:
-                self.winners.add(candidate)
+            self.remaining_candidates = remaining_candidates
+            self.winners |= self.remaining_candidates
 
     def loser(self, tallies):
         losers = self.matching_keys(tallies, min(tallies.values()))
@@ -99,16 +94,20 @@ class STV(VotingSystem):
         return ballots
             
     @staticmethod
-    def viable_candidates(ballots):
-        return set([ballot["ballot"][0] for ballot in ballots if len(ballot["ballot"]) > 0])
-    
-    @staticmethod
     def tallies(ballots):
         tallies = dict.fromkeys(STV.viable_candidates(ballots), 0)
         for ballot in ballots:
             if len(ballot["ballot"]) > 0:
                 tallies[ballot["ballot"][0]] += ballot["count"]
         return tallies
+    
+    @staticmethod
+    def viable_candidates(ballots):
+        return set([
+            ballot["ballot"][0]
+            for ballot in ballots
+            if len(ballot["ballot"]) > 0
+        ])
     
     @staticmethod
     def droop_quota(ballots, seats = 1):

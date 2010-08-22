@@ -32,7 +32,7 @@ class TestSchulzeMethod(unittest.TestCase):
         ]
         ranked_pairs = SchulzeMethod(input, "grouping")
         output = ranked_pairs.results()
-        
+
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['A', 'C', 'B', 'D']),
@@ -59,11 +59,11 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('A', 'B'): 16,
             },
             'actions': [
-                ['edges', set([('A', 'B')])],
-                ['edges', set([('A', 'C')])],
-                ['nodes', set(['A'])],
-                ['edges', set([('B', 'C')])],
-                ['nodes', set(['B', 'D'])]
+                ('edges', set([('A', 'B')])),
+                ('edges', set([('A', 'C')])),
+                ('nodes', set(['A'])),
+                ('edges', set([('B', 'C')])),
+                ('nodes', set(['B', 'D']))
             ],
             'winners': set(['C'])
         })
@@ -124,9 +124,9 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('E', 'A'): 23
             },
             'actions': [
-                ['edges', set([('E', 'A')])],
-                ['edges', set([('C', 'E')])],
-                ['nodes', set(['A', 'C', 'B', 'D'])]
+                ('edges', set([('E', 'A')])),
+                ('edges', set([('C', 'E')])),
+                ('nodes', set(['A', 'C', 'B', 'D']))
             ],
             'winners': set(['E'])
         })

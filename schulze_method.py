@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from condorcet import CondorcetSystem
-from pygraph.classes.digraph import digraph
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 
 # This class implements the Schulze Method (aka the beatpath method)
@@ -24,21 +23,10 @@ class SchulzeMethod(CondorcetSystem):
         CondorcetSystem.__init__(self, ballots, notation)
         
     def calculate_results(self):
-
-        # Try to determine a Condorcet winner
         CondorcetSystem.calculate_results(self)
-        if hasattr(self, 'winners'):
-            return
-        
-        # Initialize the candidate graph
-        self.graph = digraph()
-        self.graph.add_nodes(list(self.candidates))
-        for (pair,weight) in self.strong_pairs.items():
-            self.graph.add_edge((pair[0], pair[1]), weight)
-        
-        # Iterate through using the Schwartz set heuristic
-        self.schwartz_set_heuristic()
-        self.graph_winner()
+        if hasattr(self, 'winners') == False:
+            self.schwartz_set_heuristic()
+            self.graph_winner()
 
     def results(self):
         results = super(SchulzeMethod,self).results()
@@ -51,28 +39,21 @@ class SchulzeMethod(CondorcetSystem):
         # Iterate through using the Schwartz set heuristic
         self.actions = []
         while len(self.graph.edges()) > 0:
-            
-            # Remove nodes at the end of non-cycle paths
             access = accessibility(self.graph)
             mutual_access = mutual_accessibility(self.graph)
             candidates_to_remove = set()
             for candidate in self.graph.nodes():
-                candidates_to_remove = candidates_to_remove | (set(access[candidate]) - set(mutual_access[candidate]))
+                candidates_to_remove |= (set(access[candidate]) - set(mutual_access[candidate]))
+
+            # Remove nodes at the end of non-cycle paths
             if len(candidates_to_remove) > 0:
-                self.actions.append(['nodes', candidates_to_remove])
+                self.actions.append(('nodes', candidates_to_remove))
                 for candidate in candidates_to_remove:
                     self.graph.del_node(candidate)
 
             # If none exist, remove the weakest edges
             else:
-                lightest_edges = set([self.graph.edges()[0]])
-                weight = self.graph.edge_weight((self.graph.edges()[0][0], self.graph.edges()[0][1]))
-                for edge in self.graph.edges():
-                    if self.graph.edge_weight((edge[0], edge[1])) < weight:
-                        weight = self.graph.edge_weight((edge[0], edge[1]))
-                        lightest_edges = set([edge])
-                    elif self.graph.edge_weight((edge[0], edge[1])) == weight:
-                        lightest_edges.add(edge)
-                self.actions.append(['edges', lightest_edges])
-                for edge in lightest_edges:
-                    self.graph.del_edge((edge[0], edge[1]))
+                edge_weights = self.edge_weights(self.graph)
+                self.actions.append(('edges', self.matching_keys(edge_weights, min(edge_weights.values()))))
+                for edge in self.actions[-1][1]:
+                    self.graph.del_edge(edge)

@@ -17,6 +17,7 @@
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
 from schulze_method import SchulzeMethod
+import types
 import itertools
 
 class SchulzeSTV(SchulzeMethod):
@@ -83,6 +84,9 @@ class SchulzeSTV(SchulzeMethod):
         # Determine the winner through the Schwartz set heuristic
         self.schwartz_set_heuristic()
         self.graph_winner()
+        if type(list(self.winners)[0]) == types.TupleType:
+            self.winners = set([item for innerlist in self.winners for item in innerlist])
+
     
     def __generate_completion_patterns__(self):
         self.completion_patterns = []
@@ -117,7 +121,7 @@ class SchulzeSTV(SchulzeMethod):
         for ballot in self.ballots:
             pattern = []
             for other_candidate in other_candidates:
-                if ballot["ballot"][candidate] > ballot["ballot"][other_candidate]:
+                if ballot["ballot"][candidate] < ballot["ballot"][other_candidate]:
                     pattern.append(1)
                 elif ballot["ballot"][candidate] == ballot["ballot"][other_candidate]:
                     pattern.append(2)
