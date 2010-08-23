@@ -98,7 +98,6 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             
         finally:
-            print response
             response = json.dumps(self.__simplify_object__(response))
             self.send_header("Content-type", "application/json")
             self.send_header("Content-length", str(len(response)))
