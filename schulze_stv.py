@@ -17,7 +17,6 @@
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
 from schulze_method import SchulzeMethod
-from voting_system import VotingSystem
 import itertools
 
 class SchulzeSTV(SchulzeMethod):
@@ -36,23 +35,8 @@ class SchulzeSTV(SchulzeMethod):
         self.graph = digraph()
         for candidate_set in itertools.combinations(self.candidates, self.required_winners):
             self.graph.add_nodes([tuple(sorted(list(candidate_set)))])
-        
-        # Prepare the vote management graph
-        self.vote_management_graph = digraph()
-        self.vote_management_graph.add_nodes(self.completed_patterns)
-        self.vote_management_graph.del_node(tuple([3]*self.required_winners))
-        self.pattern_nodes = self.vote_management_graph.nodes()
-        self.vote_management_graph.add_nodes(["source","sink"])
-        for pattern_node in self.pattern_nodes:
-            self.vote_management_graph.add_edge(("source", pattern_node))
-        for i in range(self.required_winners):
-            self.vote_management_graph.add_node(i)
-        for pattern_node in self.pattern_nodes:
-            for i in range(self.required_winners):
-                if pattern_node[i] == 1:
-                    self.vote_management_graph.add_edge((pattern_node, i))
-        for i in range(self.required_winners):        
-            self.vote_management_graph.add_edge((i, "sink"))
+
+        self.__generate_vote_management_graph__()
         
         # Generate the edges between nodes
         for candidate_set in itertools.combinations(self.candidates, self.required_winners + 1):
@@ -72,6 +56,23 @@ class SchulzeSTV(SchulzeMethod):
     def results(self):
         results = SchulzeMethod.results(self)
         return results
+    
+    def __generate_vote_management_graph__(self):
+        self.vote_management_graph = digraph()
+        self.vote_management_graph.add_nodes(self.completed_patterns)
+        self.vote_management_graph.del_node(tuple([3]*self.required_winners))
+        self.pattern_nodes = self.vote_management_graph.nodes()
+        self.vote_management_graph.add_nodes(["source","sink"])
+        for pattern_node in self.pattern_nodes:
+            self.vote_management_graph.add_edge(("source", pattern_node))
+        for i in range(self.required_winners):
+            self.vote_management_graph.add_node(i)
+        for pattern_node in self.pattern_nodes:
+            for i in range(self.required_winners):
+                if pattern_node[i] == 1:
+                    self.vote_management_graph.add_edge((pattern_node, i))
+        for i in range(self.required_winners):        
+            self.vote_management_graph.add_edge((i, "sink"))
     
     def __generate_completion_patterns__(self):
         self.completion_patterns = []

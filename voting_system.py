@@ -33,9 +33,10 @@ class VotingSystem(object):
         
     def results(self):
         results = {
-            "winners": self.winners,
             "candidates": self.candidates
         }
+        if hasattr(self, 'winners'):
+            results["winners"] = self.winners
         if hasattr(self.tie_breaker, 'random_ordering'):
             results["tie_breaker"] = self.tie_breaker.random_ordering
         return results

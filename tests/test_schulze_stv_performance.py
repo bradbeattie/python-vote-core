@@ -34,7 +34,7 @@ class TestSchulzeSTV(unittest.TestCase):
         
         # Run tests
         print "10 candidates 5 winners took %d seconds" % (time.time() - startTime)
-        self.assert_(time.time() - startTime < 1)
+        self.assert_(time.time() - startTime < 2)
         
     # This test looks at few graph notes, but large completion patterns. With
     # 10 candidates and 9 winners, we're looking at 3^9 (19683) patterns to
