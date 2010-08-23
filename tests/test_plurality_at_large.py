@@ -27,11 +27,11 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c1", "c3"] },
             { "count":23, "ballot":["c2", "c3"] }
         ]
-        plurality_at_large = PluralityAtLarge(input, 2)
-        output = plurality_at_large.results()
+        output = PluralityAtLarge(input, 2).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'tallies': {'c3': 45, 'c2': 49, 'c1': 48},
             'winners': set(['c2', 'c1'])
         })
@@ -47,11 +47,11 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":22, "ballot":["c2", "c3"] },
             { "count":11, "ballot":["c4", "c5"] }
         ]
-        plurality_at_large = PluralityAtLarge(input, 2)
-        output = plurality_at_large.results()
+        output = PluralityAtLarge(input, 2).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3', 'c4', 'c5']),
             'tallies': {'c3': 44, 'c2': 48, 'c1': 48, 'c5': 11, 'c4': 11},
             'winners': set(['c2', 'c1'])
         })
@@ -68,15 +68,14 @@ class TestPluralityAtLarge(unittest.TestCase):
             { "count":4, "ballot":["c4", "c1"] },
             { "count":8, "ballot":["c3", "c4"] },
         ]
-        plurality_at_large = PluralityAtLarge(input, 2)
-        output = plurality_at_large.results()
+        output = PluralityAtLarge(input, 2).results()
 
         # Run tests
         self.assertEqual(output["tallies"], {'c3': 52, 'c2': 52, 'c1': 56, 'c4': 12})
         self.assertEqual(len(output["tie_breaker"]), 4)
         self.assertEqual(output["tied_winners"], set(['c2','c3']))
         self.assert_("c1" in output["winners"] and ("c2" in output["winners"] or "c3" in output["winners"]))
-        self.assertEqual(len(output), 4)
+        self.assertEqual(len(output), 5)
 
 
 if __name__ == "__main__":

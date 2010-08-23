@@ -27,11 +27,11 @@ class TestPlurality(unittest.TestCase):
             { "count":22, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        plurality = Plurality(input)
-        output = plurality.results()
+        output = Plurality(input).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
             'winners': set(['c1'])
         })
@@ -45,11 +45,11 @@ class TestPlurality(unittest.TestCase):
             { "count":22, "ballot":["c2"] },
             { "count":23, "ballot":["c3"] }
         ]
-        plurality_at_large = Plurality(input)
-        output = plurality_at_large.results()
+        output = Plurality(input).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
             'winners': set(['c1'])
         })
@@ -63,11 +63,11 @@ class TestPlurality(unittest.TestCase):
             { "count":23, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        plurality = Plurality(input)
-        output = plurality.results()
+        output = Plurality(input).results()
 
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'tallies': {'c3': 23, 'c2': 23, 'c1': 26},
             'winners': set(['c1'])
         })
@@ -82,8 +82,7 @@ class TestPlurality(unittest.TestCase):
             { "count":26, "ballot":"c2" },
             { "count":23, "ballot":"c3" }
         ]
-        plurality = Plurality(input)
-        output = plurality.results()
+        output = Plurality(input).results()
         
         # Run tests
         self.assertEqual(output["tallies"], {'c1':26, 'c2':26, 'c3':23})

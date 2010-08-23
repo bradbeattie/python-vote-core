@@ -32,11 +32,12 @@ class SchulzePR(SchulzeSTV):
         remaining_candidates = self.candidates.copy()
         self.proportional_ranking = []
         
-        limit = self.required_winners
-        if limit == None:
-            limit = len(self.candidates)
+        if self.required_winners == None:
+            required_winners = len(self.candidates)
+        else:
+            required_winners = min(len(self.candidates), self.required_winners + 1)
 
-        for self.required_winners in range(1, limit):
+        for self.required_winners in range(1, required_winners):
             self.__generate_completion_patterns__()
             self.__generate_completed_patterns__()
             self.__generate_vote_management_graph__()
@@ -59,7 +60,8 @@ class SchulzePR(SchulzeSTV):
             self.proportional_ranking.append(list(self.winners)[0])
             remaining_candidates -= self.winners
         
-        self.proportional_ranking.append(list(remaining_candidates)[0])
+        if required_winners == len(self.candidates):
+            self.proportional_ranking.append(list(remaining_candidates)[0])
         
         if hasattr(self, 'tied_winners'):
             del self.tied_winners

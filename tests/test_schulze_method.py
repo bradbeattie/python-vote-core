@@ -30,8 +30,7 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
             { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
         ]
-        ranked_pairs = SchulzeMethod(input, "grouping")
-        output = ranked_pairs.results()
+        output = SchulzeMethod(input, "grouping").results()
 
         # Run tests
         self.assertEqual(output, {
@@ -59,11 +58,11 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('A', 'B'): 16,
             },
             'actions': [
-                ('edges', set([('A', 'B')])),
-                ('edges', set([('A', 'C')])),
-                ('nodes', set(['A'])),
-                ('edges', set([('B', 'C')])),
-                ('nodes', set(['B', 'D']))
+                {'edges': set([('A', 'B')])},
+                {'edges': set([('A', 'C')])},
+                {'nodes': set(['A'])},
+                {'edges': set([('B', 'C')])},
+                {'nodes': set(['B', 'D'])}
             ],
             'winners': set(['C'])
         })
@@ -83,8 +82,7 @@ class TestSchulzeMethod(unittest.TestCase):
             { "count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]] },
             { "count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]] }
         ]
-        ranked_pairs = SchulzeMethod(input, "grouping")
-        output = ranked_pairs.results()
+        output = SchulzeMethod(input, "grouping").results()
         
         # Run tests
         self.assertEqual(output, {
@@ -124,9 +122,9 @@ class TestSchulzeMethod(unittest.TestCase):
                 ('E', 'A'): 23
             },
             'actions': [
-                ('edges', set([('E', 'A')])),
-                ('edges', set([('C', 'E')])),
-                ('nodes', set(['A', 'C', 'B', 'D']))
+                {'edges': set([('E', 'A')])},
+                {'edges': set([('C', 'E')])},
+                {'nodes': set(['A', 'C', 'B', 'D'])}
             ],
             'winners': set(['E'])
         })

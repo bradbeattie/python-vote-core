@@ -18,9 +18,9 @@ from plurality import Plurality
 from plurality_at_large import PluralityAtLarge
 from irv import IRV
 from stv import STV 
-from ranked_pairs import RankedPairs
 from schulze_method import SchulzeMethod
 from schulze_stv import SchulzeSTV
+from schulze_pr import SchulzePR
 import json, types, StringIO, traceback
 
 # This class provides a basic server to listen for JSON requests. It then
@@ -74,12 +74,12 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
                 system = IRV(request["ballots"], request["winners"])
             elif request["voting_system"] == "stv":
                 system = STV(request["ballots"], request["winners"])
-            elif request["voting_system"] == "ranked_pairs":
-                system = RankedPairs(request["ballots"], request["notation"])
             elif request["voting_system"] == "schulze_method":
                 system = SchulzeMethod(request["ballots"], request["notation"])
             elif request["voting_system"] == "schulze_stv":
                 system = SchulzeSTV(request["ballots"], request["winners"], request["notation"])
+            elif request["voting_system"] == "schulze_pr":
+                system = SchulzePR(request["ballots"], request["winners"], request["notation"])
             else:
                 raise Exception("No voting system specified")
             response = system.results()
@@ -98,6 +98,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             
         finally:
+            print response
             response = json.dumps(self.__simplify_object__(response))
             self.send_header("Content-type", "application/json")
             self.send_header("Content-length", str(len(response)))

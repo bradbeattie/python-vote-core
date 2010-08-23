@@ -43,7 +43,6 @@ class PluralityAtLarge(VotingSystem):
         
         # Sum up all votes for each candidate
         self.tallies = PluralityAtLarge.tallies(self.ballots)
-        self.candidates = self.tallies.keys()
         tallies = copy.deepcopy(self.tallies)
         
         # Determine which candidates win

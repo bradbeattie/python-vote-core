@@ -27,11 +27,11 @@ class TestSTV(unittest.TestCase):
             { "count":40, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        stv = STV(input, 2)
-        output = stv.results()
+        output = STV(input, 2).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1', 'c2', 'c3']),               
             'quota': 39,
             'rounds': [{
                 'tallies': {'c3': 20.0, 'c2': 40.0, 'c1': 56.0},
@@ -49,11 +49,11 @@ class TestSTV(unittest.TestCase):
             { "count":40, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        stv = STV(input, 3)
-        output = stv.results()
+        output = STV(input, 3).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1', 'c2', 'c3']),
             'quota': 30,
             'winners': set(['c1', 'c2', 'c3'])
         })
@@ -71,11 +71,11 @@ class TestSTV(unittest.TestCase):
             { "count":1, "ballot":["strawberry"] },
             { "count":1, "ballot":["sweets"] }
         ]
-        stv = STV(input, 3)
-        output = stv.results()
+        output = STV(input, 3).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['orange','pear','chocolate','strawberry','sweets']),
             'quota': 6,
             'rounds': [
                 {'tallies': {'orange': 4.0, 'strawberry': 1.0, 'pear': 2.0, 'sweets': 1.0, 'chocolate': 12.0},'winners': set(['chocolate'])},

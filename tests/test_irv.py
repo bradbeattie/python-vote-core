@@ -27,11 +27,11 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":23, "ballot":["c3", "c1", "c2"] }
         ]
-        stv = IRV(input)
-        output = stv.results()
+        output = IRV(input).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'quota': 35,
             'winners': set(['c3']),
             'rounds': [
@@ -50,8 +50,7 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        stv = IRV(input)
-        output = stv.results()
+        output = IRV(input).results()
         
         # Run tests
         self.assertEqual(output["quota"], 34)
@@ -74,11 +73,11 @@ class TestInstantRunoff(unittest.TestCase):
             { "count":20, "ballot":["c2", "c3", "c1"] },
             { "count":20, "ballot":["c3", "c1", "c2"] }
         ]
-        stv = IRV(input)
-        output = stv.results()
+        output = IRV(input).results()
         
         # Run tests
         self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3']),
             'quota': 49,
             'winners': set(['c1']),
             'rounds': [{

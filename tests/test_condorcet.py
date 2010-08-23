@@ -28,8 +28,7 @@ class TestCondorcet(unittest.TestCase):
             { "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
             { "count":27, "ballot":[["Brad"]] },
         ]
-        condorcet_system = CondorcetSystem(input, "grouping")
-        output = condorcet_system.results()
+        output = CondorcetSystem(input, "grouping").results()
             
         # Run tests
         self.assertEqual(output, {
@@ -60,8 +59,7 @@ class TestCondorcet(unittest.TestCase):
             { "count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3} },
             { "count":27, "ballot":{"Brad":1} }
         ]
-        condorcet_system = CondorcetSystem(input, "ranking")
-        output = condorcet_system.results()
+        output = CondorcetSystem(input, "ranking").results()
 
                     
         # Run tests
@@ -93,8 +91,7 @@ class TestCondorcet(unittest.TestCase):
             { "count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3} },
             { "count":27, "ballot":{"Brad":10} }
         ]
-        condorcet_system = CondorcetSystem(input, "rating")
-        output = condorcet_system.results()
+        output = CondorcetSystem(input, "rating").results()
 
                     
         # Run tests

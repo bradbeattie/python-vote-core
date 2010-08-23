@@ -47,8 +47,7 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":24, "ballot":[["e"], ["c"], ["a"], ["d"], ["b"]] },
             { "count":3,  "ballot":[["e"], ["d"], ["c"], ["b"], ["a"]] },
         ]
-        schulze_stv = SchulzeSTV(input, 3, "grouping")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 3, "grouping").results()
         
         # Run tests
         self.assertEqual(output['winners'], set(['a', 'd', 'e']))
@@ -64,17 +63,16 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
             { "count":27, "ballot":[["Brad"]] },
         ]
-        schulze_stv = SchulzeSTV(input, 2, "grouping")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 2, "grouping").results()
         
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [
-                ('edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])),
-                ('nodes', set([('Brad', 'Carter')])),
-                ('edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])),
-                ('nodes', set([('Andrea', 'Carter')]))
+                {'edges': set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])},
+                {'nodes': set([('Brad', 'Carter')])},
+                {'edges': set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])},
+                {'nodes': set([('Andrea', 'Carter')])}
             ],
             'winners': set(['Andrea', 'Brad'])
         })
@@ -90,17 +88,16 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
             { "count":27, "ballot":[["Brad"]] },
         ]
-        schulze_stv = SchulzeSTV(input, 2, "grouping")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 2, "grouping").results()
         
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Carter', 'Brad', 'Andrea']),
             'actions': [
-                ('edges', set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])),
-                ('nodes', set([('Brad', 'Carter')])),
-                ('edges', set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])),
-                ('nodes', set([('Andrea', 'Carter')]))
+                {'edges': set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])},
+                {'nodes': set([('Brad', 'Carter')])},
+                {'edges': set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])},
+                {'nodes': set([('Andrea', 'Carter')])}
             ],
             'winners': set(['Andrea', 'Brad'])
         })
@@ -112,8 +109,7 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             { "count":1, "ballot":{"a":1, "b":1, "c":3}}
         ]
-        schulze_stv = SchulzeSTV(input, 1, "rating")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 1, "rating").results()
         
         # Run tests
         self.assertEqual(output['winners'], set(["c"]))
@@ -126,19 +122,18 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             { "count":1, "ballot":{"Metal":1, "Paper":1, "Plastic":2, "Wood":2 }},
         ]
-        schulze_stv = SchulzeSTV(input, 2, "ranking")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 2, "ranking").results()
         
         # Run tests
         self.assertEqual(output, {
             'candidates': set(['Paper', 'Wood', 'Metal', 'Plastic']),
-            'actions': [('nodes', set([
+            'actions': [{'nodes': set([
                 ('Paper', 'Plastic'),
                 ('Metal', 'Plastic'),
                 ('Paper', 'Wood'),
                 ('Metal', 'Wood'),
                 ('Plastic', 'Wood')
-            ]))],
+            ])}],
             'winners': set(['Paper', 'Metal'])
         })
     
@@ -151,19 +146,18 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":1, "ballot":{"Metal":2, "Paper":1, "Plastic":2, "Wood":2 }},
             { "count":1, "ballot":{"Metal":2, "Paper":2, "Plastic":2, "Wood":1 }}
         ]
-        schulze_stv = SchulzeSTV(input, 2, "ranking")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 2, "ranking").results()
         
         # Run tests
         self.assertEqual(output, {
             "candidates": set(['Metal', 'Wood', 'Plastic', 'Paper']),
-            "actions": [('nodes', set([
+            "actions": [{'nodes': set([
                 ('Paper', 'Plastic'),
                 ('Metal', 'Plastic'),
                 ('Metal', 'Paper'),
                 ('Plastic', 'Wood'),
                 ('Metal', 'Wood')
-            ]))],
+            ])}],
             "winners": set(['Paper', 'Wood']),
         })      
 
@@ -176,8 +170,7 @@ class TestSchulzeSTV(unittest.TestCase):
             { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9 }},
             { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9 }}
         ]
-        schulze_stv = SchulzeSTV(input, 2, "ranking")
-        output = schulze_stv.results()
+        output = SchulzeSTV(input, 2, "ranking").results()
         
         # Run tests
         self.assertEqual(output["tied_winners"],

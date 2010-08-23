@@ -47,13 +47,13 @@ class SchulzeMethod(CondorcetSystem):
 
             # Remove nodes at the end of non-cycle paths
             if len(candidates_to_remove) > 0:
-                self.actions.append(('nodes', candidates_to_remove))
+                self.actions.append({'nodes': candidates_to_remove})
                 for candidate in candidates_to_remove:
                     self.graph.del_node(candidate)
 
             # If none exist, remove the weakest edges
             else:
                 edge_weights = self.edge_weights(self.graph)
-                self.actions.append(('edges', self.matching_keys(edge_weights, min(edge_weights.values()))))
-                for edge in self.actions[-1][1]:
+                self.actions.append({'edges': self.matching_keys(edge_weights, min(edge_weights.values()))})
+                for edge in self.actions[-1]["edges"]:
                     self.graph.del_edge(edge)
