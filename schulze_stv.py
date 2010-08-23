@@ -17,7 +17,7 @@
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
 from schulze_method import SchulzeMethod
-import types
+from voting_system import VotingSystem
 import itertools
 
 class SchulzeSTV(SchulzeMethod):
@@ -26,24 +26,7 @@ class SchulzeSTV(SchulzeMethod):
         self.required_winners = required_winners
         SchulzeMethod.__init__(self, ballots, notation)
         
-    def results(self):
-        results = {
-            "candidates": self.candidates,
-            "winners": self.winners
-        }
-        if hasattr(self, 'actions'):
-            results["actions"] = self.actions
-        if hasattr(self, 'tied_winners'):
-            results["tied_winners"] = self.tied_winners
-            results["tie_breaker"] = self.tie_breaker
-        return results
-        
     def calculate_results(self):
-        
-        # Return the winners if everyone wins
-        if self.required_winners == len(self.candidates):
-            self.winners = self.candidates
-            return
         
         # Generate the list of patterns we need to complete
         self.__generate_completion_patterns__()
@@ -84,9 +67,11 @@ class SchulzeSTV(SchulzeMethod):
         # Determine the winner through the Schwartz set heuristic
         self.schwartz_set_heuristic()
         self.graph_winner()
-        if type(list(self.winners)[0]) == types.TupleType:
-            self.winners = set([item for innerlist in self.winners for item in innerlist])
-
+        self.winners = set([item for innerlist in self.winners for item in innerlist])
+        
+    def results(self):
+        results = SchulzeMethod.results(self)
+        return results
     
     def __generate_completion_patterns__(self):
         self.completion_patterns = []

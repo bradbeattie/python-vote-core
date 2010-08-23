@@ -29,7 +29,7 @@ class SchulzeMethod(CondorcetSystem):
             self.graph_winner()
 
     def results(self):
-        results = super(SchulzeMethod,self).results()
+        results = CondorcetSystem.results(self)
         if hasattr(self, 'actions'):
             results["actions"] = self.actions
         return results

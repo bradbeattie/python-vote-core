@@ -20,17 +20,21 @@ class VotingSystem(object):
     required_winners = 1
 
     def __init__(self):
+        self.tie_breaker = TieBreaker(self.candidates)
         if len(self.candidates) < self.required_winners:
             raise Exception("Insufficient candidates to meet produce sufficient winners")
-        self.tie_breaker = TieBreaker(self.candidates)
-        self.calculate_results()
+        elif len(self.candidates) == self.required_winners:
+            self.winners = self.candidates
+        else:
+            self.calculate_results()
         
     def calculate_results(self):
         pass
         
     def results(self):
         results = {
-            "winners": self.winners
+            "winners": self.winners,
+            "candidates": self.candidates
         }
         if hasattr(self.tie_breaker, 'random_ordering'):
             results["tie_breaker"] = self.tie_breaker.random_ordering

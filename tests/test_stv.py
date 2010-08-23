@@ -55,8 +55,6 @@ class TestSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output, {
             'quota': 30,
-            'rounds': [],
-            'remaining_candidates': set(['c1', 'c2', 'c3']),
             'winners': set(['c1', 'c2', 'c3'])
         })
 

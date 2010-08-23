@@ -32,12 +32,13 @@ class CondorcetSystem(VotingSystem):
         self.graph_winner()
 
     def results(self):
-        results = {
-            "candidates": self.candidates,
-            "pairs": self.pairs,
-            "strong_pairs": self.strong_pairs,
-            "winners": self.winners,
-        }
+        results = VotingSystem.results(self)
+        if hasattr(self, 'pairs'):
+            results["pairs"] = self.pairs
+        if hasattr(self, 'strong_pairs'):
+            results["strong_pairs"] = self.strong_pairs
+        if hasattr(self, 'tied_winners'):
+            results["tied_winners"] = self.tied_winners
         return results
     
     def graph_winner(self):

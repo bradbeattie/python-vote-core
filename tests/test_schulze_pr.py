@@ -22,7 +22,6 @@ class TestSchulzePR(unittest.TestCase):
     # and Vote Management under Proportional Representation by the Single
     # Transferable Vote, section 6.2). 
     def test_part_2_of_5_example(self):
-        return
     
         # Generate data
         input = [
