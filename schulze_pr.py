@@ -25,12 +25,14 @@ class SchulzePR(SchulzeSTV):
     def results(self):
         results = SchulzeSTV.results(self)
         results["proportional_ranking"] = self.proportional_ranking
+        results["rounds"] = self.rounds
         return results
         
     def calculate_results(self):
         
         remaining_candidates = self.candidates.copy()
         self.proportional_ranking = []
+        self.rounds = []
         
         if self.required_winners == None:
             required_winners = len(self.candidates)
@@ -38,6 +40,8 @@ class SchulzePR(SchulzeSTV):
             required_winners = min(len(self.candidates), self.required_winners + 1)
 
         for self.required_winners in range(1, required_winners):
+            
+            # Generate the list of patterns we need to complete
             self.__generate_completion_patterns__()
             self.__generate_completed_patterns__()
             self.__generate_vote_management_graph__()
@@ -45,7 +49,10 @@ class SchulzePR(SchulzeSTV):
             # Generate the edges between nodes
             self.graph = digraph()
             self.graph.add_nodes(remaining_candidates)
+            self.winners = set([])
+            self.tied_winners = set([])
             
+            # Generate the edges between nodes
             for candidate_from in remaining_candidates:
                 other_candidates = sorted(list(remaining_candidates - set([candidate_from])))
                 for candidate_to in other_candidates:
@@ -54,13 +61,20 @@ class SchulzePR(SchulzeSTV):
                     if weight > 0:
                         self.graph.add_edge((candidate_to, candidate_from), weight)
             
-            
+            # Determine the round winner through the Schwartz set heuristic
             self.schwartz_set_heuristic()
             self.graph_winner()
+            
+            # Extract the winner and adjust the remaining candidates list
             self.proportional_ranking.append(list(self.winners)[0])
+            round = {"winner": list(self.winners)[0]}
+            if len(self.tied_winners) > 0:
+                round["tied_winners"] = self.tied_winners
+            self.rounds.append(round)
             remaining_candidates -= self.winners
         
         if required_winners == len(self.candidates):
+            self.rounds.append({"winner": list(remaining_candidates)[0]})
             self.proportional_ranking.append(list(remaining_candidates)[0])
         
         if hasattr(self, 'tied_winners'):

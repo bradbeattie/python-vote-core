@@ -30,13 +30,12 @@ class SchulzeSTV(SchulzeMethod):
         # Generate the list of patterns we need to complete
         self.__generate_completion_patterns__()
         self.__generate_completed_patterns__()
+        self.__generate_vote_management_graph__()
     
         # Build the graph of possible winners
         self.graph = digraph()
         for candidate_set in itertools.combinations(self.candidates, self.required_winners):
             self.graph.add_nodes([tuple(sorted(list(candidate_set)))])
-
-        self.__generate_vote_management_graph__()
         
         # Generate the edges between nodes
         for candidate_set in itertools.combinations(self.candidates, self.required_winners + 1):
@@ -51,6 +50,8 @@ class SchulzeSTV(SchulzeMethod):
         # Determine the winner through the Schwartz set heuristic
         self.schwartz_set_heuristic()
         self.graph_winner()
+        
+        # Split the "winner" into its candidate components
         self.winners = set([item for innerlist in self.winners for item in innerlist])
         
     def results(self):

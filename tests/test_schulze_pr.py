@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from schulze_pr import SchulzePR
-import time
 import unittest
 
 class TestSchulzePR(unittest.TestCase):
@@ -43,9 +42,31 @@ class TestSchulzePR(unittest.TestCase):
         self.assertEqual(output, {
             "candidates": set(["a","b","c","d","e"]),
             "proportional_ranking": ["e","c","a","b","d"],
+            'rounds': [
+                {'winner': 'e'},
+                {'winner': 'c'},
+                {'winner': 'a'},
+                {'winner': 'b'},
+                {'winner': 'd'}
+            ],
         })
 
+    def test_ties(self):
     
+        # Generate data
+        input = [
+            { "count": 1, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]] },
+            { "count": 1, "ballot":[["d"], ["a"], ["e"], ["c"], ["b"]] },
+        ]
+        output = SchulzePR(input, notation = "grouping").results()
+
+        # Run tests
+        self.assertEqual(output["candidates"], set(["a","b","c","d","e"]))
+        self.assertEqual(len(output["tie_breaker"]), 5)
+        self.assertEqual(output["rounds"][0]["tied_winners"], set(['a','d']))
+        self.assertEqual(output["rounds"][2]["tied_winners"], set(['c','b', 'e']))
+        self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
+
     def test_happenstance_example(self):
     
         # Generate data
@@ -60,41 +81,11 @@ class TestSchulzePR(unittest.TestCase):
         self.assertEqual(output, {
             "candidates": set(["A","B","C","D","E","F"]),
             "proportional_ranking": ["B","C"],
+            "rounds": [
+                {'winner': 'B'},
+                {'winner': 'C'}
+            ],
         })
-
-    # This test considers a case that SchulzeSTV starts to choke on due to the
-    # potential number of nodes and edges to consider.
-    def test_10_candidates_5_winners(self):
-        return
-
-        # Generate data
-        startTime = time.time()
-        input = [
-            { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
-            { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
-            { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
-        ]
-        SchulzePR(input, required_winners = 5, notation = "ranking").results()
-        
-        # Run tests
-        self.assert_(time.time() - startTime < 2)
-        
-    # This test considers a case that SchulzeSTV starts to choke on due to the
-    # potential size of the completion patterns
-    def test_10_candidates_9_winners(self):
-        return
-    
-        # Generate data
-        startTime = time.time()
-        input = [
-            { "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2, "G":9, "H":9, "I":9, "J":9 }},
-            { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
-            { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
-        ]
-        SchulzePR(input, required_winners = 9, notation = "ranking").results()
-        
-        # Run tests
-        self.assert_(time.time() - startTime < 4)
         
 if __name__ == "__main__":
     unittest.main()
