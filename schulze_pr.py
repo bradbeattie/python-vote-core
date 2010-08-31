@@ -63,7 +63,6 @@ class SchulzePR(SchulzeSTV):
             
             # Determine the round winner through the Schwartz set heuristic
             self.schwartz_set_heuristic()
-            self.graph_winner()
             
             # Extract the winner and adjust the remaining candidates list
             self.proportional_ranking.append(list(self.winners)[0])
@@ -73,10 +72,12 @@ class SchulzePR(SchulzeSTV):
             self.rounds.append(round)
             remaining_candidates -= self.winners
         
+        # Attach the last candidate as the sole winner if necessary
         if required_winners == len(self.candidates):
             self.rounds.append({"winner": list(remaining_candidates)[0]})
             self.proportional_ranking.append(list(remaining_candidates)[0])
         
+        # Remove attributes that only pertain to individual rounds
         if hasattr(self, 'tied_winners'):
             del self.tied_winners
         del self.winners

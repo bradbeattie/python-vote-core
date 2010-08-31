@@ -14,9 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # This class implements Schulze STV, a proportional representation system
+from schulze_method import SchulzeMethod
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
-from schulze_method import SchulzeMethod
 import itertools
 
 class SchulzeSTV(SchulzeMethod):
@@ -49,7 +49,6 @@ class SchulzeSTV(SchulzeMethod):
 
         # Determine the winner through the Schwartz set heuristic
         self.schwartz_set_heuristic()
-        self.graph_winner()
         
         # Split the "winner" into its candidate components
         self.winners = set([item for innerlist in self.winners for item in innerlist])

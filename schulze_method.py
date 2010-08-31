@@ -26,7 +26,6 @@ class SchulzeMethod(CondorcetSystem):
         CondorcetSystem.calculate_results(self)
         if hasattr(self, 'winners') == False:
             self.schwartz_set_heuristic()
-            self.graph_winner()
 
     def results(self):
         results = CondorcetSystem.results(self)
@@ -57,3 +56,5 @@ class SchulzeMethod(CondorcetSystem):
                 self.actions.append({'edges': self.matching_keys(edge_weights, min(edge_weights.values()))})
                 for edge in self.actions[-1]["edges"]:
                     self.graph.del_edge(edge)
+        
+        self.graph_winner()
