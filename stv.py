@@ -34,15 +34,25 @@ class STV(VotingSystem):
     def calculate_results(self):
         self.rounds = []
         self.winners = set()
+        quota = self.quota
         remaining_candidates = copy.deepcopy(self.candidates)
         ballots = copy.deepcopy(self.ballots)
         
         # Loop until we have enough candidates
         while len(self.winners) < self.required_winners and len(remaining_candidates) + len(self.winners) > self.required_winners:
             
+            # If all the votes have been used up, start from scratch for the remaining candidates
+            round = {}
+            if len(filter(lambda ballot: ballot["count"] > 0, ballots)) == 0:
+                round["note"] = "reset"
+                ballots = copy.deepcopy(self.ballots)
+                for ballot in ballots:
+                    ballot["ballot"] = filter(lambda x: x in remaining_candidates, ballot["ballot"])
+                quota = STV.droop_quota(ballots, self.required_winners - len(self.winners))
+            
             # If any candidates meet or exceeds the quota, they're a winner
-            round = {"tallies": STV.tallies(ballots)}
-            if max(round["tallies"].values()) >= self.quota:
+            round["tallies"] = STV.tallies(ballots)
+            if max(round["tallies"].values()) >= quota:
                 
                 # Collect candidates as winners
                 round["winners"] = set([
@@ -99,22 +109,21 @@ class STV(VotingSystem):
         for ballot in ballots:
             if len(ballot["ballot"]) > 0:
                 tallies[ballot["ballot"][0]] += ballot["count"]
-        return tallies
+        return dict((candidate,votes) for (candidate,votes) in tallies.iteritems() if votes > 0) 
     
     @staticmethod
     def viable_candidates(ballots):
-        return set([
-            ballot["ballot"][0]
-            for ballot in ballots
-            if len(ballot["ballot"]) > 0
-        ])
+        candidates = set([])
+        for ballot in ballots:
+            candidates |= set(ballot["ballot"])
+        return candidates
     
     @staticmethod
     def droop_quota(ballots, seats = 1):
-        quota = 0;
+        voters = 0;
         for ballot in ballots:
-            quota += ballot["count"]
-        return int(math.floor(quota / (seats + 1)) + 1)
+            voters += ballot["count"]
+        return int(math.floor(voters / (seats + 1)) + 1)
 
     def results(self):
         results = VotingSystem.results(self)

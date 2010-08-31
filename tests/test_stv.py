@@ -86,7 +86,48 @@ class TestSTV(unittest.TestCase):
             'remaining_candidates': set(['strawberry']),
             'winners': set(['orange', 'strawberry', 'chocolate'])
         })
-
+        
+    # STV, no rounds
+    def test_stv_single_ballot(self):
+        
+        # Generate data
+        input = [
+            { "count":1, "ballot":["c1", "c2", "c3", "c4"] },
+        ]
+        output = STV(input, 3).results()
+        
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3','c4']),
+            'quota': 1,
+            'rounds': [
+                {'tallies': {'c1': 1.0}, 'winners': set(['c1'])},
+                {'note': 'reset', 'tallies': {'c2': 1.0}, 'winners': set(['c2'])},
+                {'note': 'reset', 'tallies': {'c3': 1.0}, 'winners': set(['c3'])}
+            ],
+            'winners': set(['c1', 'c2', 'c3'])
+        })        
+        
+    # STV, no rounds
+    def test_stv_fewer_voters_than_winners(self):
+        
+        # Generate data
+        input = [
+            { "count":1, "ballot":["c1", "c3", "c4"] },
+            { "count":1, "ballot":["c2", "c3", "c4"] },
+        ]
+        output = STV(input, 3).results()
+        
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['c1','c2','c3','c4']),
+            'quota': 1,
+            'rounds': [
+                {'tallies': {'c2': 1.0, 'c1': 1.0}, 'winners': set(['c2', 'c1'])},
+                {'note': 'reset', 'tallies': {'c3': 2.0}, 'winners': set(['c3'])}
+            ],
+            'winners': set(['c1', 'c2', 'c3'])
+        })
 
 if __name__ == "__main__":
     unittest.main()
