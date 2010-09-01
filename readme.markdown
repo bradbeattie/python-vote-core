@@ -16,9 +16,9 @@ available.
 * Plurality at large (aka block voting)
 * Instant-Runoff Voting (aka IRV)
 * Single Transferable Vote (aka STV)
-* Ranked Pairs (aka Tideman)
 * Schulze Method (aka Beatpath)
 * Schulze STV
+* Schulze Proportional Representation
 
 ## Installation
   
