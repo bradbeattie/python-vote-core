@@ -21,6 +21,8 @@ import itertools
 
 class SchulzeSTV(SchulzeMethod):
     
+    compute_vote_management_with_pygraph = False
+    
     def __init__(self, ballots, required_winners, notation = None):
         self.required_winners = required_winners
         SchulzeMethod.__init__(self, ballots, notation)
@@ -58,6 +60,7 @@ class SchulzeSTV(SchulzeMethod):
         return results
     
     def __generate_vote_management_graph__(self):
+        if self.compute_vote_management_with_pygraph == False: return
         self.vote_management_graph = digraph()
         self.vote_management_graph.add_nodes(self.completed_patterns)
         self.vote_management_graph.del_node(tuple([3]*self.required_winners))
@@ -171,21 +174,107 @@ class SchulzeSTV(SchulzeMethod):
     # the calculation of the strengths of the vote managements.").
     def __strength_of_vote_management__(self, voter_profile):
         
-        # Initialize the graph weights
-        for pattern in self.pattern_nodes:
-            self.vote_management_graph.set_edge_weight(("source", pattern), voter_profile[pattern])
-            for i in range(self.required_winners):
-                if pattern[i] == 1:
-                    self.vote_management_graph.set_edge_weight((pattern, i), voter_profile[pattern])
+        # This implementation uses Python Graph Core and requires less code, but
+        # runs roughly 2-3x slower than our internal implementation
+        if self.compute_vote_management_with_pygraph:
+            
+            # Initialize the graph weights
+            for pattern in self.pattern_nodes:
+                self.vote_management_graph.set_edge_weight(("source", pattern), voter_profile[pattern])
+                for i in range(self.required_winners):
+                    if pattern[i] == 1:
+                        self.vote_management_graph.set_edge_weight((pattern, i), voter_profile[pattern])
+            
+            # Iterate towards the limit
+            r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*self.required_winners)]) / self.required_winners]
+            while len(r) < 2 or r[-2] - r[-1] > 0.0000000001:
+                for i in range(self.required_winners):
+                    self.vote_management_graph.set_edge_weight((i, "sink"), r[-1])
+                max_flow = maximum_flow(self.vote_management_graph, "source", "sink")
+                sink_sum = sum(v for k,v in max_flow[0].iteritems() if k[1] == "sink")
+                r.append(sink_sum/self.required_winners)
+            
+            # Return the final max flow
+            return round(r[-1],9)
         
-        # Iterate towards the limit
-        r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*self.required_winners)]) / self.required_winners]
-        while len(r) < 2 or r[-2] - r[-1] > 0.0000000001:
-            for i in range(self.required_winners):
-                self.vote_management_graph.set_edge_weight((i, "sink"), r[-1])
-            max_flow = maximum_flow(self.vote_management_graph, "source", "sink")
-            sink_sum = sum(v for k,v in max_flow[0].iteritems() if k[1] == "sink")
-            r.append(sink_sum/self.required_winners)
-        
-        # Return the final max flow
-        return round(r[-1],9)
+        # This implementation generates a capacity matrix and iterates on it
+        # using a custom-written Edmonds-Karp implementation. It'd be nice to
+        # speed up the Python Graph Core implementation and scrap this section,
+        # along with the two accompanying methods. 
+        else:
+            number_of_candidates = len(voter_profile.keys()[0])
+            number_of_patterns = len(voter_profile) - 1
+            number_of_nodes = 1 + number_of_patterns + number_of_candidates + 1
+            ordered_patterns = sorted(voter_profile.keys())
+            ordered_patterns.remove(tuple([3]*number_of_candidates))
+            
+            r = [(float(sum(voter_profile.values())) - voter_profile[tuple([3]*number_of_candidates)]) / number_of_candidates]
+            
+            # Generate a number_of_nodes x number_of_nodes matrix of zeroes
+            C = []
+            for i in range(number_of_nodes):
+                C.append([0] * number_of_nodes)
+                
+            # Source to voters
+            vertex = 0
+            for pattern in ordered_patterns:
+                C[0][vertex+1] = voter_profile[pattern]
+                vertex += 1
+    
+            # Voters to candidates
+            vertex = 0
+            for pattern in ordered_patterns:
+                for i in range(1,number_of_candidates + 1):
+                    if pattern[i-1] == 1:
+                        C[vertex+1][1 + number_of_patterns + i - 1] = voter_profile[pattern]
+                vertex += 1
+            
+            # Iterate towards the limit
+            while len(r) < 2 or r[-2] - r[-1] > 0.0000000001:
+                for i in range(number_of_candidates):
+                    C[1 + number_of_patterns + i][number_of_nodes - 1] = r[-1]
+                r.append(SchulzeSTV.__edmonds_karp__(C,0,number_of_nodes-1)/number_of_candidates)
+            return round(r[-1],9)
+    
+    # The Edmonds-Karp algorithm is an implementation of the Ford-Fulkerson
+    # method for computing the maximum flow in a flow network in O(VE^2).
+    #
+    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm
+    @staticmethod
+    def __edmonds_karp__(C, source, sink):
+        n = len(C) # C is the capacity matrix
+        F = [[0] * n for i in xrange(n)]
+        # residual capacity from u to v is C[u][v] - F[u][v]
+
+        while True:
+            path = SchulzeSTV.__bfs__(C, F, source, sink)
+            if not path:
+                break
+            # traverse path to find smallest capacity
+            flow = min(C[u][v] - F[u][v] for u,v in path)
+            # traverse path to update flow
+            for u,v in path:
+                F[u][v] += flow
+                F[v][u] -= flow
+                
+        return sum(F[source][i] for i in xrange(n))
+    
+    # In graph theory, breadth-first search (BFS) is a graph search algorithm
+    # that begins at the root node and explores all the neighboring nodes. Then
+    # for each of those nearest nodes, it explores their unexplored neighbor
+    # nodes, and so on, until it finds the goal.
+    #
+    # Sourced from http://semanticweb.org/wiki/Python_implementation_of_Edmonds-Karp_algorithm    
+    @staticmethod
+    def __bfs__(C, F, source, sink):
+        queue = [source]                 
+        paths = {source: []}
+        while queue:
+            u = queue.pop(0)
+            for v in xrange(len(C)):
+                if C[u][v] - F[u][v] > 0 and v not in paths:
+                    paths[v] = paths[u] + [(u,v)]
+                    if v == sink:
+                        return paths[v]
+                    queue.append(v)
+        return None

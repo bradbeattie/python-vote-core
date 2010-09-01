@@ -34,7 +34,7 @@ class TestSchulzePR(unittest.TestCase):
         SchulzePR(input, required_winners = 5, notation = "ranking").results()
         
         # Run tests
-        self.assert_(time.time() - startTime < 3)
+        self.assert_(time.time() - startTime < 1)
         
     # This test considers a case that SchulzeSTV starts to choke on due to the
     # potential size of the completion patterns
@@ -50,7 +50,7 @@ class TestSchulzePR(unittest.TestCase):
         SchulzePR(input, required_winners = 9, notation = "ranking").results()
         
         # Run tests
-        self.assert_(time.time() - startTime < 6)
+        self.assert_(time.time() - startTime < 2)
         
 if __name__ == "__main__":
     unittest.main()
