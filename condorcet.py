@@ -98,7 +98,12 @@ class CondorcetSystem(VotingSystem):
                 for candidate, rating in ballot["ballot"].iteritems():
                     ballot["ballot"][candidate] = -float(rating)
 
-        elif notation != "rating":
+        elif notation == "rating":
+            for ballot in ballots:
+                for candidate, rating in ballot["ballot"].iteritems():
+                    ballot["ballot"][candidate] = float(rating)
+        
+        else:
             raise Exception("Unknown notation specified")
         
         candidates = set()
