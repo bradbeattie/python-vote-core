@@ -80,6 +80,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
                 system = SchulzeSTV(request["ballots"], request["winners"], request["notation"])
             elif request["voting_system"] == "schulze_pr":
                 system = SchulzePR(request["ballots"], request["winners"], request["notation"])
+		if len(system.candidates) == system.required_winners: system.calculate_results()
             else:
                 raise Exception("No voting system specified")
             response = system.results()
