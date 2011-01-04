@@ -130,5 +130,31 @@ class TestSchulzeMethod(unittest.TestCase):
         })
 
 
+    def test_tiebreaker_bug(self):
+
+        # Generate data
+        input = [
+            { "count":1, "ballot":[["A"], ["B", "C"]] },
+            { "count":1, "ballot":[["B"], ["A"], ["C"]] },
+        ]
+        output = SchulzeMethod(input, "grouping").results()
+        
+        # Run tests
+        self.assertEqual(output['candidates'], set(['A', 'B', 'C']))
+        self.assertEqual(output['pairs'], {
+            ('A', 'B'): 1,
+            ('A', 'C'): 2,
+            ('B', 'A'): 1,
+            ('B', 'C'): 1,
+            ('C', 'A'): 0,
+            ('C', 'B'): 0,
+        })
+        self.assertEqual(output['strong_pairs'], {
+            ('A', 'C'): 2,
+            ('B', 'C'): 1,
+        })
+        self.assertEqual(output['tied_winners'], set(['A','B']))
+
+
 if __name__ == "__main__":
     unittest.main()

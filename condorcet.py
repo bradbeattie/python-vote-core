@@ -47,7 +47,7 @@ class CondorcetSystem(VotingSystem):
         if len(winning_candidates) == 1:
             self.winners = set([list(winning_candidates)[0]])
         elif len(winning_candidates) > 1:
-            self.tied_winners = set(self.graph.nodes())
+            self.tied_winners = winning_candidates
             self.winners = set([self.break_ties(winning_candidates)])
 
     @staticmethod
