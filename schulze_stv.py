@@ -127,12 +127,12 @@ class SchulzeSTV(SchulzeMethod):
 			append = False
 			append_target = []
 			for i in range(len(completion_pattern)):
-				if completion_pattern[i] != PREFERRED_SAME:
-					append_target.append(completion_pattern[i])
-				else:
+				if completion_pattern[i] == PREFERRED_SAME:
 					append_target.append(pattern[i])
-				if completion_pattern[i] == PREFERRED_SAME and pattern[i] != PREFERRED_SAME:
-					append = True
+					if pattern[i] != PREFERRED_SAME:
+						append = True
+				else:
+					append_target.append(completion_pattern[i])
 			if append == True:
 				append_target = tuple(append_target)
 				if append_target not in patterns_to_consider:
