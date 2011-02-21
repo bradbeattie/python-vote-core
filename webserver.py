@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+from SocketServer import ThreadingMixIn
 from plurality import Plurality
 from plurality_at_large import PluralityAtLarge
 from irv import IRV
@@ -23,16 +25,15 @@ from stv import STV
 from schulze_method import SchulzeMethod
 from schulze_stv import SchulzeSTV
 from schulze_pr import SchulzePR
-import json, types, StringIO, traceback
+import json, types, StringIO, traceback, re
 
 # This class provides a basic server to listen for JSON requests. It then
 # calculates the winner using the desired voting system and returns the results,
 # again, encoded in JSON.
-class ElectionRequestHandler(BaseHTTPRequestHandler):
-
+class ElectionWebServiceHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
-		response = '<html><body><h1>Election Web Service</h1><p>This server only responds to posts. Try sending something like this:</p><code>curl -d \'{"voting_system": "stv", "ballots": [{"count": 4, "ballot": ["orange"]}, {"count": 2, "ballot": ["pear", "orange"]}, {"count": 8, "ballot": ["chocolate", "strawberry"]}, {"count": 4, "ballot": ["chocolate", "sweets"]}, {"count": 1, "ballot": ["strawberry"]}, {"count": 1, "ballot": ["sweets"]}], "winners": 3}\' http://vote.cognitivesandbox.com; echo;</code><p>For further documentation, see <a href="http://github.com/bradbeattie/Election-Web-Service">the GitHub project page</a>.</p></body></html>'
+		response = '<html><body><h1>Election Web Service</h1><p>This server only responds to posts. Try sending something like this:</p><code>curl -d \'{"voting_system": "schulze_method", "notation": "ranking", "ballots": [{ "count":1, "ballot":{"A":1, "B":2, "C":3 }}, { "count":1, "ballot":{"A":1, "B":3, "C":2 }}, { "count":1, "ballot":{"A":3, "B":2, "C":1 }}]}\' http://vote.cognitivesandbox.com; echo;</code><p>For further documentation, see <a href="http://github.com/bradbeattie/Election-Web-Service">the GitHub project page</a>.</p></body></html>'
 		self.send_response(200)
 		self.send_header("Content-type", "text/html")
 		self.send_header("Content-length", str(len(response)))
@@ -43,7 +44,9 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 	def do_POST(self):
 		try:
 			# Parse the incoming data
-			request = json.loads(self.rfile.read(int(self.headers["content-length"])))
+			request_raw = self.rfile.read(int(self.headers["content-length"]))
+			request_raw = re.sub("\n", "", request_raw)
+			request = json.loads(request_raw)
 
 			# Assume we're looking for a single winner
 			if "winners" not in request:
@@ -82,7 +85,7 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 				system = SchulzeSTV(request["ballots"], request["winners"], request["notation"])
 			elif request["voting_system"] == "schulze_pr":
 				system = SchulzePR(request["ballots"], request["winners"], request["notation"])
-		if len(system.candidates) == system.required_winners: system.calculate_results()
+				if len(system.candidates) == system.required_winners: system.calculate_results()
 			else:
 				raise Exception("No voting system specified")
 			response = system.results()
@@ -130,9 +133,12 @@ class ElectionRequestHandler(BaseHTTPRequestHandler):
 		else:
 			return object
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+	pass
+
 def main():
 	try:
-		server = HTTPServer(('', 8044), ElectionRequestHandler)
+		server = ThreadedHTTPServer(('localhost', 8044), ElectionWebServiceHandler)
 		print('Webservice running...')
 		server.serve_forever()
 	except KeyboardInterrupt:
