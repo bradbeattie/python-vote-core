@@ -22,6 +22,7 @@ class SchulzePR(SchulzeSTV):
 
 	def __init__(self, ballots, required_winners = None, notation = None):
 		SchulzeSTV.__init__(self, ballots, required_winners, notation)
+		if len(self.candidates) == self.required_winners: self.calculate_results()
 
 	def results(self):
 		results = SchulzeSTV.results(self)
