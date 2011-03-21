@@ -43,7 +43,6 @@ class SchulzePR(SchulzeSTV):
 		for self.required_winners in range(1, required_winners):
 
 			# Generate the list of patterns we need to complete
-			self.__generate_completion_patterns__()
 			self.__generate_completed_patterns__()
 			self.__generate_vote_management_graph__()
 
