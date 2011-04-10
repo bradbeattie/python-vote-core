@@ -19,11 +19,11 @@ import unittest
 
 class TestSchulzePR(unittest.TestCase):
 
-
+	
 	# This test considers a case that SchulzeSTV starts to choke on due to the
 	# potential number of nodes and edges to consider.
 	def test_10_candidates_5_winners(self):
-
+		
 		# Generate data
 		startTime = time.time()
 		input = [
@@ -31,15 +31,15 @@ class TestSchulzePR(unittest.TestCase):
 			{ "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
 			{ "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
 		]
-		SchulzePR(input, required_winners = 5, notation = "ranking").results()
-
+		SchulzePR(input, winner_threshold = 5, ballot_notation = "ranking").as_dict()
+		
 		# Run tests
 		self.assert_(time.time() - startTime < 1)
-
+	
 	# This test considers a case that SchulzeSTV starts to choke on due to the
 	# potential size of the completion patterns
 	def test_10_candidates_9_winners(self):
-
+		
 		# Generate data
 		startTime = time.time()
 		input = [
@@ -47,8 +47,8 @@ class TestSchulzePR(unittest.TestCase):
 			{ "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
 			{ "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
 		]
-		SchulzePR(input, required_winners = 9, notation = "ranking").results()
-
+		SchulzePR(input, winner_threshold = 9, ballot_notation = "ranking").as_dict()
+		
 		# Run tests
 		self.assert_(time.time() - startTime < 2)
 

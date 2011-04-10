@@ -13,63 +13,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from abstract_classes import AbstractOrderingVotingSystem
+from schulze_helper import SchulzeHelper
 from schulze_method import SchulzeMethod
-from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 
-# This class implements the an iterated Schulze Method that produces a
-# non-proportional ordering.
-class SchulzeNPR(SchulzeMethod):
-
-	def __init__(self, ballots, required_winners = None, notation = None):
-		self.required_winners = required_winners
-		SchulzeMethod.__init__(self, ballots, notation)
-		if len(self.candidates) == self.required_winners: self.calculate_results()
-
-	def results(self):
-		results = SchulzeMethod.results(self)
-		results["nonproportional_ranking"] = self.nonproportional_ranking
-		results["rounds"] = self.rounds
-		return results
-
-	def calculate_results(self):
-		print "CALCULATE RESULTS"
-
-		original_candidates = self.candidates.copy()
-		self.nonproportional_ranking = []
-		self.rounds = []
-
-		if self.required_winners == None:
-			required_winners = len(self.candidates)
-		else:
-			required_winners = min(len(self.candidates), self.required_winners + 1)
-
-		for self.required_winners in range(1, required_winners):
-			
-			SchulzeMethod.calculate_results(self)
-
-			# Extract the winner and adjust the remaining candidates list
-			self.nonproportional_ranking.append(list(self.winners)[0])
-			round = {"winner": list(self.winners)[0]}
-			if hasattr(self, 'tied_winners') and len(self.tied_winners) > 0:
-				round["tied_winners"] = self.tied_winners
-				del self.tied_winners 
-			self.rounds.append(round)
-			self.candidates -= self.winners
-
-		# Attach the last candidate as the sole winner if necessary
-		if required_winners == len(original_candidates):
-			self.rounds.append({"winner": list(self.candidates)[0]})
-			self.nonproportional_ranking.append(list(self.candidates)[0])
-			
-		self.candidates = original_candidates
-			
-		# Remove attributes that only pertain to individual rounds
-		del self.winners
-		if hasattr(self, 'tied_winners'):
-			del self.tied_winners
-		if hasattr(self, 'actions'):
-			del self.actions
-		if hasattr(self, 'strong_pairs'):
-			del self.strong_pairs
-		if hasattr(self, 'pairs'):
-			del self.pairs
+#
+class SchulzeNPR(AbstractOrderingVotingSystem, SchulzeHelper):
+	
+	def __init__(self, ballots, winner_threshold = None, tie_breaker = None, ballot_notation = None):
+		self.standardize_ballots(ballots, ballot_notation)
+		super(SchulzeNPR, self).__init__(self.ballots,
+			single_winner_class = SchulzeMethod,
+			winner_threshold = winner_threshold,
+			tie_breaker = tie_breaker,
+		)
+	
+	@staticmethod
+	def ballots_without_candidate(ballots, candidate):
+		for ballot in ballots:
+			if candidate in ballot['ballot']:
+				del ballot['ballot'][candidate]
+		return ballots

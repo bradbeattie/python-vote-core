@@ -1,3 +1,10 @@
+def matching_keys(dict, target_value):
+	return set([
+		key
+		for key, value in dict.iteritems()
+		if value == target_value
+	])
+
 def unique_permutations(xs):
 	if len(xs) < 2:
 		yield xs

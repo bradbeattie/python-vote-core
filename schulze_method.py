@@ -13,48 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from schulze_helper import SchulzeHelper
 from condorcet import CondorcetSystem
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
+from common_functions import matching_keys
 
 # This class implements the Schulze Method (aka the beatpath method)
-class SchulzeMethod(CondorcetSystem):
-
-	def __init__(self, ballots, notation = None):
-		CondorcetSystem.__init__(self, ballots, notation)
-
-	def calculate_results(self):
-		CondorcetSystem.calculate_results(self)
-		if hasattr(self, 'winners') == False:
-			self.schwartz_set_heuristic()
-
-	def results(self):
-		results = CondorcetSystem.results(self)
+class SchulzeMethod(CondorcetSystem, SchulzeHelper):
+	
+	def __init__(self, ballots, tie_breaker = None, ballot_notation = None):
+		CondorcetSystem.__init__(self, ballots, tie_breaker = tie_breaker, ballot_notation = ballot_notation)
+	
+	def as_dict(self):
+		data = super(SchulzeMethod, self).as_dict()
 		if hasattr(self, 'actions'):
-			results["actions"] = self.actions
-		return results
-
-	def schwartz_set_heuristic(self):
-
-		# Iterate through using the Schwartz set heuristic
-		self.actions = []
-		while len(self.graph.edges()) > 0:
-			access = accessibility(self.graph)
-			mutual_access = mutual_accessibility(self.graph)
-			candidates_to_remove = set()
-			for candidate in self.graph.nodes():
-				candidates_to_remove |= (set(access[candidate]) - set(mutual_access[candidate]))
-
-			# Remove nodes at the end of non-cycle paths
-			if len(candidates_to_remove) > 0:
-				self.actions.append({'nodes': candidates_to_remove})
-				for candidate in candidates_to_remove:
-					self.graph.del_node(candidate)
-
-			# If none exist, remove the weakest edges
-			else:
-				edge_weights = self.edge_weights(self.graph)
-				self.actions.append({'edges': self.matching_keys(edge_weights, min(edge_weights.values()))})
-				for edge in self.actions[-1]["edges"]:
-					self.graph.del_edge(edge)
-
-		self.graph_winner()
+			data["actions"] = self.actions
+		return data

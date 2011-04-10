@@ -17,11 +17,11 @@ from schulze_method import SchulzeMethod
 import unittest
 
 class TestSchulzeMethod(unittest.TestCase):
-
+	
 	# Schulze Method, example from Wikipedia
 	# http://en.wikipedia.org/wiki/Schulze_method#The_Schwartz_set_heuristic
 	def test_wiki_example(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
@@ -30,8 +30,8 @@ class TestSchulzeMethod(unittest.TestCase):
 			{ "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
 			{ "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
 		]
-		output = SchulzeMethod(input, "grouping").results()
-
+		output = SchulzeMethod(input, ballot_notation = "grouping").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['A', 'C', 'B', 'D']),
@@ -64,13 +64,12 @@ class TestSchulzeMethod(unittest.TestCase):
 				{'edges': set([('B', 'C')])},
 				{'nodes': set(['B', 'D'])}
 			],
-			'winners': set(['C'])
+			'winner': 'C'
 		})
-
-
+	
 	# http://en.wikipedia.org/wiki/Schulze_method#Example
 	def test_wiki_example2(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":5, "ballot":[["A"], ["C"], ["B"], ["E"], ["D"]] },
@@ -82,8 +81,8 @@ class TestSchulzeMethod(unittest.TestCase):
 			{ "count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]] },
 			{ "count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]] }
 		]
-		output = SchulzeMethod(input, "grouping").results()
-
+		output = SchulzeMethod(input, ballot_notation = "grouping").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['A', 'C', 'B', 'E', 'D']),
@@ -126,19 +125,18 @@ class TestSchulzeMethod(unittest.TestCase):
 				{'edges': set([('C', 'E')])},
 				{'nodes': set(['A', 'C', 'B', 'D'])}
 			],
-			'winners': set(['E'])
+			'winner': 'E'
 		})
-
-
+	
 	def test_tiebreaker_bug(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":1, "ballot":[["A"], ["B", "C"]] },
 			{ "count":1, "ballot":[["B"], ["A"], ["C"]] },
 		]
-		output = SchulzeMethod(input, "grouping").results()
-
+		output = SchulzeMethod(input, ballot_notation = "grouping").as_dict()
+		
 		# Run tests
 		self.assertEqual(output['candidates'], set(['A', 'B', 'C']))
 		self.assertEqual(output['pairs'], {
@@ -154,7 +152,6 @@ class TestSchulzeMethod(unittest.TestCase):
 			('B', 'C'): 1,
 		})
 		self.assertEqual(output['tied_winners'], set(['A','B']))
-
 
 if __name__ == "__main__":
 	unittest.main()

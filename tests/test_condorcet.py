@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from condorcet import CondorcetSystem
+from schulze_method import SchulzeMethod
 import unittest
 
 class TestCondorcet(unittest.TestCase):
-
+	
 	def test_grouping_format(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]] },
@@ -28,8 +28,8 @@ class TestCondorcet(unittest.TestCase):
 			{ "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
 			{ "count":27, "ballot":[["Brad"]] },
 		]
-		output = CondorcetSystem(input, "grouping").results()
-
+		output = SchulzeMethod(input, ballot_notation = "grouping").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			"candidates": set(['Carter', 'Brad', 'Andrea']),
@@ -46,11 +46,11 @@ class TestCondorcet(unittest.TestCase):
 				('Carter', 'Brad'): 51,
 				('Andrea', 'Carter'): 50
 			},
-			"winners": set(['Andrea'])
+			"winner": 'Andrea'
 		})
-
+	
 	def test_ranking_format(self):
-		return
+		
 		# Generate data
 		input = [
 			{ "count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3} },
@@ -59,9 +59,8 @@ class TestCondorcet(unittest.TestCase):
 			{ "count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3} },
 			{ "count":27, "ballot":{"Brad":1} }
 		]
-		output = CondorcetSystem(input, "ranking").results()
-
-
+		output = SchulzeMethod(input, ballot_notation = "ranking").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			"candidates": set(['Carter', 'Brad', 'Andrea']),
@@ -78,11 +77,11 @@ class TestCondorcet(unittest.TestCase):
 				('Carter', 'Brad'): 51,
 				('Andrea', 'Carter'): 50
 			},
-			"winners": set(['Andrea'])
+			"winner": 'Andrea'
 		})
-
+	
 	def test_rating_format(self):
-		return
+		
 		# Generate data
 		input = [
 			{ "count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3} },
@@ -91,9 +90,9 @@ class TestCondorcet(unittest.TestCase):
 			{ "count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3} },
 			{ "count":27, "ballot":{"Brad":10} }
 		]
-		output = CondorcetSystem(input, "rating").results()
+		output = SchulzeMethod(input, ballot_notation = "rating").as_dict()
 
-
+		
 		# Run tests
 		self.assertEqual(output, {
 			"candidates": set(['Carter', 'Brad', 'Andrea']),
@@ -110,9 +109,8 @@ class TestCondorcet(unittest.TestCase):
 				('Carter', 'Brad'): 51,
 				('Andrea', 'Carter'): 50
 			},
-			"winners": set(['Andrea'])
+			"winner": 'Andrea'
 		})
-
 
 if __name__ == "__main__":
 	unittest.main()

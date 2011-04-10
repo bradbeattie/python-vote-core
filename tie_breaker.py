@@ -14,41 +14,50 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import random, types
+from copy import copy
 
 # This class provides tie breaking methods
 class TieBreaker(object):
-
-	def __init__(self, object_range):
-		self.object_range = object_range
-
-	def break_ties(self, tied_objects, reverse_order=False):
-		tie_breaker = self.__generate_tie_breaker__()
-		if reverse_order:
-			tie_breaker.reverse()
-		if type(list(tied_objects)[0]) in [types.UnicodeType, types.StringType]:
-			result = self.__break_ties_simple__(tied_objects, tie_breaker)
+	
+	#
+	def __init__(self, candidate_range):
+		self.random_ordering = list(candidate_range)
+		if type(candidate_range) != types.ListType:
+			random.shuffle(self.random_ordering)
+	
+	#
+	def break_ties(self, tied_candidates, reverse=False):
+		random_ordering = copy(self.random_ordering)
+		if reverse:
+			random_ordering.reverse()
+		if type(list(tied_candidates)[0]) in types.StringTypes:
+			result = self.break_simple_ties(tied_candidates, random_ordering)
 		else:
-			result = self.__break_ties_complex__(tied_objects, tie_breaker)
-		if reverse_order:
-			tie_breaker.reverse() # TODO: Check to see if this is necessary
+			result = self.break_complex_ties(tied_candidates, random_ordering)
 		return result
-
-	def __break_ties_simple__(self, tied_candidates, tie_breaker):
-		for candidate in tie_breaker:
+	
+	#
+	@staticmethod
+	def break_simple_ties(tied_candidates, random_ordering):
+		for candidate in random_ordering:
 			if candidate in tied_candidates:
 				return candidate
-
-	def __generate_tie_breaker__(self):
-		if hasattr(self, 'random_ordering') == False:
-			self.random_ordering = list(self.object_range)
-			random.shuffle(self.random_ordering)
-		return self.random_ordering
-
-	def __break_ties_complex__(self, tied_objects, tie_breaker):
-		max_columns = len(list(tied_objects)[0])
+	
+	#
+	@staticmethod
+	def break_complex_ties(tied_candidates, random_ordering):
+		max_columns = len(list(tied_candidates)[0])
 		column = 0
-		while len(tied_objects) > 1 and column < max_columns:
-			min_index = min(tie_breaker.index(list(object)[column]) for object in tied_objects)
-			tied_objects = set([object for object in tied_objects if object[column] == tie_breaker[min_index]])
+		while len(tied_candidates) > 1 and column < max_columns:
+			min_index = min(random_ordering.index(list(candidate)[column]) for candidate in tied_candidates)
+			tied_candidates = set([candidate for candidate in tied_candidates if candidate[column] == random_ordering[min_index]])
 			column += 1
-		return list(tied_objects)[0]
+		return list(tied_candidates)[0]
+	
+	#
+	def as_list(self):
+		return self.random_ordering
+	
+	#
+	def __str__(self):
+		return "[%s]" % ">".join(self.random_ordering)

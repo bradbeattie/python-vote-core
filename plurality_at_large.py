@@ -13,79 +13,61 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from voting_system import VotingSystem
-import copy, types
+from abstract_classes import MultipleWinnerVotingSystem
+from common_functions import matching_keys
+import types, copy
 
-# This class implements plurality at large (aka block voting).
-class PluralityAtLarge(VotingSystem):
-
-	def __init__(self, ballots, required_winners = 1):
-		self.required_winners = required_winners
-		self.convert_ballots(ballots)
-		self.candidates = PluralityAtLarge.viable_candidates(ballots)
-		VotingSystem.__init__(self)
-
-	def convert_ballots(self, ballots):
-
-		# Parse the incoming candidate list
-		self.ballots = ballots
+class PluralityAtLarge(MultipleWinnerVotingSystem):
+	
+	def __init__(self, ballots, tie_breaker = None, required_winners = 1):
+		super(PluralityAtLarge, self).__init__(ballots, tie_breaker = tie_breaker, required_winners = required_winners)
+	
+	def calculate_results(self):
+		
+		# Standardize the ballot format and extract the candidates
+		self.candidates = set()
 		for ballot in self.ballots:
-
+			
 			# Convert single candidate ballots into ballot lists
 			if type(ballot["ballot"]) != types.ListType:
 				ballot["ballot"] = [ballot["ballot"]]
-
+			
 			# Ensure no ballot has an excess of votes
 			if len(ballot["ballot"]) > self.required_winners:
 				raise Exception("A ballot contained too many candidates")
-
-	def calculate_results(self):
-
+			
+			# Add all candidates on the ballot to the set
+			self.candidates.update(set(ballot["ballot"]))
+		
 		# Sum up all votes for each candidate
-		self.tallies = PluralityAtLarge.tallies(self.ballots)
+		self.tallies = dict.fromkeys(self.candidates, 0)
+		for ballot in self.ballots:
+			for candidate in ballot["ballot"]:
+				self.tallies[candidate] += ballot["count"]
 		tallies = copy.deepcopy(self.tallies)
-
+		
 		# Determine which candidates win
 		winning_candidates = set()
 		while len(winning_candidates) < self.required_winners:
-
+			
 			# Find the remaining candidates with the most votes
 			largest_tally = max(tallies.values())
-			top_candidates = self.matching_keys(tallies, largest_tally)
-
+			top_candidates = matching_keys(tallies, largest_tally)
+			
 			# Reduce the found candidates if there are too many
 			if len(top_candidates | winning_candidates) > self.required_winners:
 				self.tied_winners = top_candidates.copy()
 				while len(top_candidates | winning_candidates) > self.required_winners:
 					top_candidates.remove(self.break_ties(top_candidates, True))
-
+			
 			# Move the top candidates into the winning pile
 			winning_candidates |= top_candidates
 			for candidate in top_candidates:
 				del tallies[candidate]
-
-		# Return the final result
-		self.winners =  winning_candidates
-
-	@staticmethod
-	def tallies(ballots):
-		tallies = dict.fromkeys(PluralityAtLarge.viable_candidates(ballots), 0)
-		for ballot in ballots:
-			for candidate in ballot["ballot"]:
-				tallies[candidate] += ballot["count"]
-		return tallies
-
-	@staticmethod
-	def viable_candidates(ballots):
-		candidates = set()
-		for ballot in ballots:
-			for candidate in ballot["ballot"]:
-				candidates.add(candidate)
-		return candidates
-
-	def results(self):
-		results = VotingSystem.results(self)
-		results["tallies"] = self.tallies
-		if hasattr(self, 'tied_winners'):
-			results["tied_winners"] = self.tied_winners
-		return results
+		
+		self.winners = winning_candidates
+	
+	def as_dict(self):
+		data = super(PluralityAtLarge, self).as_dict()
+		data["tallies"] = self.tallies
+		return data

@@ -13,43 +13,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from voting_system import VotingSystem
+from abc import ABCMeta, abstractmethod
+from abstract_classes import SingleWinnerVotingSystem
 from pygraph.classes.digraph import digraph
 import itertools
 
-# This class determines the Condorcet winner if one exists.
-class CondorcetSystem(VotingSystem):
-
-	def __init__(self, ballots, notation = "rating"):
-		self.candidates, self.ballots = self.convert_ballots(ballots, notation)
-		VotingSystem.__init__(self)
-
-	def calculate_results(self):
-		self.graph = self.ballots_into_graph(self.candidates, self.ballots)
-		self.pairs = CondorcetSystem.edge_weights(self.graph)
-		self.remove_weak_edges(self.graph)
-		self.strong_pairs = CondorcetSystem.edge_weights(self.graph)
-		self.graph_winner()
-
-	def results(self):
-		results = VotingSystem.results(self)
-		if hasattr(self, 'pairs'):
-			results["pairs"] = self.pairs
-		if hasattr(self, 'strong_pairs'):
-			results["strong_pairs"] = self.strong_pairs
-		if hasattr(self, 'tied_winners'):
-			results["tied_winners"] = self.tied_winners
-		return results
-
+class CondorcetHelper(object):
+	
+	def standardize_ballots(self, ballots, ballot_notation):
+		
+		self.ballots = ballots
+		if ballot_notation == "grouping":
+			for ballot in self.ballots:
+				ballot["ballot"].reverse()
+				new_ballot = {}
+				r = 0
+				for rank in ballot["ballot"]:
+					r += 1
+					for candidate in rank:
+						new_ballot[candidate] = r
+				ballot["ballot"] = new_ballot
+		elif ballot_notation == "ranking":
+			for ballot in self.ballots:
+				for candidate, rating in ballot["ballot"].iteritems():
+					ballot["ballot"][candidate] = -float(rating)
+		elif ballot_notation == "rating" or ballot_notation == None:
+			for ballot in self.ballots:
+				for candidate, rating in ballot["ballot"].iteritems():
+					ballot["ballot"][candidate] = float(rating)
+		else:
+			print ballot_notation
+			raise Exception("Unknown notation specified")
+		
+		self.candidates = set()
+		for ballot in self.ballots:
+			self.candidates |= set(ballot["ballot"].keys())
+		
+		for ballot in self.ballots:
+			lowest_preference = min(ballot["ballot"].values()) - 1
+			for candidate in self.candidates - set(ballot["ballot"].keys()):
+				ballot["ballot"][candidate] = lowest_preference
+	
 	def graph_winner(self):
 		losing_candidates = set([edge[1] for edge in self.graph.edges()])
 		winning_candidates = set(self.graph.nodes()) - losing_candidates
 		if len(winning_candidates) == 1:
-			self.winners = set([list(winning_candidates)[0]])
+			self.winner = list(winning_candidates)[0]
 		elif len(winning_candidates) > 1:
 			self.tied_winners = winning_candidates
-			self.winners = set([self.break_ties(winning_candidates)])
-
+			self.winner = self.break_ties(winning_candidates)
+		else:
+			self.condorcet_completion_method()
+	
 	@staticmethod
 	def ballots_into_graph(candidates, ballots):
 		graph = digraph()
@@ -61,14 +76,14 @@ class CondorcetSystem(VotingSystem):
 				if ballot["ballot"][pair[0]] > ballot["ballot"][pair[1]]
 			]))
 		return graph
-
+	
 	@staticmethod
 	def edge_weights(graph):
 		return dict([
 			(edge, graph.edge_weight(edge))
 			for edge in graph.edges()
 		])
-
+	
 	@staticmethod
 	def remove_weak_edges(graph):
 		for pair in itertools.combinations(graph.nodes(), 2):
@@ -79,40 +94,29 @@ class CondorcetSystem(VotingSystem):
 			if weights[1] >= weights[0]:
 				graph.del_edge(pairs[0])
 
-	@staticmethod
-	def convert_ballots(ballots, notation):
+# This class determines the Condorcet winner if one exists.
+class CondorcetSystem(SingleWinnerVotingSystem, CondorcetHelper):
+	
+	__metaclass__ = ABCMeta
+	@abstractmethod
+	def __init__(self, ballots, tie_breaker = None, ballot_notation = None):
+		self.standardize_ballots(ballots, ballot_notation)
+		super(CondorcetSystem, self).__init__(self.ballots, tie_breaker = tie_breaker)
+	
+	def calculate_results(self):
+		self.graph = self.ballots_into_graph(self.candidates, self.ballots)
+		self.pairs = self.edge_weights(self.graph)
+		self.remove_weak_edges(self.graph)
+		self.strong_pairs = self.edge_weights(self.graph)
+		self.graph_winner()
+	
+	def as_dict(self):
+		data = super(CondorcetSystem, self).as_dict()
+		if hasattr(self, 'pairs'):
+			data["pairs"] = self.pairs
+		if hasattr(self, 'strong_pairs'):
+			data["strong_pairs"] = self.strong_pairs
+		if hasattr(self, 'tied_winners'):
+			data["tied_winners"] = self.tied_winners
+		return data
 
-		if notation == "grouping":
-			for ballot in ballots:
-				ballot["ballot"].reverse()
-				new_ballot = {}
-				r = 0
-				for rank in ballot["ballot"]:
-					r += 1
-					for candidate in rank:
-						new_ballot[candidate] = r
-				ballot["ballot"] = new_ballot
-
-		elif notation == "ranking":
-			for ballot in ballots:
-				for candidate, rating in ballot["ballot"].iteritems():
-					ballot["ballot"][candidate] = -float(rating)
-
-		elif notation == "rating":
-			for ballot in ballots:
-				for candidate, rating in ballot["ballot"].iteritems():
-					ballot["ballot"][candidate] = float(rating)
-
-		else:
-			raise Exception("Unknown notation specified")
-
-		candidates = set()
-		for ballot in ballots:
-			candidates |= set(ballot["ballot"].keys())
-
-		for ballot in ballots:
-			lowest_preference = min(ballot["ballot"].values()) - 1
-			for candidate in candidates - set(ballot["ballot"].keys()):
-				ballot["ballot"][candidate] = lowest_preference
-
-		return candidates, ballots

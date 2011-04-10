@@ -17,18 +17,18 @@ from stv import STV
 import unittest
 
 class TestSTV(unittest.TestCase):
-
+	
 	# STV, no rounds
 	def test_stv_landslide(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":56, "ballot":["c1", "c2", "c3"] },
 			{ "count":40, "ballot":["c2", "c3", "c1"] },
 			{ "count":20, "ballot":["c3", "c1", "c2"] }
 		]
-		output = STV(input, 2).results()
-
+		output = STV(input, required_winners = 2).as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['c1', 'c2', 'c3']),
@@ -39,29 +39,31 @@ class TestSTV(unittest.TestCase):
 			}],
 			'winners': set(['c2', 'c1'])
 		})
-
+	
 	# STV, no rounds
 	def test_stv_everyone_wins(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":56, "ballot":["c1", "c2", "c3"] },
 			{ "count":40, "ballot":["c2", "c3", "c1"] },
 			{ "count":20, "ballot":["c3", "c1", "c2"] }
 		]
-		output = STV(input, 3).results()
-
+		output = STV(input, required_winners = 3).as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['c1', 'c2', 'c3']),
 			'quota': 30,
+			'rounds': [],
+			'remaining_candidates': set(['c1', 'c2', 'c3']),
 			'winners': set(['c1', 'c2', 'c3'])
 		})
-
+	
 	# STV, example from Wikipedia
 	# http://en.wikipedia.org/wiki/Single_transferable_vote#An_example
 	def test_stv_wiki_example(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":4, "ballot":["orange"] },
@@ -71,8 +73,8 @@ class TestSTV(unittest.TestCase):
 			{ "count":1, "ballot":["strawberry"] },
 			{ "count":1, "ballot":["sweets"] }
 		]
-		output = STV(input, 3).results()
-
+		output = STV(input, required_winners = 3).as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['orange','pear','chocolate','strawberry','sweets']),
@@ -86,16 +88,16 @@ class TestSTV(unittest.TestCase):
 			'remaining_candidates': set(['strawberry']),
 			'winners': set(['orange', 'strawberry', 'chocolate'])
 		})
-
+	
 	# STV, no rounds
 	def test_stv_single_ballot(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":1, "ballot":["c1", "c2", "c3", "c4"] },
 		]
-		output = STV(input, 3).results()
-
+		output = STV(input, required_winners = 3).as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['c1','c2','c3','c4']),
@@ -107,17 +109,17 @@ class TestSTV(unittest.TestCase):
 			],
 			'winners': set(['c1', 'c2', 'c3'])
 		})
-
+	
 	# STV, no rounds
 	def test_stv_fewer_voters_than_winners(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":1, "ballot":["c1", "c3", "c4"] },
 			{ "count":1, "ballot":["c2", "c3", "c4"] },
 		]
-		output = STV(input, 3).results()
-
+		output = STV(input, required_winners = 3).as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
 			'candidates': set(['c1','c2','c3','c4']),

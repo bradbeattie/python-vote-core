@@ -17,18 +17,18 @@ from schulze_npr import SchulzeNPR
 import unittest
 
 class TestSchulzeNPR(unittest.TestCase):
-
-	def test_sinlge_voter(self):
-
+	
+	def test_single_voter(self):
+		
 		# Generate data
 		input = [
 			{ "count":1, "ballot":{"A":1, "B":2, "C":3, "D":4, "E":5}},
 		]
-		output = SchulzeNPR(input, required_winners = 5, notation = "ranking").results()
-
+		output = SchulzeNPR(input, winner_threshold = 5, ballot_notation = "ranking").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
-			'nonproportional_ranking': ['A', 'B', 'C', 'D', 'E'],
+			'order': ['A', 'B', 'C', 'D', 'E'],
 			'candidates': set(['A', 'B', 'C', 'D', 'E']),
 			'rounds': [
 				{'winner': 'A'},
@@ -38,19 +38,19 @@ class TestSchulzeNPR(unittest.TestCase):
 				{'winner': 'E'}
 			]
 		})
-
+	
 	def test_nonproportionality(self):
-
+		
 		# Generate data
 		input = [
 			{ "count":2, "ballot":{"A":1, "B":2, "C":3, "D":4, "E":5}},
 			{ "count":1, "ballot":{"A":5, "B":4, "C":3, "D":2, "E":1}},
 		]
-		output = SchulzeNPR(input, required_winners = 5, notation = "ranking").results()
-
+		output = SchulzeNPR(input, winner_threshold = 5, ballot_notation = "ranking").as_dict()
+		
 		# Run tests
 		self.assertEqual(output, {
-			'nonproportional_ranking': ['A', 'B', 'C', 'D', 'E'],
+			'order': ['A', 'B', 'C', 'D', 'E'],
 			'candidates': set(['A', 'B', 'C', 'D', 'E']),
 			'rounds': [
 				{'winner': 'A'},
@@ -60,7 +60,7 @@ class TestSchulzeNPR(unittest.TestCase):
 				{'winner': 'E'}
 			]
 		})
-		
+
 
 if __name__ == "__main__":
 	unittest.main()
