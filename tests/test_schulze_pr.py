@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from schulze_pr import SchulzePR
+from pyvotecore.schulze_pr import SchulzePR
 import unittest
 
 class TestSchulzePR(unittest.TestCase):

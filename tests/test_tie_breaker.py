@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from tie_breaker import TieBreaker
+from pyvotecore.tie_breaker import TieBreaker
 import unittest
 
 class TestTieBreaker(unittest.TestCase):

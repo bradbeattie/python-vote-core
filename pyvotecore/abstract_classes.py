@@ -24,6 +24,9 @@ class VotingSystem(object):
 	@abstractmethod
 	def __init__(self, ballots, tie_breaker = None):
 		self.ballots = ballots
+		for ballot in self.ballots:
+			if "count" not in ballot:
+				ballot["count"] = 1
 		self.tie_breaker = tie_breaker
 		self.calculate_results()
 	
