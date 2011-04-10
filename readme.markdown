@@ -1,36 +1,35 @@
-# Election Web Service
+# Python Vote Core
 
-Election Web Service exposes implmentations of various election methods through
-a JSON interface. The purpose of this is to eliminate the need to implement
-language-specific versions of these methods wherever an internet connection is
-available.
+python-vote-core implements various electoral methods, providing the results
+calculated off a provided set of ballots and options.
 
-* Project page: <http://github.com/bradbeattie/Election-Web-Service>
-* Issue tracker: <http://github.com/bradbeattie/Election-Web-Service/issues>
-* Active server: <http://vote.cognitivesandbox.com>
-* Example usage: <http://modernballots.com>
+* Project page: <http://github.com/bradbeattie/python-vote-core>
+* Issue tracker: <http://github.com/bradbeattie/python-vote-core/issues>
+* Example usage: <http://vote.cognitivesandbox.com>, <http://modernballots.com>
 
 ## Methods implemented
 
-* Plurality (aka first-past-the-post or fptp)
-* Plurality at large (aka block voting)
-* Instant-Runoff Voting (aka IRV)
-* Single Transferable Vote (aka STV)
-* Schulze Method (aka Beatpath)
-* Schulze STV
-* Schulze Proportional Representation
+* Single Winner Methods
+** Plurality (aka first-past-the-post or fptp)
+** Instant-Runoff Voting (aka IRV)
+** Schulze Method (aka Beatpath)
+* Multiple Winner Methods
+** Plurality at large (aka block voting)
+** Single Transferable Vote (aka STV)
+** Schulze STV
+* Ordering Methods
+** Schulze Proportional Representation
+** Schulze Nonproportional Representation
 
-## Installation
-  
-    python webserver.py
-  
 ## Basic Usage
 
-    curl -d '{"voting_system": "stv", "ballots": [{"count": 4, "ballot": ["orange"]}, {"count": 2, "ballot": ["pear", "orange"]}, {"count": 8, "ballot": ["chocolate", "strawberry"]}, {"count": 4, "ballot": ["chocolate", "sweets"]}, {"count": 1, "ballot": ["strawberry"]}, {"count": 1, "ballot": ["sweets"]}], "winners": 3}' http://vote.cognitivesandbox.com;
-    
-    curl -d '{"voting_system": "schulze_method", "notation": "ranking", "ballots": [{ "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2 }}, { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9 }}, { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9 }}]}' http://vote.cognitivesandbox.com;
-    
-    curl -d '{"voting_system": "schulze_stv", "notation": "ranking", "ballots": [{ "count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2 }}, { "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9 }}, { "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9 }}], "winners": 2}' http://vote.cognitivesandbox.com;
+print SchulzeMethod([
+	{ "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
+	{ "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
+	{ "count":8, "ballot":[["C"], ["D"], ["A"], ["B"]] },
+	{ "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
+	{ "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
+], ballot_notation = "grouping").as_dict()
 
 ## License
 
