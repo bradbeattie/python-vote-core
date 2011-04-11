@@ -15,14 +15,12 @@
 
 from schulze_helper import SchulzeHelper
 from condorcet import CondorcetSystem
-from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
-from common_functions import matching_keys
 
 # This class implements the Schulze Method (aka the beatpath method)
 class SchulzeMethod(CondorcetSystem, SchulzeHelper):
 	
 	def __init__(self, ballots, tie_breaker = None, ballot_notation = None):
-		CondorcetSystem.__init__(self, ballots, tie_breaker = tie_breaker, ballot_notation = ballot_notation)
+		super(SchulzeMethod, self).__init__(ballots, tie_breaker = tie_breaker, ballot_notation = ballot_notation)
 	
 	def as_dict(self):
 		data = super(SchulzeMethod, self).as_dict()
