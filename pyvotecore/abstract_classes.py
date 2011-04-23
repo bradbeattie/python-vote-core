@@ -16,6 +16,7 @@
 from tie_breaker import TieBreaker
 from abc import ABCMeta, abstractmethod
 from copy import copy, deepcopy
+import types
 
 # This class provides methods that most electoral systems make use of.
 class VotingSystem(object):
@@ -28,6 +29,8 @@ class VotingSystem(object):
 			if "count" not in ballot:
 				ballot["count"] = 1
 		self.tie_breaker = tie_breaker
+		if type(self.tie_breaker) == types.ListType:
+			self.tie_breaker = TieBreaker(self.tie_breaker)
 		self.calculate_results()
 	
 	@abstractmethod
@@ -137,15 +140,14 @@ class AbstractOrderingVotingSystem(OrderingVotingSystem):
 		self.rounds = []
 		remaining_ballots = deepcopy(self.ballots)
 		remaining_candidates = True
-		while remaining_candidates and (self.winner_threshold == None or len(self.order) < self.winner_threshold):
+		while (remaining_candidates == True or len(remaining_candidates) > 1) and (self.winner_threshold == None or len(self.order) < self.winner_threshold):
 			
 			# Given the remaining ballots, who should win?
 			result = self.single_winner_class(deepcopy(remaining_ballots), tie_breaker = self.tie_breaker)
 			
 			# Mark the candidate that won
-			r = {}
-			r['winner'] = result.winner
-			self.order.append(result.winner)
+			r = {'winner': result.winner}
+			self.order.append(r['winner'])
 			
 			# Mark any ties that might have occurred
 			if hasattr(result, 'tie_breaker'):
@@ -160,6 +162,11 @@ class AbstractOrderingVotingSystem(OrderingVotingSystem):
 				remaining_candidates = copy(self.candidates)
 			remaining_candidates.remove(result.winner)
 			remaining_ballots = self.ballots_without_candidate(result.ballots, result.winner)
+		
+		# Note the last remaining candidate
+		r = {'winner': list(remaining_candidates)[0]}
+		self.order.append(r['winner'])
+		self.rounds.append(r)
 	
 	def as_dict(self):
 		data = super(AbstractOrderingVotingSystem, self).as_dict()
