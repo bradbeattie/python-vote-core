@@ -32,10 +32,9 @@ class TestSchulzeSTV(unittest.TestCase):
 		SchulzeSTV(input, required_winners = 5, ballot_notation = "ranking").as_dict()
 		
 		# Run tests
-		print "10 candidates 5 winners took %d seconds" % (time.time() - startTime)
 		self.assert_(time.time() - startTime < 8)
 	
-	# This test looks at few graph notes, but large completion patterns. With
+	# This test looks at few graph nodes, but large completion patterns. With
 	# 10 candidates and 9 winners, we're looking at 3^9 (19683) patterns to
 	# consider.
 	def test_10_candidates_9_winners(self):
@@ -50,7 +49,6 @@ class TestSchulzeSTV(unittest.TestCase):
 		SchulzeSTV(input, required_winners = 9, ballot_notation = "ranking").as_dict()
 		
 		# Run tests
-		print "10 candidates 9 winners took %d seconds" % (time.time() - startTime)
 		self.assert_(time.time() - startTime < 2)
 	
 	# This test ensures that if you request the same number of winners as there
@@ -64,8 +62,7 @@ class TestSchulzeSTV(unittest.TestCase):
 			{ "count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9, "G":9, "H":9, "I":9, "J":9 }},
 			{ "count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9, "G":9, "H":9, "I":9, "J":9 }}
 		]
-		schulze_stv = SchulzeSTV(input, required_winners = 10, ballot_notation = "ranking")
-		output = schulze_stv.as_dict()
+		output = SchulzeSTV(input, required_winners = 10, ballot_notation = "ranking").as_dict()
 		
 		# Run tests
 		self.assertAlmostEqual(startTime, time.time(), 1)
