@@ -76,7 +76,7 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
 				del self.tied_winners
 		
 		# Attach the last candidate as the sole winner if necessary
-		if winner_threshold == len(self.candidates):
+		if self.winner_threshold == None or self.winner_threshold == len(self.candidates):
 			self.rounds.append({"winner": list(remaining_candidates)[0]})
 			self.order.append(list(remaining_candidates)[0])
 		

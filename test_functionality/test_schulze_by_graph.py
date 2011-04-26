@@ -93,9 +93,8 @@ class TestSchulzeNPRByGraph(unittest.TestCase):
 				{'winner': 'a', 'tied_winners': set(['a', 'd'])},
 				{'winner': 'd', 'tied_winners': set(['b', 'd'])},
 				{'winner': 'b'},
-				{'winner': 'c'},
 			],
-			'order': ['a', 'd', 'b', 'c'],
+			'order': ['a', 'd', 'b'],
 		})
 
 if __name__ == "__main__":

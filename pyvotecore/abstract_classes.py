@@ -164,9 +164,10 @@ class AbstractOrderingVotingSystem(OrderingVotingSystem):
 			remaining_ballots = self.ballots_without_candidate(result.ballots, result.winner)
 		
 		# Note the last remaining candidate
-		r = {'winner': list(remaining_candidates)[0]}
-		self.order.append(r['winner'])
-		self.rounds.append(r)
+		if (self.winner_threshold == None or len(self.order) < self.winner_threshold): 
+			r = {'winner': list(remaining_candidates)[0]}
+			self.order.append(r['winner'])
+			self.rounds.append(r)
 	
 	def as_dict(self):
 		data = super(AbstractOrderingVotingSystem, self).as_dict()
