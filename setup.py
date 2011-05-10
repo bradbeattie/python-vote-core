@@ -5,14 +5,14 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
-LICENSE = open(os.path.join(here, 'docs', 'LICENSE.txt')).read()
+LICENSE = open(os.path.join(here, 'LICENSE.txt')).read()
 
 requires = [
     'python-graph-core >= 1.8.0',
     ]
 
 setup(name='python-vote-core',
-      version='20110509.0',
+      version='20110509.1',
       description="An implementation of various election methods, most notably the Schulze Method and Schulze STV.",
       long_description=README + '\n\n' +  CHANGES + '\n\n' + LICENSE,
       classifiers=[

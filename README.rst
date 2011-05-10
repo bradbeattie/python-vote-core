@@ -12,14 +12,19 @@ Methods implemented
 -------------------
 
 * Single Winner Methods
+
   * Plurality (aka first-past-the-post or fptp)
   * Instant-Runoff Voting (aka IRV)
   * Schulze Method (aka Beatpath)
+
 * Multiple Winner Methods
+
   * Plurality at large (aka block voting)
   * Single Transferable Vote (aka STV)
   * Schulze STV
+
 * Ordering Methods
+
   * Schulze Proportional Representation
   * Schulze Nonproportional Representation
 
