@@ -2,3 +2,4 @@
 *.py-e
 *.swp
 *.egg-info
+dist

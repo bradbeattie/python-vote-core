@@ -1,4 +1,4 @@
-0.0
+20110509.0
 ---
 
--  Initial version
+-  Initial PyPi release
