@@ -26,10 +26,13 @@ Methods implemented
 Basic Usage
 -----------
 
+Schulze method example::
+
   print SchulzeMethod([
-      { "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
-      { "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
-      { "count":8, "ballot":[["C"], ["D"], ["A"], ["B"]] },
-      { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
-      { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
+    { "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
+    { "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
+    { "count":8, "ballot":[["C"], ["D"], ["A"], ["B"]] },
+    { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
+    { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
   ], ballot_notation = "grouping").as_dict()
+
