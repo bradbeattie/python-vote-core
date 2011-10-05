@@ -21,12 +21,14 @@ class TieBreaker(object):
 	
 	#
 	def __init__(self, candidate_range):
+		self.ties_broken = False
 		self.random_ordering = list(candidate_range)
 		if type(candidate_range) != types.ListType:
 			random.shuffle(self.random_ordering)
 	
 	#
 	def break_ties(self, tied_candidates, reverse=False):
+		self.ties_broken = True
 		random_ordering = copy(self.random_ordering)
 		if reverse:
 			random_ordering.reverse()

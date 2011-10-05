@@ -37,7 +37,7 @@ class VotingSystem(object):
 	def as_dict(self):
 		data = dict()
 		data["candidates"] = self.candidates
-		if self.tie_breaker:
+		if self.tie_breaker and self.tie_breaker.ties_broken:
 			data["tie_breaker"] = self.tie_breaker.as_list()
 		return data
 	
