@@ -32,10 +32,10 @@ class TieBreaker(object):
 		random_ordering = copy(self.random_ordering)
 		if reverse:
 			random_ordering.reverse()
-		if type(list(tied_candidates)[0]) in types.StringTypes:
-			result = self.break_simple_ties(tied_candidates, random_ordering)
-		else:
+		if getattr(list(tied_candidates)[0], '__iter__', False):
 			result = self.break_complex_ties(tied_candidates, random_ordering)
+		else:
+			result = self.break_simple_ties(tied_candidates, random_ordering)
 		return result
 	
 	#
