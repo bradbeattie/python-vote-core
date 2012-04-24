@@ -16,80 +16,80 @@
 from pyvotecore.plurality import Plurality
 import unittest
 
-class TestPlurality(unittest.TestCase):
-	
-	# Plurality, no ties
-	def test_no_ties(self):
-		
-		# Generate data
-		input = [
-			{ "count":26, "ballot":"c1" },
-			{ "count":22, "ballot":"c2" },
-			{ "count":23, "ballot":"c3" }
-		]
-		output = Plurality(input).as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			'candidates': set(['c1','c2','c3']),
-			'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
-			'winner': 'c1'
-		})
-	
-	# Plurality, alternate ballot format
-	def test_plurality_alternate_ballot_format(self):
-		
-		# Generate data
-		input = [
-			{ "count":26, "ballot":["c1"] },
-			{ "count":22, "ballot":["c2"] },
-			{ "count":23, "ballot":["c3"] }
-		]
-		output = Plurality(input).as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			'candidates': set(['c1','c2','c3']),
-			'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
-			'winner': 'c1'
-		})
-	
-	# Plurality, irrelevant ties
-	def test_irrelevant_ties(self):
-		
-		# Generate data
-		input = [
-			{ "count":26, "ballot":"c1" },
-			{ "count":23, "ballot":"c2" },
-			{ "count":23, "ballot":"c3" }
-		]
-		output = Plurality(input).as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			'candidates': set(['c1','c2','c3']),
-			'tallies': {'c3': 23, 'c2': 23, 'c1': 26},
-			'winner': 'c1'
-		})
 
-	
-	# Plurality, relevant ties
-	def test_relevant_ties(self):
-		
-		# Generate data
-		input = [
-			{ "count":26, "ballot":"c1" },
-			{ "count":26, "ballot":"c2" },
-			{ "count":23, "ballot":"c3" }
-		]
-		output = Plurality(input).as_dict()
-		
-		# Run tests
-		self.assertEqual(output["tallies"], {'c1':26, 'c2':26, 'c3':23})
-		self.assertEqual(output["tied_winners"], set(['c1', 'c2']))
-		self.assert_(output["winner"] in output["tied_winners"])
-		self.assertEqual(len(output["tie_breaker"]), 3)
+class TestPlurality(unittest.TestCase):
+
+    # Plurality, no ties
+    def test_no_ties(self):
+
+        # Generate data
+        input = [
+            {"count":26, "ballot":"c1"},
+            {"count":22, "ballot":"c2"},
+            {"count":23, "ballot":"c3"}
+        ]
+        output = Plurality(input).as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['c1', 'c2', 'c3']),
+            'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
+            'winner': 'c1'
+        })
+
+    # Plurality, alternate ballot format
+    def test_plurality_alternate_ballot_format(self):
+
+        # Generate data
+        input = [
+            {"count":26, "ballot":["c1"]},
+            {"count":22, "ballot":["c2"]},
+            {"count":23, "ballot":["c3"]}
+        ]
+        output = Plurality(input).as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['c1', 'c2', 'c3']),
+            'tallies': {'c3': 23, 'c2': 22, 'c1': 26},
+            'winner': 'c1'
+        })
+
+    # Plurality, irrelevant ties
+    def test_irrelevant_ties(self):
+
+        # Generate data
+        input = [
+            {"count":26, "ballot":"c1"},
+            {"count":23, "ballot":"c2"},
+            {"count":23, "ballot":"c3"}
+        ]
+        output = Plurality(input).as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            'candidates': set(['c1', 'c2', 'c3']),
+            'tallies': {'c3': 23, 'c2': 23, 'c1': 26},
+            'winner': 'c1'
+        })
+
+    # Plurality, relevant ties
+    def test_relevant_ties(self):
+
+        # Generate data
+        input = [
+            {"count":26, "ballot":"c1"},
+            {"count":26, "ballot":"c2"},
+            {"count":23, "ballot":"c3"}
+        ]
+        output = Plurality(input).as_dict()
+
+        # Run tests
+        self.assertEqual(output["tallies"], {'c1': 26, 'c2': 26, 'c3': 23})
+        self.assertEqual(output["tied_winners"], set(['c1', 'c2']))
+        self.assert_(output["winner"] in output["tied_winners"])
+        self.assertEqual(len(output["tie_breaker"]), 3)
 
 
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()

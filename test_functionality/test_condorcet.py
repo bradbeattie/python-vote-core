@@ -16,101 +16,101 @@
 from pyvotecore.schulze_method import SchulzeMethod
 import unittest
 
-class TestCondorcet(unittest.TestCase):
-	
-	def test_grouping_format(self):
-		
-		# Generate data
-		input = [
-			{ "count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]] },
-			{ "count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]] },
-			{ "count":12, "ballot":[["Andrea"], ["Carter"], ["Brad"]] },
-			{ "count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]] },
-			{ "count":27, "ballot":[["Brad"]] },
-		]
-		output = SchulzeMethod(input, ballot_notation = "grouping").as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			"candidates": set(['Carter', 'Brad', 'Andrea']),
-			"pairs": {
-				('Andrea', 'Brad'): 63,
-				('Brad', 'Carter'): 39,
-				('Carter', 'Andrea'): 13,
-				('Andrea', 'Carter'): 50,
-				('Brad', 'Andrea'): 27,
-				('Carter', 'Brad'): 51
-			},
-			"strong_pairs": {
-				('Andrea', 'Brad'): 63,
-				('Carter', 'Brad'): 51,
-				('Andrea', 'Carter'): 50
-			},
-			"winner": 'Andrea'
-		})
-	
-	def test_ranking_format(self):
-		
-		# Generate data
-		input = [
-			{ "count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3} },
-			{ "count":26, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
-			{ "count":12, "ballot":{"Andrea":1, "Carter":2, "Brad":3} },
-			{ "count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3} },
-			{ "count":27, "ballot":{"Brad":1} }
-		]
-		output = SchulzeMethod(input, ballot_notation = "ranking").as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			"candidates": set(['Carter', 'Brad', 'Andrea']),
-			"pairs": {
-				('Andrea', 'Brad'): 63,
-				('Brad', 'Carter'): 39,
-				('Carter', 'Andrea'): 13,
-				('Andrea', 'Carter'): 50,
-				('Brad', 'Andrea'): 27,
-				('Carter', 'Brad'): 51
-			},
-			"strong_pairs": {
-				('Andrea', 'Brad'): 63,
-				('Carter', 'Brad'): 51,
-				('Andrea', 'Carter'): 50
-			},
-			"winner": 'Andrea'
-		})
-	
-	def test_rating_format(self):
-		
-		# Generate data
-		input = [
-			{ "count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3} },
-			{ "count":26, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
-			{ "count":12, "ballot":{"Andrea":10, "Carter":5, "Brad":3} },
-			{ "count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3} },
-			{ "count":27, "ballot":{"Brad":10} }
-		]
-		output = SchulzeMethod(input, ballot_notation = "rating").as_dict()
 
-		
-		# Run tests
-		self.assertEqual(output, {
-			"candidates": set(['Carter', 'Brad', 'Andrea']),
-			"pairs": {
-				('Andrea', 'Brad'): 63,
-				('Brad', 'Carter'): 39,
-				('Carter', 'Andrea'): 13,
-				('Andrea', 'Carter'): 50,
-				('Brad', 'Andrea'): 27,
-				('Carter', 'Brad'): 51
-			},
-			"strong_pairs": {
-				('Andrea', 'Brad'): 63,
-				('Carter', 'Brad'): 51,
-				('Andrea', 'Carter'): 50
-			},
-			"winner": 'Andrea'
-		})
+class TestCondorcet(unittest.TestCase):
+
+    def test_grouping_format(self):
+
+        # Generate data
+        input = [
+            {"count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]]},
+            {"count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
+            {"count":12, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
+            {"count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]]},
+            {"count":27, "ballot":[["Brad"]]},
+        ]
+        output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(['Carter', 'Brad', 'Andrea']),
+            "pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Brad', 'Carter'): 39,
+                ('Carter', 'Andrea'): 13,
+                ('Andrea', 'Carter'): 50,
+                ('Brad', 'Andrea'): 27,
+                ('Carter', 'Brad'): 51
+            },
+            "strong_pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Carter', 'Brad'): 51,
+                ('Andrea', 'Carter'): 50
+            },
+            "winner": 'Andrea'
+        })
+
+    def test_ranking_format(self):
+
+        # Generate data
+        input = [
+            {"count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3}},
+            {"count":26, "ballot":{"Andrea":1, "Carter":2, "Brad":3}},
+            {"count":12, "ballot":{"Andrea":1, "Carter":2, "Brad":3}},
+            {"count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3}},
+            {"count":27, "ballot":{"Brad":1}}
+        ]
+        output = SchulzeMethod(input, ballot_notation="ranking").as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(['Carter', 'Brad', 'Andrea']),
+            "pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Brad', 'Carter'): 39,
+                ('Carter', 'Andrea'): 13,
+                ('Andrea', 'Carter'): 50,
+                ('Brad', 'Andrea'): 27,
+                ('Carter', 'Brad'): 51
+            },
+            "strong_pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Carter', 'Brad'): 51,
+                ('Andrea', 'Carter'): 50
+            },
+            "winner": 'Andrea'
+        })
+
+    def test_rating_format(self):
+
+        # Generate data
+        input = [
+            {"count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3}},
+            {"count":26, "ballot":{"Andrea":10, "Carter":5, "Brad":3}},
+            {"count":12, "ballot":{"Andrea":10, "Carter":5, "Brad":3}},
+            {"count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3}},
+            {"count":27, "ballot":{"Brad":10}}
+        ]
+        output = SchulzeMethod(input, ballot_notation="rating").as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(['Carter', 'Brad', 'Andrea']),
+            "pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Brad', 'Carter'): 39,
+                ('Carter', 'Andrea'): 13,
+                ('Andrea', 'Carter'): 50,
+                ('Brad', 'Andrea'): 27,
+                ('Carter', 'Brad'): 51
+            },
+            "strong_pairs": {
+                ('Andrea', 'Brad'): 63,
+                ('Carter', 'Brad'): 51,
+                ('Andrea', 'Carter'): 50
+            },
+            "winner": 'Andrea'
+        })
 
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()

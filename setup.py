@@ -14,7 +14,7 @@ requires = [
 setup(name='python-vote-core',
       version='20110509.1',
       description="An implementation of various election methods, most notably the Schulze Method and Schulze STV.",
-      long_description=README + '\n\n' +  CHANGES + '\n\n' + LICENSE,
+      long_description=README + '\n\n' + CHANGES + '\n\n' + LICENSE,
       classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: GNU General Public License (GPL)",
@@ -30,7 +30,7 @@ setup(name='python-vote-core',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      install_requires = requires,
-      tests_require= requires,
+      install_requires=requires,
+      tests_require=requires,
       test_suite="test_functionality",
       )

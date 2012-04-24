@@ -19,40 +19,42 @@ from abstract_classes import AbstractOrderingVotingSystem
 from pygraph.classes.digraph import digraph
 
 
-# This class provides Schulze Method results, but bypasses ballots and uses preference tallies instead. 
+# This class provides Schulze Method results, but bypasses ballots and uses preference tallies instead.
 class SchulzeMethodByGraph(SchulzeMethod):
-	
-	def __init__(self, edges, tie_breaker = None, ballot_notation = None):
-		self.edges = edges
-		super(SchulzeMethodByGraph, self).__init__([], tie_breaker = tie_breaker, ballot_notation = ballot_notation)
-	
-	def standardize_ballots(self, ballots, ballot_notation):
-		self.ballots = []
-		self.candidates = set([edge[0] for edge, weight in self.edges.iteritems()]) | set([edge[1] for edge, weight in self.edges.iteritems()])
-	
-	def ballots_into_graph(self, candidates, ballots):
-		graph = digraph()
-		graph.add_nodes(candidates)
-		for edge in self.edges.iteritems():
-			graph.add_edge(edge[0], edge[1])
-		return graph
+
+    def __init__(self, edges, tie_breaker=None, ballot_notation=None):
+        self.edges = edges
+        super(SchulzeMethodByGraph, self).__init__([], tie_breaker=tie_breaker, ballot_notation=ballot_notation)
+
+    def standardize_ballots(self, ballots, ballot_notation):
+        self.ballots = []
+        self.candidates = set([edge[0] for edge, weight in self.edges.iteritems()]) | set([edge[1] for edge, weight in self.edges.iteritems()])
+
+    def ballots_into_graph(self, candidates, ballots):
+        graph = digraph()
+        graph.add_nodes(candidates)
+        for edge in self.edges.iteritems():
+            graph.add_edge(edge[0], edge[1])
+        return graph
 
 # This class provides Schulze NPR results, but bypasses ballots and uses preference tallies instead.
+
+
 class SchulzeNPRByGraph(AbstractOrderingVotingSystem, SchulzeHelper):
-	
-	def __init__(self, edges, winner_threshold = None, tie_breaker = None, ballot_notation = None):
-		self.edges = edges
-		self.candidates = set([edge[0] for edge, weight in edges.iteritems()]) | set([edge[1] for edge, weight in edges.iteritems()])
-		super(SchulzeNPRByGraph, self).__init__([],
-			single_winner_class = SchulzeMethodByGraph,
-			winner_threshold = winner_threshold,
-			tie_breaker = tie_breaker,
-		)
-	
-	def ballots_without_candidate(self, ballots, candidate):
-		self.edges = dict([(edge, weight) for edge, weight in self.edges.iteritems() if edge[0] != candidate and edge[1] != candidate])
-		return self.edges
-	
-	def calculate_results(self):
-		self.ballots = self.edges
-		super(SchulzeNPRByGraph, self).calculate_results()
+
+    def __init__(self, edges, winner_threshold=None, tie_breaker=None, ballot_notation=None):
+        self.edges = edges
+        self.candidates = set([edge[0] for edge, weight in edges.iteritems()]) | set([edge[1] for edge, weight in edges.iteritems()])
+        super(SchulzeNPRByGraph, self).__init__([],
+            single_winner_class=SchulzeMethodByGraph,
+            winner_threshold=winner_threshold,
+            tie_breaker=tie_breaker,
+        )
+
+    def ballots_without_candidate(self, ballots, candidate):
+        self.edges = dict([(edge, weight) for edge, weight in self.edges.iteritems() if edge[0] != candidate and edge[1] != candidate])
+        return self.edges
+
+    def calculate_results(self):
+        self.ballots = self.edges
+        super(SchulzeNPRByGraph, self).calculate_results()

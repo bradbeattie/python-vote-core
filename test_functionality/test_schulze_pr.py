@@ -16,76 +16,77 @@
 from pyvotecore.schulze_pr import SchulzePR
 import unittest
 
+
 class TestSchulzePR(unittest.TestCase):
-	
-	# This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
-	# and Vote Management under Proportional Representation by the Single
-	# Transferable Vote, section 6.2).
-	def test_part_2_of_5_example(self):
-		
-		# Generate data
-		input = [
-			{ "count":  6, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]] },
-			{ "count": 12, "ballot":[["a"], ["d"], ["e"], ["c"], ["b"]] },
-			{ "count": 72, "ballot":[["a"], ["d"], ["e"], ["b"], ["c"]] },
-			{ "count":  6, "ballot":[["a"], ["e"], ["b"], ["d"], ["c"]] },
-			{ "count": 30, "ballot":[["b"], ["d"], ["c"], ["e"], ["a"]] },
-			{ "count": 48, "ballot":[["b"], ["e"], ["a"], ["d"], ["c"]] },
-			{ "count": 24, "ballot":[["b"], ["e"], ["d"], ["c"], ["a"]] },
-			{ "count":168, "ballot":[["c"], ["a"], ["e"], ["b"], ["d"]] },
-			{ "count":108, "ballot":[["d"], ["b"], ["e"], ["c"], ["a"]] },
-			{ "count": 30, "ballot":[["e"], ["a"], ["b"], ["d"], ["c"]] },
-		]
-		output = SchulzePR(input, ballot_notation = "grouping").as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			"candidates": set(["a","b","c","d","e"]),
-			"order": ["e","c","a","b","d"],
-			'rounds': [
-				{'winner': 'e'},
-				{'winner': 'c'},
-				{'winner': 'a'},
-				{'winner': 'b'},
-				{'winner': 'd'}
-			],
-		})
-	
-	def test_ties(self):
-		
-		# Generate data
-		input = [
-			{ "count": 1, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]] },
-			{ "count": 1, "ballot":[["d"], ["a"], ["e"], ["c"], ["b"]] },
-		]
-		output = SchulzePR(input, ballot_notation = "grouping").as_dict()
-		
-		# Run tests
-		self.assertEqual(output["candidates"], set(["a","b","c","d","e"]))
-		self.assertEqual(len(output["tie_breaker"]), 5)
-		self.assertEqual(output["rounds"][0]["tied_winners"], set(['a','d']))
-		self.assertEqual(output["rounds"][2]["tied_winners"], set(['c','b', 'e']))
-		self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
-	
-	def test_happenstance_example(self):
-		
-		# Generate data
-		input = [
-			{ "count":23, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2 }},
-			{ "count": 7, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9 }},
-			{ "count": 2, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9 }}
-		]
-		output = SchulzePR(input, winner_threshold = 2, ballot_notation = "ranking").as_dict()
-		
-		# Run tests
-		self.assertEqual(output, {
-			"candidates": set(["A","B","C","D","E","F"]),
-			"order": ["B","C"],
-			"rounds": [
-				{'winner': 'B'},
-				{'winner': 'C'}
-			],
-		})
+
+    # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
+    # and Vote Management under Proportional Representation by the Single
+    # Transferable Vote, section 6.2).
+    def test_part_2_of_5_example(self):
+
+        # Generate data
+        input = [
+            {"count":  6, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]]},
+            {"count": 12, "ballot":[["a"], ["d"], ["e"], ["c"], ["b"]]},
+            {"count": 72, "ballot":[["a"], ["d"], ["e"], ["b"], ["c"]]},
+            {"count":  6, "ballot":[["a"], ["e"], ["b"], ["d"], ["c"]]},
+            {"count": 30, "ballot":[["b"], ["d"], ["c"], ["e"], ["a"]]},
+            {"count": 48, "ballot":[["b"], ["e"], ["a"], ["d"], ["c"]]},
+            {"count": 24, "ballot":[["b"], ["e"], ["d"], ["c"], ["a"]]},
+            {"count":168, "ballot":[["c"], ["a"], ["e"], ["b"], ["d"]]},
+            {"count":108, "ballot":[["d"], ["b"], ["e"], ["c"], ["a"]]},
+            {"count": 30, "ballot":[["e"], ["a"], ["b"], ["d"], ["c"]]},
+        ]
+        output = SchulzePR(input, ballot_notation="grouping").as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(["a", "b", "c", "d", "e"]),
+            "order": ["e", "c", "a", "b", "d"],
+            'rounds': [
+                {'winner': 'e'},
+                {'winner': 'c'},
+                {'winner': 'a'},
+                {'winner': 'b'},
+                {'winner': 'd'}
+            ],
+        })
+
+    def test_ties(self):
+
+        # Generate data
+        input = [
+            {"count": 1, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]]},
+            {"count": 1, "ballot":[["d"], ["a"], ["e"], ["c"], ["b"]]},
+        ]
+        output = SchulzePR(input, ballot_notation="grouping").as_dict()
+
+        # Run tests
+        self.assertEqual(output["candidates"], set(["a", "b", "c", "d", "e"]))
+        self.assertEqual(len(output["tie_breaker"]), 5)
+        self.assertEqual(output["rounds"][0]["tied_winners"], set(['a', 'd']))
+        self.assertEqual(output["rounds"][2]["tied_winners"], set(['c', 'b', 'e']))
+        self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
+
+    def test_happenstance_example(self):
+
+        # Generate data
+        input = [
+            {"count":23, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2}},
+            {"count": 7, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9}},
+            {"count": 2, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9}}
+        ]
+        output = SchulzePR(input, winner_threshold=2, ballot_notation="ranking").as_dict()
+
+        # Run tests
+        self.assertEqual(output, {
+            "candidates": set(["A", "B", "C", "D", "E", "F"]),
+            "order": ["B", "C"],
+            "rounds": [
+                {'winner': 'B'},
+                {'winner': 'C'}
+            ],
+        })
 
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()

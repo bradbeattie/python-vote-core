@@ -17,13 +17,15 @@ from schulze_helper import SchulzeHelper
 from condorcet import CondorcetSystem
 
 # This class implements the Schulze Method (aka the beatpath method)
+
+
 class SchulzeMethod(CondorcetSystem, SchulzeHelper):
-	
-	def __init__(self, ballots, tie_breaker = None, ballot_notation = None):
-		super(SchulzeMethod, self).__init__(ballots, tie_breaker = tie_breaker, ballot_notation = ballot_notation)
-	
-	def as_dict(self):
-		data = super(SchulzeMethod, self).as_dict()
-		if hasattr(self, 'actions'):
-			data["actions"] = self.actions
-		return data
+
+    def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
+        super(SchulzeMethod, self).__init__(ballots, tie_breaker=tie_breaker, ballot_notation=ballot_notation)
+
+    def as_dict(self):
+        data = super(SchulzeMethod, self).as_dict()
+        if hasattr(self, 'actions'):
+            data["actions"] = self.actions
+        return data
