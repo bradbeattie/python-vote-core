@@ -103,6 +103,7 @@ class SchulzeHelper(CondorcetHelper):
             if pattern not in profile:
                 profile[pattern] = 0.0
             profile[pattern] += ballot["count"]
+        weight_sum = sum(profile.values())
 
         # Peel off patterns with indifference (from the most to the least) and apply proportional completion to them
         for pattern in sorted(profile.keys(), key=lambda pattern: pattern.count(PREFERRED_SAME), reverse=True):
@@ -110,11 +111,17 @@ class SchulzeHelper(CondorcetHelper):
                 break
             self.proportional_completion_round(pattern, profile)
 
+        try:
+            assert round(weight_sum,5) == round(sum(profile.values()),5)
+        except:
+            print "Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+
         return profile
 
     def proportional_completion_round(self, completion_pattern, profile):
 
         # Remove pattern that contains indifference
+        weight_sum = sum(profile.values())
         completion_pattern_weight = profile[completion_pattern]
         del profile[completion_pattern]
 
@@ -143,11 +150,16 @@ class SchulzeHelper(CondorcetHelper):
         # Reweight the remaining items
         for pattern in patterns_to_consider.keys():
             if denominator == 0:
-                profile[pattern] += completion_pattern_weight / len(patterns_to_consider[pattern])
+                profile[pattern] += completion_pattern_weight / len(patterns_to_consider)
             else:
                 if pattern not in profile:
                     profile[pattern] = 0
                 profile[pattern] += sum(profile[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
+
+        try:
+            assert round(weight_sum,5) == round(sum(profile.values()),5)
+        except:
+            print "Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
 
         return profile
 
