@@ -12,7 +12,7 @@ requires = [
     ]
 
 setup(name='python-vote-core',
-      version='20110509.1',
+      version='20120423.0',
       description="An implementation of various election methods, most notably the Schulze Method and Schulze STV.",
       long_description=README + '\n\n' + CHANGES + '\n\n' + LICENSE,
       classifiers=[
