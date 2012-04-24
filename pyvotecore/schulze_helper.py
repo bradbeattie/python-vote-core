@@ -136,7 +136,9 @@ class SchulzeHelper(CondorcetHelper):
                         append = True
                 else:
                     append_target.append(completion_pattern[i])
-            if append == True:
+            append_target = tuple(append_target)
+
+            if append == True and append_target in profile:
                 append_target = tuple(append_target)
                 if append_target not in patterns_to_consider:
                     patterns_to_consider[append_target] = set()

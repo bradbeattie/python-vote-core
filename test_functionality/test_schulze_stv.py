@@ -168,16 +168,16 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":45, "ballot":[["A1", "A2", "A3"], ["B1", "B2", "B3"], ["C1", "C2", "C3"]]},
-            {"count":20, "ballot":[["B1", "B2", "B3"], ["A1", "A2", "A3", "C1", "C2", "C3"]]},
-            {"count":35, "ballot":[["C1", "C2", "C3"], ["B1", "B2", "B3"], ["A1", "A2", "A3"]]},
+            {"count":5, "ballot":[["A1", "A2"], ["B1", "B2"], ["C1", "C2"]]},
+            {"count":2, "ballot":[["B1", "B2"], ["A1", "A2", "C1", "C2"]]},
+            {"count":4, "ballot":[["C1", "C2"], ["B1", "B2"], ["A1", "A2"]]},
         ]
         output = SchulzeSTV(input, required_winners=3, ballot_notation="grouping").as_dict()
 
         # Run tests
-        self.assert_(set(["A1", "A2", "A3"]) & output["winners"])
-        self.assert_(set(["B1", "B2", "B3"]) & output["winners"])
-        self.assert_(set(["C1", "C2", "C3"]) & output["winners"])
+        self.assert_(set(["A1", "A2"]) & output["winners"])
+        self.assert_(set(["B1", "B2"]) & output["winners"])
+        self.assert_(set(["C1", "C2"]) & output["winners"])
 
 if __name__ == "__main__":
     unittest.main()
