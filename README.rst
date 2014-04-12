@@ -6,7 +6,7 @@ calculated off a provided set of ballots and options.
 
 * Project page: http://github.com/bradbeattie/python-vote-core
 * Issue tracker: http://github.com/bradbeattie/python-vote-core/issues
-* Example usage: http://vote.cognitivesandbox.com, http://modernballots.com
+* Example usage: http://modernballots.com
 
 Methods implemented
 -------------------
