@@ -9,19 +9,19 @@ LICENSE = open(os.path.join(here, 'LICENSE.txt')).read()
 
 requires = [
     'python-graph-core >= 1.8.0',
-    ]
+]
 
 setup(name='python-vote-core',
       version='20120423.0',
       description="An implementation of various election methods, most notably the Schulze Method and Schulze STV.",
       long_description=README + '\n\n' + CHANGES + '\n\n' + LICENSE,
       classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Topic :: Scientific/Engineering :: Mathematics",
-        ],
+          "Development Status :: 5 - Production/Stable",
+          "License :: OSI Approved :: GNU General Public License (GPL)",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2.7",
+          "Topic :: Scientific/Engineering :: Mathematics",
+      ],
       author='Brad Beattie',
       author_email='bradbeattie@gmail com',
       url='https://github.com/bradbeattie/python-vote-core',

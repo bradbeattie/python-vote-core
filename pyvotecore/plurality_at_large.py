@@ -31,7 +31,7 @@ class PluralityAtLarge(MultipleWinnerVotingSystem):
         for ballot in self.ballots:
 
             # Convert single candidate ballots into ballot lists
-            if type(ballot["ballot"]) != types.ListType:
+            if not isinstance(ballot["ballot"], types.ListType):
                 ballot["ballot"] = [ballot["ballot"]]
 
             # Ensure no ballot has an excess of votes

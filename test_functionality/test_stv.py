@@ -24,9 +24,9 @@ class TestSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":56, "ballot":["c1", "c2", "c3"]},
-            {"count":40, "ballot":["c2", "c3", "c1"]},
-            {"count":20, "ballot":["c3", "c1", "c2"]}
+            {"count": 56, "ballot": ["c1", "c2", "c3"]},
+            {"count": 40, "ballot": ["c2", "c3", "c1"]},
+            {"count": 20, "ballot": ["c3", "c1", "c2"]}
         ]
         output = STV(input, required_winners=2).as_dict()
 
@@ -46,9 +46,9 @@ class TestSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":56, "ballot":["c1", "c2", "c3"]},
-            {"count":40, "ballot":["c2", "c3", "c1"]},
-            {"count":20, "ballot":["c3", "c1", "c2"]}
+            {"count": 56, "ballot": ["c1", "c2", "c3"]},
+            {"count": 40, "ballot": ["c2", "c3", "c1"]},
+            {"count": 20, "ballot": ["c3", "c1", "c2"]}
         ]
         output = STV(input, required_winners=3).as_dict()
 
@@ -67,12 +67,12 @@ class TestSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":4, "ballot":["orange"]},
-            {"count":2, "ballot":["pear", "orange"]},
-            {"count":8, "ballot":["chocolate", "strawberry"]},
-            {"count":4, "ballot":["chocolate", "sweets"]},
-            {"count":1, "ballot":["strawberry"]},
-            {"count":1, "ballot":["sweets"]}
+            {"count": 4, "ballot": ["orange"]},
+            {"count": 2, "ballot": ["pear", "orange"]},
+            {"count": 8, "ballot": ["chocolate", "strawberry"]},
+            {"count": 4, "ballot": ["chocolate", "sweets"]},
+            {"count": 1, "ballot": ["strawberry"]},
+            {"count": 1, "ballot": ["sweets"]}
         ]
         output = STV(input, required_winners=3).as_dict()
 
@@ -95,7 +95,7 @@ class TestSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":["c1", "c2", "c3", "c4"]},
+            {"count": 1, "ballot": ["c1", "c2", "c3", "c4"]},
         ]
         output = STV(input, required_winners=3).as_dict()
 
@@ -116,8 +116,8 @@ class TestSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":["c1", "c3", "c4"]},
-            {"count":1, "ballot":["c2", "c3", "c4"]},
+            {"count": 1, "ballot": ["c1", "c3", "c4"]},
+            {"count": 1, "ballot": ["c2", "c3", "c4"]},
         ]
         output = STV(input, required_winners=3).as_dict()
 

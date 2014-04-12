@@ -31,7 +31,7 @@ class VotingSystem(object):
             if "count" not in ballot:
                 ballot["count"] = 1
         self.tie_breaker = tie_breaker
-        if type(self.tie_breaker) == types.ListType:
+        if isinstance(self.tie_breaker, types.ListType):
             self.tie_breaker = TieBreaker(self.tie_breaker)
         self.calculate_results()
 
@@ -44,7 +44,7 @@ class VotingSystem(object):
         return data
 
     def break_ties(self, tied_objects, reverse_order=False):
-        if self.tie_breaker == None:
+        if self.tie_breaker is None:
             self.tie_breaker = TieBreaker(self.candidates)
         return self.tie_breaker.break_ties(tied_objects, reverse_order)
 
@@ -154,7 +154,10 @@ class AbstractOrderingVotingSystem(OrderingVotingSystem):
         self.rounds = []
         remaining_ballots = deepcopy(self.ballots)
         remaining_candidates = True
-        while (remaining_candidates == True or len(remaining_candidates) > 1) and (self.winner_threshold == None or len(self.order) < self.winner_threshold):
+        while (
+            (remaining_candidates is True or len(remaining_candidates) > 1)
+            and (self.winner_threshold is None or len(self.order) < self.winner_threshold)
+        ):
 
             # Given the remaining ballots, who should win?
             result = self.single_winner_class(deepcopy(remaining_ballots), tie_breaker=self.tie_breaker)
@@ -171,14 +174,14 @@ class AbstractOrderingVotingSystem(OrderingVotingSystem):
             self.rounds.append(r)
 
             # Remove the candidate from the remaining candidates and ballots
-            if remaining_candidates == True:
+            if remaining_candidates is True:
                 self.candidates = result.candidates
                 remaining_candidates = copy(self.candidates)
             remaining_candidates.remove(result.winner)
             remaining_ballots = self.ballots_without_candidate(result.ballots, result.winner)
 
         # Note the last remaining candidate
-        if (self.winner_threshold == None or len(self.order) < self.winner_threshold):
+        if (self.winner_threshold is None or len(self.order) < self.winner_threshold):
             r = {'winner': list(remaining_candidates)[0]}
             self.order.append(r['winner'])
             self.rounds.append(r)

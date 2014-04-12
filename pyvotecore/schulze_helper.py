@@ -112,7 +112,7 @@ class SchulzeHelper(CondorcetHelper):
             self.proportional_completion_round(pattern, profile)
 
         try:
-            assert round(weight_sum,5) == round(sum(profile.values()),5)
+            assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
             print "Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
 
@@ -138,7 +138,7 @@ class SchulzeHelper(CondorcetHelper):
                     append_target.append(completion_pattern[i])
             append_target = tuple(append_target)
 
-            if append == True and append_target in profile:
+            if append is True and append_target in profile:
                 append_target = tuple(append_target)
                 if append_target not in patterns_to_consider:
                     patterns_to_consider[append_target] = set()
@@ -159,7 +159,7 @@ class SchulzeHelper(CondorcetHelper):
                 profile[pattern] += sum(profile[considered_pattern] for considered_pattern in patterns_to_consider[pattern]) * completion_pattern_weight / denominator
 
         try:
-            assert round(weight_sum,5) == round(sum(profile.values()),5)
+            assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
             print "Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
 

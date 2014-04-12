@@ -24,9 +24,9 @@ class TestPlurality(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":"c1"},
-            {"count":22, "ballot":"c2"},
-            {"count":23, "ballot":"c3"}
+            {"count": 26, "ballot": "c1"},
+            {"count": 22, "ballot": "c2"},
+            {"count": 23, "ballot": "c3"}
         ]
         output = Plurality(input).as_dict()
 
@@ -42,9 +42,9 @@ class TestPlurality(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":["c1"]},
-            {"count":22, "ballot":["c2"]},
-            {"count":23, "ballot":["c3"]}
+            {"count": 26, "ballot": ["c1"]},
+            {"count": 22, "ballot": ["c2"]},
+            {"count": 23, "ballot": ["c3"]}
         ]
         output = Plurality(input).as_dict()
 
@@ -60,9 +60,9 @@ class TestPlurality(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":"c1"},
-            {"count":23, "ballot":"c2"},
-            {"count":23, "ballot":"c3"}
+            {"count": 26, "ballot": "c1"},
+            {"count": 23, "ballot": "c2"},
+            {"count": 23, "ballot": "c3"}
         ]
         output = Plurality(input).as_dict()
 
@@ -78,9 +78,9 @@ class TestPlurality(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":"c1"},
-            {"count":26, "ballot":"c2"},
-            {"count":23, "ballot":"c3"}
+            {"count": 26, "ballot": "c1"},
+            {"count": 26, "ballot": "c2"},
+            {"count": 23, "ballot": "c3"}
         ]
         output = Plurality(input).as_dict()
 

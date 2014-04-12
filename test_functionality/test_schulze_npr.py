@@ -23,7 +23,7 @@ class TestSchulzeNPR(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":{"A":1, "B":2, "C":3, "D":4, "E":5}},
+            {"count": 1, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
         ]
         output = SchulzeNPR(input, winner_threshold=5, ballot_notation="ranking").as_dict()
 
@@ -44,8 +44,8 @@ class TestSchulzeNPR(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":2, "ballot":{"A":1, "B":2, "C":3, "D":4, "E":5}},
-            {"count":1, "ballot":{"A":5, "B":4, "C":3, "D":2, "E":1}},
+            {"count": 2, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
+            {"count": 1, "ballot": {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}},
         ]
         output = SchulzeNPR(input, winner_threshold=5, ballot_notation="ranking").as_dict()
 

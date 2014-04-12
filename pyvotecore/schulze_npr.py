@@ -24,7 +24,8 @@ class SchulzeNPR(AbstractOrderingVotingSystem, SchulzeHelper):
 
     def __init__(self, ballots, winner_threshold=None, tie_breaker=None, ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
-        super(SchulzeNPR, self).__init__(self.ballots,
+        super(SchulzeNPR, self).__init__(
+            self.ballots,
             single_winner_class=SchulzeMethod,
             winner_threshold=winner_threshold,
             tie_breaker=tie_breaker,

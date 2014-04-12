@@ -38,7 +38,7 @@ class CondorcetHelper(object):
             for ballot in self.ballots:
                 for candidate, rating in ballot["ballot"].iteritems():
                     ballot["ballot"][candidate] = -float(rating)
-        elif ballot_notation == "rating" or ballot_notation == None:
+        elif ballot_notation == "rating" or ballot_notation is None:
             for ballot in self.ballots:
                 for candidate, rating in ballot["ballot"].iteritems():
                     ballot["ballot"][candidate] = float(rating)

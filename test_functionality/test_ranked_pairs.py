@@ -24,9 +24,9 @@ class TestRankedPairs(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":80, "ballot":[["c1", "c2"], ["c3"]]},
-            {"count":50, "ballot":[["c2"], ["c3", "c1"]]},
-            {"count":40, "ballot":[["c3"], ["c1"], ["c2"]]}
+            {"count": 80, "ballot": [["c1", "c2"], ["c3"]]},
+            {"count": 50, "ballot": [["c2"], ["c3", "c1"]]},
+            {"count": 40, "ballot": [["c3"], ["c1"], ["c2"]]}
         ]
         output = RankedPairs(input, ballot_notation="grouping").as_dict()
 
@@ -54,9 +54,9 @@ class TestRankedPairs(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":80, "ballot":[["c1"], ["c2"], ["c3"]]},
-            {"count":50, "ballot":[["c2"], ["c3"], ["c1"]]},
-            {"count":40, "ballot":[["c3"], ["c1"], ["c2"]]}
+            {"count": 80, "ballot": [["c1"], ["c2"], ["c3"]]},
+            {"count": 50, "ballot": [["c2"], ["c3"], ["c1"]]},
+            {"count": 40, "ballot": [["c3"], ["c1"], ["c2"]]}
         ]
         output = RankedPairs(input, ballot_notation="grouping").as_dict()
 
@@ -89,9 +89,9 @@ class TestRankedPairs(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":100, "ballot":[["chocolate"], ["vanilla"]]},
-            {"count":100, "ballot":[["vanilla"], ["strawberry"]]},
-            {"count":1, "ballot":[["strawberry"], ["chocolate"]]}
+            {"count": 100, "ballot": [["chocolate"], ["vanilla"]]},
+            {"count": 100, "ballot": [["vanilla"], ["strawberry"]]},
+            {"count": 1, "ballot": [["strawberry"], ["chocolate"]]}
         ]
         output = RankedPairs(input, ballot_notation="grouping").as_dict()
 

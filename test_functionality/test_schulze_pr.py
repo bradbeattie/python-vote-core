@@ -26,16 +26,16 @@ class TestSchulzePR(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":  6, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]]},
-            {"count": 12, "ballot":[["a"], ["d"], ["e"], ["c"], ["b"]]},
-            {"count": 72, "ballot":[["a"], ["d"], ["e"], ["b"], ["c"]]},
-            {"count":  6, "ballot":[["a"], ["e"], ["b"], ["d"], ["c"]]},
-            {"count": 30, "ballot":[["b"], ["d"], ["c"], ["e"], ["a"]]},
-            {"count": 48, "ballot":[["b"], ["e"], ["a"], ["d"], ["c"]]},
-            {"count": 24, "ballot":[["b"], ["e"], ["d"], ["c"], ["a"]]},
-            {"count":168, "ballot":[["c"], ["a"], ["e"], ["b"], ["d"]]},
-            {"count":108, "ballot":[["d"], ["b"], ["e"], ["c"], ["a"]]},
-            {"count": 30, "ballot":[["e"], ["a"], ["b"], ["d"], ["c"]]},
+            {"count": 6, "ballot": [["a"], ["d"], ["b"], ["c"], ["e"]]},
+            {"count": 12, "ballot": [["a"], ["d"], ["e"], ["c"], ["b"]]},
+            {"count": 72, "ballot": [["a"], ["d"], ["e"], ["b"], ["c"]]},
+            {"count": 6, "ballot": [["a"], ["e"], ["b"], ["d"], ["c"]]},
+            {"count": 30, "ballot": [["b"], ["d"], ["c"], ["e"], ["a"]]},
+            {"count": 48, "ballot": [["b"], ["e"], ["a"], ["d"], ["c"]]},
+            {"count": 24, "ballot": [["b"], ["e"], ["d"], ["c"], ["a"]]},
+            {"count": 168, "ballot": [["c"], ["a"], ["e"], ["b"], ["d"]]},
+            {"count": 108, "ballot": [["d"], ["b"], ["e"], ["c"], ["a"]]},
+            {"count": 30, "ballot": [["e"], ["a"], ["b"], ["d"], ["c"]]},
         ]
         output = SchulzePR(input, ballot_notation="grouping").as_dict()
 
@@ -56,8 +56,8 @@ class TestSchulzePR(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count": 1, "ballot":[["a"], ["d"], ["b"], ["c"], ["e"]]},
-            {"count": 1, "ballot":[["d"], ["a"], ["e"], ["c"], ["b"]]},
+            {"count": 1, "ballot": [["a"], ["d"], ["b"], ["c"], ["e"]]},
+            {"count": 1, "ballot": [["d"], ["a"], ["e"], ["c"], ["b"]]},
         ]
         output = SchulzePR(input, ballot_notation="grouping").as_dict()
 
@@ -72,9 +72,9 @@ class TestSchulzePR(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":23, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2}},
-            {"count": 7, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9}},
-            {"count": 2, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9}}
+            {"count": 23, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2}},
+            {"count": 7, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
+            {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
         ]
         output = SchulzePR(input, winner_threshold=2, ballot_notation="ranking").as_dict()
 

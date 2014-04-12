@@ -23,11 +23,11 @@ class TestCondorcet(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]]},
-            {"count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
-            {"count":12, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
-            {"count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]]},
-            {"count":27, "ballot":[["Brad"]]},
+            {"count": 12, "ballot": [["Andrea"], ["Brad"], ["Carter"]]},
+            {"count": 26, "ballot": [["Andrea"], ["Carter"], ["Brad"]]},
+            {"count": 12, "ballot": [["Andrea"], ["Carter"], ["Brad"]]},
+            {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
+            {"count": 27, "ballot": [["Brad"]]},
         ]
         output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
 
@@ -54,11 +54,11 @@ class TestCondorcet(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":12, "ballot":{"Andrea":1, "Brad":2, "Carter":3}},
-            {"count":26, "ballot":{"Andrea":1, "Carter":2, "Brad":3}},
-            {"count":12, "ballot":{"Andrea":1, "Carter":2, "Brad":3}},
-            {"count":13, "ballot":{"Carter":1, "Andrea":2, "Brad":3}},
-            {"count":27, "ballot":{"Brad":1}}
+            {"count": 12, "ballot": {"Andrea": 1, "Brad": 2, "Carter": 3}},
+            {"count": 26, "ballot": {"Andrea": 1, "Carter": 2, "Brad": 3}},
+            {"count": 12, "ballot": {"Andrea": 1, "Carter": 2, "Brad": 3}},
+            {"count": 13, "ballot": {"Carter": 1, "Andrea": 2, "Brad": 3}},
+            {"count": 27, "ballot": {"Brad": 1}}
         ]
         output = SchulzeMethod(input, ballot_notation="ranking").as_dict()
 
@@ -85,11 +85,11 @@ class TestCondorcet(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":12, "ballot":{"Andrea":10, "Brad":5, "Carter":3}},
-            {"count":26, "ballot":{"Andrea":10, "Carter":5, "Brad":3}},
-            {"count":12, "ballot":{"Andrea":10, "Carter":5, "Brad":3}},
-            {"count":13, "ballot":{"Carter":10, "Andrea":5, "Brad":3}},
-            {"count":27, "ballot":{"Brad":10}}
+            {"count": 12, "ballot": {"Andrea": 10, "Brad": 5, "Carter": 3}},
+            {"count": 26, "ballot": {"Andrea": 10, "Carter": 5, "Brad": 3}},
+            {"count": 12, "ballot": {"Andrea": 10, "Carter": 5, "Brad": 3}},
+            {"count": 13, "ballot": {"Carter": 10, "Andrea": 5, "Brad": 3}},
+            {"count": 27, "ballot": {"Brad": 10}}
         ]
         output = SchulzeMethod(input, ballot_notation="rating").as_dict()
 

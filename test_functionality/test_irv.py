@@ -24,9 +24,9 @@ class TestInstantRunoff(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":["c1", "c2", "c3"]},
-            {"count":20, "ballot":["c2", "c3", "c1"]},
-            {"count":23, "ballot":["c3", "c1", "c2"]}
+            {"count": 26, "ballot": ["c1", "c2", "c3"]},
+            {"count": 20, "ballot": ["c2", "c3", "c1"]},
+            {"count": 23, "ballot": ["c3", "c1", "c2"]}
         ]
         output = IRV(input).as_dict()
 
@@ -46,9 +46,9 @@ class TestInstantRunoff(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":26, "ballot":["c1", "c2", "c3"]},
-            {"count":20, "ballot":["c2", "c3", "c1"]},
-            {"count":20, "ballot":["c3", "c1", "c2"]}
+            {"count": 26, "ballot": ["c1", "c2", "c3"]},
+            {"count": 20, "ballot": ["c2", "c3", "c1"]},
+            {"count": 20, "ballot": ["c3", "c1", "c2"]}
         ]
         output = IRV(input).as_dict()
 
@@ -68,9 +68,9 @@ class TestInstantRunoff(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":56, "ballot":["c1", "c2", "c3"]},
-            {"count":20, "ballot":["c2", "c3", "c1"]},
-            {"count":20, "ballot":["c3", "c1", "c2"]}
+            {"count": 56, "ballot": ["c1", "c2", "c3"]},
+            {"count": 20, "ballot": ["c2", "c3", "c1"]},
+            {"count": 20, "ballot": ["c3", "c1", "c2"]}
         ]
         output = IRV(input).as_dict()
 

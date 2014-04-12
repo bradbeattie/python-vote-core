@@ -24,7 +24,8 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
 
     def __init__(self, ballots, tie_breaker=None, winner_threshold=None, ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
-        super(SchulzePR, self).__init__(self.ballots,
+        super(SchulzePR, self).__init__(
+            self.ballots,
             tie_breaker=tie_breaker,
             winner_threshold=winner_threshold,
         )
@@ -35,7 +36,7 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
         self.order = []
         self.rounds = []
 
-        if self.winner_threshold == None:
+        if self.winner_threshold is None:
             winner_threshold = len(self.candidates)
         else:
             winner_threshold = min(len(self.candidates), self.winner_threshold + 1)
@@ -77,7 +78,7 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
                 del self.tied_winners
 
         # Attach the last candidate as the sole winner if necessary
-        if self.winner_threshold == None or self.winner_threshold == len(self.candidates):
+        if self.winner_threshold is None or self.winner_threshold == len(self.candidates):
             self.rounds.append({"winner": list(remaining_candidates)[0]})
             self.order.append(list(remaining_candidates)[0])
 

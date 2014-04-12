@@ -24,9 +24,9 @@ class TestPluralityAtLarge(unittest.TestCase):
 
         # Generate data
         output = PluralityAtLarge([
-            {"count":26, "ballot":["c1", "c2"]},
-            {"count":22, "ballot":["c1", "c3"]},
-            {"count":23, "ballot":["c2", "c3"]}
+            {"count": 26, "ballot": ["c1", "c2"]},
+            {"count": 22, "ballot": ["c1", "c3"]},
+            {"count": 23, "ballot": ["c2", "c3"]}
         ], required_winners=2).as_dict()
 
         # Run tests
@@ -41,10 +41,10 @@ class TestPluralityAtLarge(unittest.TestCase):
 
         # Generate data
         output = PluralityAtLarge([
-            {"count":26, "ballot":["c1", "c2"]},
-            {"count":22, "ballot":["c1", "c3"]},
-            {"count":22, "ballot":["c2", "c3"]},
-            {"count":11, "ballot":["c4", "c5"]}
+            {"count": 26, "ballot": ["c1", "c2"]},
+            {"count": 22, "ballot": ["c1", "c3"]},
+            {"count": 22, "ballot": ["c2", "c3"]},
+            {"count": 11, "ballot": ["c4", "c5"]}
         ], required_winners=2).as_dict()
 
         # Run tests
@@ -59,11 +59,11 @@ class TestPluralityAtLarge(unittest.TestCase):
 
         # Generate data
         output = PluralityAtLarge([
-            {"count":30, "ballot":["c1", "c2"]},
-            {"count":22, "ballot":["c3", "c1"]},
-            {"count":22, "ballot":["c2", "c3"]},
-            {"count":4, "ballot":["c4", "c1"]},
-            {"count":8, "ballot":["c3", "c4"]},
+            {"count": 30, "ballot": ["c1", "c2"]},
+            {"count": 22, "ballot": ["c3", "c1"]},
+            {"count": 22, "ballot": ["c2", "c3"]},
+            {"count": 4, "ballot": ["c4", "c1"]},
+            {"count": 8, "ballot": ["c3", "c4"]},
         ], required_winners=2).as_dict()
 
         # Run tests

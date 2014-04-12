@@ -45,7 +45,8 @@ class SchulzeNPRByGraph(AbstractOrderingVotingSystem, SchulzeHelper):
     def __init__(self, edges, winner_threshold=None, tie_breaker=None, ballot_notation=None):
         self.edges = edges
         self.candidates = set([edge[0] for edge, weight in edges.iteritems()]) | set([edge[1] for edge, weight in edges.iteritems()])
-        super(SchulzeNPRByGraph, self).__init__([],
+        super(SchulzeNPRByGraph, self).__init__(
+            [],
             single_winner_class=SchulzeMethodByGraph,
             winner_threshold=winner_threshold,
             tie_breaker=tie_breaker,

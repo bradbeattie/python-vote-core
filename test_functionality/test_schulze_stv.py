@@ -26,26 +26,26 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":60, "ballot":[["a"], ["b"], ["c"], ["d"], ["e"]]},
-            {"count":45, "ballot":[["a"], ["c"], ["e"], ["b"], ["d"]]},
-            {"count":30, "ballot":[["a"], ["d"], ["b"], ["e"], ["c"]]},
-            {"count":15, "ballot":[["a"], ["e"], ["d"], ["c"], ["b"]]},
-            {"count":12, "ballot":[["b"], ["a"], ["e"], ["d"], ["c"]]},
-            {"count":48, "ballot":[["b"], ["c"], ["d"], ["e"], ["a"]]},
-            {"count":39, "ballot":[["b"], ["d"], ["a"], ["c"], ["e"]]},
-            {"count":21, "ballot":[["b"], ["e"], ["c"], ["a"], ["d"]]},
-            {"count":27, "ballot":[["c"], ["a"], ["d"], ["b"], ["e"]]},
-            {"count":9,  "ballot":[["c"], ["b"], ["a"], ["e"], ["d"]]},
-            {"count":51, "ballot":[["c"], ["d"], ["e"], ["a"], ["b"]]},
-            {"count":33, "ballot":[["c"], ["e"], ["b"], ["d"], ["a"]]},
-            {"count":42, "ballot":[["d"], ["a"], ["c"], ["e"], ["b"]]},
-            {"count":18, "ballot":[["d"], ["b"], ["e"], ["c"], ["a"]]},
-            {"count":6,  "ballot":[["d"], ["c"], ["b"], ["a"], ["e"]]},
-            {"count":54, "ballot":[["d"], ["e"], ["a"], ["b"], ["c"]]},
-            {"count":57, "ballot":[["e"], ["a"], ["b"], ["c"], ["d"]]},
-            {"count":36, "ballot":[["e"], ["b"], ["d"], ["a"], ["c"]]},
-            {"count":24, "ballot":[["e"], ["c"], ["a"], ["d"], ["b"]]},
-            {"count":3,  "ballot":[["e"], ["d"], ["c"], ["b"], ["a"]]},
+            {"count": 60, "ballot": [["a"], ["b"], ["c"], ["d"], ["e"]]},
+            {"count": 45, "ballot": [["a"], ["c"], ["e"], ["b"], ["d"]]},
+            {"count": 30, "ballot": [["a"], ["d"], ["b"], ["e"], ["c"]]},
+            {"count": 15, "ballot": [["a"], ["e"], ["d"], ["c"], ["b"]]},
+            {"count": 12, "ballot": [["b"], ["a"], ["e"], ["d"], ["c"]]},
+            {"count": 48, "ballot": [["b"], ["c"], ["d"], ["e"], ["a"]]},
+            {"count": 39, "ballot": [["b"], ["d"], ["a"], ["c"], ["e"]]},
+            {"count": 21, "ballot": [["b"], ["e"], ["c"], ["a"], ["d"]]},
+            {"count": 27, "ballot": [["c"], ["a"], ["d"], ["b"], ["e"]]},
+            {"count": 9, "ballot": [["c"], ["b"], ["a"], ["e"], ["d"]]},
+            {"count": 51, "ballot": [["c"], ["d"], ["e"], ["a"], ["b"]]},
+            {"count": 33, "ballot": [["c"], ["e"], ["b"], ["d"], ["a"]]},
+            {"count": 42, "ballot": [["d"], ["a"], ["c"], ["e"], ["b"]]},
+            {"count": 18, "ballot": [["d"], ["b"], ["e"], ["c"], ["a"]]},
+            {"count": 6, "ballot": [["d"], ["c"], ["b"], ["a"], ["e"]]},
+            {"count": 54, "ballot": [["d"], ["e"], ["a"], ["b"], ["c"]]},
+            {"count": 57, "ballot": [["e"], ["a"], ["b"], ["c"], ["d"]]},
+            {"count": 36, "ballot": [["e"], ["b"], ["d"], ["a"], ["c"]]},
+            {"count": 24, "ballot": [["e"], ["c"], ["a"], ["d"], ["b"]]},
+            {"count": 3, "ballot": [["e"], ["d"], ["c"], ["b"], ["a"]]},
         ]
         output = SchulzeSTV(input, required_winners=3, ballot_notation="grouping").as_dict()
 
@@ -57,11 +57,11 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]]},
-            {"count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
-            {"count":12, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
-            {"count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]]},
-            {"count":27, "ballot":[["Brad"]]},
+            {"count": 12, "ballot": [["Andrea"], ["Brad"], ["Carter"]]},
+            {"count": 26, "ballot": [["Andrea"], ["Carter"], ["Brad"]]},
+            {"count": 12, "ballot": [["Andrea"], ["Carter"], ["Brad"]]},
+            {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
+            {"count": 27, "ballot": [["Brad"]]},
         ]
         output = SchulzeSTV(input, required_winners=2, ballot_notation="grouping").as_dict()
 
@@ -82,11 +82,11 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":12, "ballot":[["Andrea"], ["Brad"], ["Carter"]]},
-            {"count":26, "ballot":[["Andrea"], ["Carter"], ["Brad"]]},
-            {"count":12, "ballot":[["Carter"], ["Andrea"], ["Brad"]]},
-            {"count":13, "ballot":[["Carter"], ["Andrea"], ["Brad"]]},
-            {"count":27, "ballot":[["Brad"]]},
+            {"count": 12, "ballot": [["Andrea"], ["Brad"], ["Carter"]]},
+            {"count": 26, "ballot": [["Andrea"], ["Carter"], ["Brad"]]},
+            {"count": 12, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
+            {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
+            {"count": 27, "ballot": [["Brad"]]},
         ]
         output = SchulzeSTV(input, required_winners=2, ballot_notation="grouping").as_dict()
 
@@ -107,7 +107,7 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":{"a":1, "b":1, "c":3}}
+            {"count": 1, "ballot": {"a": 1, "b": 1, "c": 3}}
         ]
         output = SchulzeSTV(input, required_winners=1, ballot_notation="rating").as_dict()
 
@@ -120,7 +120,7 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":{"Metal":1, "Paper":1, "Plastic":2, "Wood":2}},
+            {"count": 1, "ballot": {"Metal": 1, "Paper": 1, "Plastic": 2, "Wood": 2}},
         ]
         output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
 
@@ -136,8 +136,8 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":{"Metal":2, "Paper":1, "Plastic":2, "Wood":2}},
-            {"count":1, "ballot":{"Metal":2, "Paper":2, "Plastic":2, "Wood":1}}
+            {"count": 1, "ballot": {"Metal": 2, "Paper": 1, "Plastic": 2, "Wood": 2}},
+            {"count": 1, "ballot": {"Metal": 2, "Paper": 2, "Plastic": 2, "Wood": 1}}
         ]
         output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
 
@@ -152,15 +152,16 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":{"A":9, "B":1, "C":1, "D":9, "E":9, "F":2}},
-            {"count":1, "ballot":{"A":3, "B":2, "C":3, "D":1, "E":9, "F":9}},
-            {"count":1, "ballot":{"A":9, "B":9, "C":9, "D":9, "E":1, "F":9}}
+            {"count": 1, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2}},
+            {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
+            {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
         ]
         output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
 
         # Run tests
-        self.assertEqual(output["tied_winners"],
-             set([('D', 'E'), ('B', 'E'), ('C', 'E'), ('B', 'D')])
+        self.assertEqual(
+            output["tied_winners"],
+            set([('D', 'E'), ('B', 'E'), ('C', 'E'), ('B', 'D')])
         )
 
     # Any winner set should include one from each of A, B, and C
@@ -168,9 +169,9 @@ class TestSchulzeSTV(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":5, "ballot":[["A1", "A2"], ["B1", "B2"], ["C1", "C2"]]},
-            {"count":2, "ballot":[["B1", "B2"], ["A1", "A2", "C1", "C2"]]},
-            {"count":4, "ballot":[["C1", "C2"], ["B1", "B2"], ["A1", "A2"]]},
+            {"count": 5, "ballot": [["A1", "A2"], ["B1", "B2"], ["C1", "C2"]]},
+            {"count": 2, "ballot": [["B1", "B2"], ["A1", "A2", "C1", "C2"]]},
+            {"count": 4, "ballot": [["C1", "C2"], ["B1", "B2"], ["A1", "A2"]]},
         ]
         output = SchulzeSTV(input, required_winners=3, ballot_notation="grouping").as_dict()
 

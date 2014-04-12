@@ -25,11 +25,11 @@ class TestSchulzeMethod(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":3, "ballot":[["A"], ["C"], ["D"], ["B"]]},
-            {"count":9, "ballot":[["B"], ["A"], ["C"], ["D"]]},
-            {"count":8, "ballot":[["C"], ["D"], ["A"], ["B"]]},
-            {"count":5, "ballot":[["D"], ["A"], ["B"], ["C"]]},
-            {"count":5, "ballot":[["D"], ["B"], ["C"], ["A"]]}
+            {"count": 3, "ballot": [["A"], ["C"], ["D"], ["B"]]},
+            {"count": 9, "ballot": [["B"], ["A"], ["C"], ["D"]]},
+            {"count": 8, "ballot": [["C"], ["D"], ["A"], ["B"]]},
+            {"count": 5, "ballot": [["D"], ["A"], ["B"], ["C"]]},
+            {"count": 5, "ballot": [["D"], ["B"], ["C"], ["A"]]}
         ]
         output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
 
@@ -73,14 +73,14 @@ class TestSchulzeMethod(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":5, "ballot":[["A"], ["C"], ["B"], ["E"], ["D"]]},
-            {"count":5, "ballot":[["A"], ["D"], ["E"], ["C"], ["B"]]},
-            {"count":8, "ballot":[["B"], ["E"], ["D"], ["A"], ["C"]]},
-            {"count":3, "ballot":[["C"], ["A"], ["B"], ["E"], ["D"]]},
-            {"count":7, "ballot":[["C"], ["A"], ["E"], ["B"], ["D"]]},
-            {"count":2, "ballot":[["C"], ["B"], ["A"], ["D"], ["E"]]},
-            {"count":7, "ballot":[["D"], ["C"], ["E"], ["B"], ["A"]]},
-            {"count":8, "ballot":[["E"], ["B"], ["A"], ["D"], ["C"]]}
+            {"count": 5, "ballot": [["A"], ["C"], ["B"], ["E"], ["D"]]},
+            {"count": 5, "ballot": [["A"], ["D"], ["E"], ["C"], ["B"]]},
+            {"count": 8, "ballot": [["B"], ["E"], ["D"], ["A"], ["C"]]},
+            {"count": 3, "ballot": [["C"], ["A"], ["B"], ["E"], ["D"]]},
+            {"count": 7, "ballot": [["C"], ["A"], ["E"], ["B"], ["D"]]},
+            {"count": 2, "ballot": [["C"], ["B"], ["A"], ["D"], ["E"]]},
+            {"count": 7, "ballot": [["D"], ["C"], ["E"], ["B"], ["A"]]},
+            {"count": 8, "ballot": [["E"], ["B"], ["A"], ["D"], ["C"]]}
         ]
         output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
 
@@ -133,8 +133,8 @@ class TestSchulzeMethod(unittest.TestCase):
 
         # Generate data
         input = [
-            {"count":1, "ballot":[["A"], ["B", "C"]]},
-            {"count":1, "ballot":[["B"], ["A"], ["C"]]},
+            {"count": 1, "ballot": [["A"], ["B", "C"]]},
+            {"count": 1, "ballot": [["B"], ["A"], ["C"]]},
         ]
         output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
 
