@@ -15,7 +15,6 @@
 
 from condorcet import CondorcetSystem, CondorcetHelper
 from pygraph.classes.digraph import digraph
-from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 from pygraph.algorithms.cycles import find_cycle
 from common_functions import matching_keys
 from copy import deepcopy
