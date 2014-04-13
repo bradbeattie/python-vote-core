@@ -24,6 +24,8 @@ PREFERRED_SAME = 2
 PREFERRED_MORE = 3
 STRENGTH_TOLERANCE = 0.0000000001
 STRENGTH_THRESHOLD = 0.1
+NODE_SINK = -1
+NODE_SOURCE = -2
 
 # This class implements the Schulze Method (aka the beatpath method)
 
@@ -64,9 +66,9 @@ class SchulzeHelper(CondorcetHelper):
         self.vote_management_graph.add_nodes(self.completed_patterns)
         self.vote_management_graph.del_node(tuple([PREFERRED_MORE] * self.required_winners))
         self.pattern_nodes = self.vote_management_graph.nodes()
-        self.vote_management_graph.add_nodes(["source", "sink"])
+        self.vote_management_graph.add_nodes([NODE_SOURCE, NODE_SINK])
         for pattern_node in self.pattern_nodes:
-            self.vote_management_graph.add_edge(("source", pattern_node))
+            self.vote_management_graph.add_edge((NODE_SOURCE, pattern_node))
         for i in range(self.required_winners):
             self.vote_management_graph.add_node(i)
         for pattern_node in self.pattern_nodes:
@@ -74,7 +76,7 @@ class SchulzeHelper(CondorcetHelper):
                 if pattern_node[i] == 1:
                     self.vote_management_graph.add_edge((pattern_node, i))
         for i in range(self.required_winners):
-            self.vote_management_graph.add_edge((i, "sink"))
+            self.vote_management_graph.add_edge((i, NODE_SINK))
 
     # Generates a list of all patterns that do not contain indifference
     def generate_completed_patterns(self):
@@ -174,7 +176,7 @@ class SchulzeHelper(CondorcetHelper):
 
         # Initialize the graph weights
         for pattern in self.pattern_nodes:
-            self.vote_management_graph.set_edge_weight(("source", pattern), voter_profile[pattern])
+            self.vote_management_graph.set_edge_weight((NODE_SOURCE, pattern), voter_profile[pattern])
             for i in range(self.required_winners):
                 if pattern[i] == 1:
                     self.vote_management_graph.set_edge_weight((pattern, i), voter_profile[pattern])
@@ -183,9 +185,9 @@ class SchulzeHelper(CondorcetHelper):
         r = [(float(sum(voter_profile.values())) - voter_profile[tuple([PREFERRED_MORE] * self.required_winners)]) / self.required_winners]
         while len(r) < 2 or r[-2] - r[-1] > STRENGTH_TOLERANCE:
             for i in range(self.required_winners):
-                self.vote_management_graph.set_edge_weight((i, "sink"), r[-1])
-            max_flow = maximum_flow(self.vote_management_graph, "source", "sink")
-            sink_sum = sum(v for k, v in max_flow[0].iteritems() if k[1] == "sink")
+                self.vote_management_graph.set_edge_weight((i, NODE_SINK), r[-1])
+            max_flow = maximum_flow(self.vote_management_graph, NODE_SOURCE, NODE_SINK)
+            sink_sum = sum(v for k, v in max_flow[0].iteritems() if k[1] == NODE_SINK)
             r.append(sink_sum / self.required_winners)
 
             # We expect strengths to be above a specified threshold
