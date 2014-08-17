@@ -33,11 +33,37 @@ Basic Usage
 
 Schulze method example::
 
-  print SchulzeMethod([
-    { "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
-    { "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
-    { "count":8, "ballot":[["C"], ["D"], ["A"], ["B"]] },
-    { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
-    { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
-  ], ballot_notation = "grouping").as_dict()
-
+    >>> from pyvotecore.schulze_method import SchulzeMethod
+    >>> ballots = [
+    ...   { "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
+    ...   { "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
+    ...   { "count":8, "ballot":[["C"], ["D"], ["A"], ["B"]] },
+    ...   { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
+    ...   { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
+    ... ]
+    >>> SchulzeMethod(ballots, ballot_notation = "grouping").as_dict()
+    {'actions': [{'edges': {('A', 'B')}},
+      {'edges': {('A', 'C')}},
+      {'nodes': {'A'}},
+      {'edges': {('B', 'C')}},
+      {'nodes': {'B', 'D'}}],
+     'candidates': {'A', 'B', 'C', 'D'},
+     'pairs': {('A', 'B'): 16,
+      ('A', 'C'): 17,
+      ('A', 'D'): 12,
+      ('B', 'A'): 14,
+      ('B', 'C'): 19,
+      ('B', 'D'): 9,
+      ('C', 'A'): 13,
+      ('C', 'B'): 11,
+      ('C', 'D'): 20,
+      ('D', 'A'): 18,
+      ('D', 'B'): 21,
+      ('D', 'C'): 10},
+     'strong_pairs': {('A', 'B'): 16,
+      ('A', 'C'): 17,
+      ('B', 'C'): 19,
+      ('C', 'D'): 20,
+      ('D', 'A'): 18,
+      ('D', 'B'): 21},
+     'winner': 'C'}
