@@ -12,11 +12,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-from tie_breaker import TieBreaker
+from __future__ import absolute_import
 from abc import ABCMeta, abstractmethod
 from copy import copy, deepcopy
-import types
+
+from .tie_breaker import TieBreaker
 
 # This class provides methods that most electoral systems make use of.
 
@@ -31,7 +31,7 @@ class VotingSystem(object):
             if "count" not in ballot:
                 ballot["count"] = 1
         self.tie_breaker = tie_breaker
-        if isinstance(self.tie_breaker, types.ListType):
+        if isinstance(self.tie_breaker, list):
             self.tie_breaker = TieBreaker(self.tie_breaker)
         self.calculate_results()
 

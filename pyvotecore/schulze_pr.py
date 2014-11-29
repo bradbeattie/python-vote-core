@@ -15,9 +15,12 @@
 
 # This class implements the Schulze Proportional Ranking Method as defined
 # in schulze2.pdf
-from schulze_helper import SchulzeHelper
-from abstract_classes import OrderingVotingSystem
+from __future__ import absolute_import
+
 from pygraph.classes.digraph import digraph
+
+from .abstract_classes import OrderingVotingSystem
+from .schulze_helper import SchulzeHelper
 
 
 class SchulzePR(OrderingVotingSystem, SchulzeHelper):

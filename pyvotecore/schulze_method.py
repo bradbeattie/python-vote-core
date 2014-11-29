@@ -12,9 +12,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import, print_function
 
-from schulze_helper import SchulzeHelper
-from condorcet import CondorcetSystem
+from .condorcet import CondorcetSystem
+from .schulze_helper import SchulzeHelper
 
 # This class implements the Schulze Method (aka the beatpath method)
 

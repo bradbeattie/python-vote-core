@@ -12,12 +12,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import
 
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
-from condorcet import CondorcetHelper
-from common_functions import matching_keys, unique_permutations
+import six
+
+from .condorcet import CondorcetHelper
+from .common_functions import matching_keys, unique_permutations
+
 
 PREFERRED_LESS = 1
 PREFERRED_SAME = 2
@@ -114,7 +118,7 @@ class SchulzeHelper(CondorcetHelper):
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print("Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values())))
 
         return profile
 
@@ -161,7 +165,7 @@ class SchulzeHelper(CondorcetHelper):
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print("Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values())))
 
         return profile
 
@@ -185,7 +189,7 @@ class SchulzeHelper(CondorcetHelper):
             for i in range(self.required_winners):
                 self.vote_management_graph.set_edge_weight((i, "sink"), r[-1])
             max_flow = maximum_flow(self.vote_management_graph, "source", "sink")
-            sink_sum = sum(v for k, v in max_flow[0].iteritems() if k[1] == "sink")
+            sink_sum = sum(v for k, v in six.iteritems(max_flow[0]) if k[1] == "sink")
             r.append(sink_sum / self.required_winners)
 
             # We expect strengths to be above a specified threshold

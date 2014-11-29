@@ -12,12 +12,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import
+from copy import deepcopy
 
-from condorcet import CondorcetSystem, CondorcetHelper
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.cycles import find_cycle
-from common_functions import matching_keys
-from copy import deepcopy
+
+from .condorcet import CondorcetSystem, CondorcetHelper
+from .common_functions import matching_keys
+
 
 
 # This class implements the Schulze Method (aka the beatpath method)

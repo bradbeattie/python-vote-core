@@ -12,11 +12,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import
 
-from schulze_method import SchulzeMethod
-from schulze_helper import SchulzeHelper
-from abstract_classes import AbstractOrderingVotingSystem
 from pygraph.classes.digraph import digraph
+import six
+
+from .abstract_classes import AbstractOrderingVotingSystem
+from .schulze_method import SchulzeMethod
+from .schulze_helper import SchulzeHelper
 
 
 # This class provides Schulze Method results, but bypasses ballots and uses preference tallies instead.
@@ -28,12 +31,12 @@ class SchulzeMethodByGraph(SchulzeMethod):
 
     def standardize_ballots(self, ballots, ballot_notation):
         self.ballots = []
-        self.candidates = set([edge[0] for edge, weight in self.edges.iteritems()]) | set([edge[1] for edge, weight in self.edges.iteritems()])
+        self.candidates = set([edge[0] for edge, weight in six.iteritems(self.edges)]) | set([edge[1] for edge, weight in six.iteritems(self.edges)])
 
     def ballots_into_graph(self, candidates, ballots):
         graph = digraph()
         graph.add_nodes(candidates)
-        for edge in self.edges.iteritems():
+        for edge in six.iteritems(self.edges):
             graph.add_edge(edge[0], edge[1])
         return graph
 
@@ -44,7 +47,7 @@ class SchulzeNPRByGraph(AbstractOrderingVotingSystem, SchulzeHelper):
 
     def __init__(self, edges, winner_threshold=None, tie_breaker=None, ballot_notation=None):
         self.edges = edges
-        self.candidates = set([edge[0] for edge, weight in edges.iteritems()]) | set([edge[1] for edge, weight in edges.iteritems()])
+        self.candidates = set([edge[0] for edge, weight in six.iteritems(edges)]) | set([edge[1] for edge, weight in six.iteritems(edges)])
         super(SchulzeNPRByGraph, self).__init__(
             [],
             single_winner_class=SchulzeMethodByGraph,
@@ -53,7 +56,7 @@ class SchulzeNPRByGraph(AbstractOrderingVotingSystem, SchulzeHelper):
         )
 
     def ballots_without_candidate(self, ballots, candidate):
-        self.edges = dict([(edge, weight) for edge, weight in self.edges.iteritems() if edge[0] != candidate and edge[1] != candidate])
+        self.edges = dict([(edge, weight) for edge, weight in six.iteritems(self.edges) if edge[0] != candidate and edge[1] != candidate])
         return self.edges
 
     def calculate_results(self):

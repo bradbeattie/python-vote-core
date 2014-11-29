@@ -9,6 +9,7 @@ LICENSE = open(os.path.join(here, 'LICENSE.txt')).read()
 
 requires = [
     'python-graph-core >= 1.8.0',
+    'six >= 1.8.0',
 ]
 
 setup(name='python-vote-core',
@@ -20,6 +21,7 @@ setup(name='python-vote-core',
           "License :: OSI Approved :: GNU General Public License (GPL)",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3.3",
           "Topic :: Scientific/Engineering :: Mathematics",
       ],
       author='Brad Beattie',

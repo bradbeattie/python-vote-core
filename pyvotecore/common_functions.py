@@ -1,7 +1,9 @@
+import six
+
 def matching_keys(dict, target_value):
     return set([
         key
-        for key, value in dict.iteritems()
+        for key, value in six.iteritems(dict)
         if value == target_value
     ])
 
