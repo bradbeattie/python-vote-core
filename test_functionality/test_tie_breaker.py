@@ -37,13 +37,15 @@ class TestTieBreaker(unittest.TestCase):
 
     def test_tuple_tie(self):
         self.assertEqual(
-            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'), ('c', 'b')])),
+            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'),
+                                            ('c', 'b')])),
             ('b', 'd')
         )
 
     def test_tuple_tie_reverse(self):
         self.assertEqual(
-            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'), ('c', 'b')]), reverse=True),
+            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'),
+                                            ('c', 'b')]), reverse=True),
             ('c', 'b')
         )
 

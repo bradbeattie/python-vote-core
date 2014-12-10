@@ -15,19 +15,18 @@
 from copy import copy
 import random
 
-# This class provides tie breaking methods
-
 
 class TieBreaker(object):
+    """
+    This class provides tie breaking methods
+    """
 
-    #
     def __init__(self, candidate_range):
         self.ties_broken = False
         self.random_ordering = list(candidate_range)
         if not isinstance(candidate_range, list):
             random.shuffle(self.random_ordering)
 
-    #
     def break_ties(self, tied_candidates, reverse=False):
         self.ties_broken = True
         random_ordering = copy(self.random_ordering)
@@ -39,28 +38,28 @@ class TieBreaker(object):
             result = self.break_simple_ties(tied_candidates, random_ordering)
         return result
 
-    #
     @staticmethod
     def break_simple_ties(tied_candidates, random_ordering):
         for candidate in random_ordering:
             if candidate in tied_candidates:
                 return candidate
 
-    #
     @staticmethod
     def break_complex_ties(tied_candidates, random_ordering):
         max_columns = len(list(tied_candidates)[0])
         column = 0
         while len(tied_candidates) > 1 and column < max_columns:
-            min_index = min(random_ordering.index(list(candidate)[column]) for candidate in tied_candidates)
-            tied_candidates = set([candidate for candidate in tied_candidates if candidate[column] == random_ordering[min_index]])
+            min_index = min(random_ordering.index(list(candidate)[column])
+                            for candidate in tied_candidates)
+            tied_candidates = set([
+                candidate for candidate in tied_candidates
+                if candidate[column] == random_ordering[min_index]
+            ])
             column += 1
         return list(tied_candidates)[0]
 
-    #
     def as_list(self):
         return self.random_ordering
 
-    #
     def __str__(self):
         return "[%s]" % ">".join(self.random_ordering)

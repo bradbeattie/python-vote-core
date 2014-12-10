@@ -19,8 +19,10 @@ import unittest
 
 class TestInstantRunoff(unittest.TestCase):
 
-    # IRV, no ties
     def test_irv_no_ties(self):
+        """
+        IRV, no ties
+        """
 
         # Generate data
         input = [
@@ -36,13 +38,16 @@ class TestInstantRunoff(unittest.TestCase):
             'quota': 35,
             'winner': 'c3',
             'rounds': [
-                {'tallies': {'c3': 23.0, 'c2': 20.0, 'c1': 26.0}, 'loser': 'c2'},
+                {'tallies': {'c3': 23.0, 'c2': 20.0, 'c1': 26.0},
+                 'loser': 'c2'},
                 {'tallies': {'c3': 43.0, 'c1': 26.0}, 'winner': 'c3'}
             ]
         })
 
-    # IRV, ties
     def test_irv_ties(self):
+        """
+        IRV, ties
+        """
 
         # Generate data
         input = [
@@ -56,15 +61,19 @@ class TestInstantRunoff(unittest.TestCase):
         self.assertEqual(output["quota"], 34)
         self.assertEqual(len(output["rounds"]), 2)
         self.assertEqual(len(output["rounds"][0]), 3)
-        self.assertEqual(output["rounds"][0]["tallies"], {'c1': 26, 'c2': 20, 'c3': 20})
+        self.assertEqual(output["rounds"][0]["tallies"],
+                         {'c1': 26, 'c2': 20, 'c3': 20})
         self.assertEqual(output["rounds"][0]["tied_losers"], set(['c2', 'c3']))
-        self.assert_(output["rounds"][0]["loser"] in output["rounds"][0]["tied_losers"])
+        self.assert_(output["rounds"][0]["loser"] in
+                     output["rounds"][0]["tied_losers"])
         self.assertEqual(len(output["rounds"][1]["tallies"]), 2)
         self.assert_("winner" in output["rounds"][1])
         self.assertEqual(len(output["tie_breaker"]), 3)
 
-    # IRV, no rounds
     def test_irv_landslide(self):
+        """
+        IRV, no rounds
+        """
 
         # Generate data
         input = [
@@ -80,7 +89,8 @@ class TestInstantRunoff(unittest.TestCase):
             'quota': 49,
             'winner': 'c1',
             'rounds': [
-                {'tallies': {'c3': 20.0, 'c2': 20.0, 'c1': 56.0}, 'winner': 'c1'}
+                {'tallies': {'c3': 20.0, 'c2': 20.0, 'c1': 56.0},
+                 'winner': 'c1'}
             ]
         })
 

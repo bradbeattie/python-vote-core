@@ -19,8 +19,10 @@ import unittest
 
 class TestRankedPairs(unittest.TestCase):
 
-    # Ranked Pairs, cycle
     def test_no_cycle(self):
+        """
+        Ranked Pairs, cycle
+        """
 
         # Generate data
         input = [
@@ -49,8 +51,10 @@ class TestRankedPairs(unittest.TestCase):
             'winner': 'c2'
         })
 
-    # Ranked Pairs, cycle
     def test_cycle(self):
+        """
+        Ranked Pairs, cycle
+        """
 
         # Generate data
         input = [
@@ -84,8 +88,10 @@ class TestRankedPairs(unittest.TestCase):
             'winner': 'c1'
         })
 
-    # Strongest pairs tie
     def test_tied_pairs(self):
+        """
+        Strongest pairs tie
+        """
 
         # Generate data
         input = [

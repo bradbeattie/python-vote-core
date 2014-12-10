@@ -85,7 +85,8 @@ class TestSchulzeNPRByGraph(unittest.TestCase):
             ('d', 'c'): 4
 
         }
-        output = SchulzeNPRByGraph(input, winner_threshold=3, tie_breaker=['a', 'd', 'c', 'b']).as_dict()
+        output = SchulzeNPRByGraph(input, winner_threshold=3,
+                                   tie_breaker=['a', 'd', 'c', 'b']).as_dict()
 
         # Run tests
         self.assertEqual(output, {

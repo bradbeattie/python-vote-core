@@ -91,23 +91,25 @@ class CondorcetHelper(object):
     def remove_weak_edges(graph):
         for pair in itertools.combinations(graph.nodes(), 2):
             pairs = (pair, (pair[1], pair[0]))
-            weights = (graph.edge_weight(pairs[0]), graph.edge_weight(pairs[1]))
+            weights = (graph.edge_weight(pairs[0]),
+                       graph.edge_weight(pairs[1]))
             if weights[0] >= weights[1]:
                 graph.del_edge(pairs[1])
             if weights[1] >= weights[0]:
                 graph.del_edge(pairs[0])
 
-# This class determines the Condorcet winner if one exists.
-
 
 class CondorcetSystem(SingleWinnerVotingSystem, CondorcetHelper):
-
+    """
+    This class determines the Condorcet winner if one exists.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
-        super(CondorcetSystem, self).__init__(self.ballots, tie_breaker=tie_breaker)
+        super(CondorcetSystem, self).__init__(self.ballots,
+                                              tie_breaker=tie_breaker)
 
     def calculate_results(self):
         self.graph = self.ballots_into_graph(self.candidates, self.ballots)
