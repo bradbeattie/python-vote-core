@@ -19,8 +19,10 @@ import unittest
 
 class TestSTV(unittest.TestCase):
 
-    # STV, no rounds
     def test_stv_landslide(self):
+        """
+        STV, no rounds
+        """
 
         # Generate data
         input = [
@@ -41,8 +43,10 @@ class TestSTV(unittest.TestCase):
             'winners': set(['c2', 'c1'])
         })
 
-    # STV, no rounds
     def test_stv_everyone_wins(self):
+        """
+        STV, no rounds
+        """
 
         # Generate data
         input = [
@@ -61,9 +65,11 @@ class TestSTV(unittest.TestCase):
             'winners': set(['c1', 'c2', 'c3'])
         })
 
-    # STV, example from Wikipedia
-    # http://en.wikipedia.org/wiki/Single_transferable_vote#An_example
     def test_stv_wiki_example(self):
+        """
+        STV, example from Wikipedia
+        http://en.wikipedia.org/wiki/Single_transferable_vote#An_example
+        """
 
         # Generate data
         input = [
@@ -78,20 +84,28 @@ class TestSTV(unittest.TestCase):
 
         # Run tests
         self.assertEqual(output, {
-            'candidates': set(['orange', 'pear', 'chocolate', 'strawberry', 'sweets']),
+            'candidates': set(['orange', 'pear', 'chocolate', 'strawberry',
+                               'sweets']),
             'quota': 6,
             'rounds': [
-                {'tallies': {'orange': 4.0, 'strawberry': 1.0, 'pear': 2.0, 'sweets': 1.0, 'chocolate': 12.0}, 'winners': set(['chocolate'])},
-                {'tallies': {'orange': 4.0, 'strawberry': 5.0, 'pear': 2.0, 'sweets': 3.0}, 'loser': 'pear'},
-                {'tallies': {'orange': 6.0, 'strawberry': 5.0, 'sweets': 3.0}, 'winners': set(['orange'])},
-                {'tallies': {'strawberry': 5.0, 'sweets': 3.0}, 'loser': 'sweets'}
+                {'tallies': {'orange': 4.0, 'strawberry': 1.0, 'pear': 2.0,
+                             'sweets': 1.0, 'chocolate': 12.0},
+                 'winners': set(['chocolate'])},
+                {'tallies': {'orange': 4.0, 'strawberry': 5.0, 'pear': 2.0,
+                             'sweets': 3.0}, 'loser': 'pear'},
+                {'tallies': {'orange': 6.0, 'strawberry': 5.0, 'sweets': 3.0},
+                 'winners': set(['orange'])},
+                {'tallies': {'strawberry': 5.0, 'sweets': 3.0},
+                 'loser': 'sweets'}
             ],
             'remaining_candidates': set(['strawberry']),
             'winners': set(['orange', 'strawberry', 'chocolate'])
         })
 
-    # STV, no rounds
     def test_stv_single_ballot(self):
+        """
+        STV, no rounds
+        """
 
         # Generate data
         input = [
@@ -105,14 +119,18 @@ class TestSTV(unittest.TestCase):
             'quota': 1,
             'rounds': [
                 {'tallies': {'c1': 1.0}, 'winners': set(['c1'])},
-                {'note': 'reset', 'tallies': {'c2': 1.0}, 'winners': set(['c2'])},
-                {'note': 'reset', 'tallies': {'c3': 1.0}, 'winners': set(['c3'])}
+                {'note': 'reset', 'tallies': {'c2': 1.0},
+                 'winners': set(['c2'])},
+                {'note': 'reset', 'tallies': {'c3': 1.0},
+                 'winners': set(['c3'])}
             ],
             'winners': set(['c1', 'c2', 'c3'])
         })
 
-    # STV, no rounds
     def test_stv_fewer_voters_than_winners(self):
+        """
+        STV, no rounds
+        """
 
         # Generate data
         input = [
@@ -126,8 +144,10 @@ class TestSTV(unittest.TestCase):
             'candidates': set(['c1', 'c2', 'c3', 'c4']),
             'quota': 1,
             'rounds': [
-                {'tallies': {'c2': 1.0, 'c1': 1.0}, 'winners': set(['c2', 'c1'])},
-                {'note': 'reset', 'tallies': {'c3': 2.0}, 'winners': set(['c3'])}
+                {'tallies': {'c2': 1.0, 'c1': 1.0},
+                 'winners': set(['c2', 'c1'])},
+                {'note': 'reset', 'tallies': {'c3': 2.0},
+                 'winners': set(['c3'])}
             ],
             'winners': set(['c1', 'c2', 'c3'])
         })

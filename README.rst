@@ -67,3 +67,9 @@ Schulze method example::
       ('D', 'A'): 18,
       ('D', 'B'): 21},
      'winner': 'C'}
+
+Requirements
+------------
+
+* python-graph-core >= 1.8.0
+* six >= 1.8.0

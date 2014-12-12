@@ -12,19 +12,23 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-from condorcet import CondorcetSystem, CondorcetHelper
-from pygraph.classes.digraph import digraph
-from pygraph.algorithms.cycles import find_cycle
-from common_functions import matching_keys
+from __future__ import absolute_import
 from copy import deepcopy
 
+from pygraph.classes.digraph import digraph
+from pygraph.algorithms.cycles import find_cycle
 
-# This class implements the Schulze Method (aka the beatpath method)
+from .condorcet import CondorcetSystem, CondorcetHelper
+from .common_functions import matching_keys
+
+
 class RankedPairs(CondorcetSystem, CondorcetHelper):
-
+    """
+    This class implements the Schulze Method (aka the beatpath method)
+    """
     def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
-        super(RankedPairs, self).__init__(ballots, tie_breaker=tie_breaker, ballot_notation=ballot_notation)
+        super(RankedPairs, self).__init__(ballots, tie_breaker=tie_breaker,
+                                          ballot_notation=ballot_notation)
 
     def condorcet_completion_method(self):
 
@@ -40,7 +44,8 @@ class RankedPairs(CondorcetSystem, CondorcetHelper):
 
             # Find the strongest pair
             largest_strength = max(remaining_strong_pairs.values())
-            strongest_pairs = matching_keys(remaining_strong_pairs, largest_strength)
+            strongest_pairs = matching_keys(remaining_strong_pairs,
+                                            largest_strength)
             if len(strongest_pairs) > 1:
                 r["tied_pairs"] = strongest_pairs
                 strongest_pair = self.break_ties(strongest_pairs)

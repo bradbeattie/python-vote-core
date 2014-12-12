@@ -19,10 +19,12 @@ import unittest
 
 class TestSchulzePR(unittest.TestCase):
 
-    # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
-    # and Vote Management under Proportional Representation by the Single
-    # Transferable Vote, section 6.2).
     def test_part_2_of_5_example(self):
+        """
+        This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
+        and Vote Management under Proportional Representation by the Single
+        Transferable Vote, section 6.2).
+        """
 
         # Generate data
         input = [
@@ -65,18 +67,23 @@ class TestSchulzePR(unittest.TestCase):
         self.assertEqual(output["candidates"], set(["a", "b", "c", "d", "e"]))
         self.assertEqual(len(output["tie_breaker"]), 5)
         self.assertEqual(output["rounds"][0]["tied_winners"], set(['a', 'd']))
-        self.assertEqual(output["rounds"][2]["tied_winners"], set(['c', 'b', 'e']))
+        self.assertEqual(output["rounds"][2]["tied_winners"],
+                         set(['c', 'b', 'e']))
         self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
 
     def test_happenstance_example(self):
 
         # Generate data
         input = [
-            {"count": 23, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2}},
-            {"count": 7, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
-            {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
+            {"count": 23, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9,
+                                     "F": 2}},
+            {"count": 7, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9,
+                                    "F": 9}},
+            {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1,
+                                    "F": 9}}
         ]
-        output = SchulzePR(input, winner_threshold=2, ballot_notation="ranking").as_dict()
+        output = SchulzePR(input, winner_threshold=2,
+                           ballot_notation="ranking").as_dict()
 
         # Run tests
         self.assertEqual(output, {

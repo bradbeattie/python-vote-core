@@ -1,5 +1,7 @@
-from abstract_classes import AbstractSingleWinnerVotingSystem
-from stv import STV
+from __future__ import absolute_import
+
+from .abstract_classes import AbstractSingleWinnerVotingSystem
+from .stv import STV
 
 
 class IRV(AbstractSingleWinnerVotingSystem):

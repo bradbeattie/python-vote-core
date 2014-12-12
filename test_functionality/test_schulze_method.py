@@ -19,9 +19,11 @@ import unittest
 
 class TestSchulzeMethod(unittest.TestCase):
 
-    # Schulze Method, example from Wikipedia
-    # http://en.wikipedia.org/wiki/Schulze_method#The_Schwartz_set_heuristic
     def test_wiki_example(self):
+        """
+        Schulze Method, example from Wikipedia
+        http://en.wikipedia.org/wiki/Schulze_method#The_Schwartz_set_heuristic
+        """
 
         # Generate data
         input = [
@@ -68,8 +70,10 @@ class TestSchulzeMethod(unittest.TestCase):
             'winner': 'C'
         })
 
-    # http://en.wikipedia.org/wiki/Schulze_method#Example
     def test_wiki_example2(self):
+        """
+        http://en.wikipedia.org/wiki/Schulze_method#Example
+        """
 
         # Generate data
         input = [

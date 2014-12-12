@@ -19,8 +19,10 @@ import unittest
 
 class TestPluralityAtLarge(unittest.TestCase):
 
-    # Plurality at Large, no ties
     def test_plurality_at_large_no_ties(self):
+        """
+        Plurality at Large, no ties
+        """
 
         # Generate data
         output = PluralityAtLarge([
@@ -36,8 +38,10 @@ class TestPluralityAtLarge(unittest.TestCase):
             'winners': set(['c2', 'c1'])
         })
 
-    # Plurality at Large, irrelevant ties
     def test_plurality_at_large_irrelevant_ties(self):
+        """
+        Plurality at Large, irrelevant ties
+        """
 
         # Generate data
         output = PluralityAtLarge([
@@ -54,8 +58,10 @@ class TestPluralityAtLarge(unittest.TestCase):
             'winners': set(['c2', 'c1'])
         })
 
-    # Plurality at Large, irrelevant ties
     def test_plurality_at_large_relevant_ties(self):
+        """
+        Plurality at Large, irrelevant ties
+        """
 
         # Generate data
         output = PluralityAtLarge([
@@ -67,10 +73,12 @@ class TestPluralityAtLarge(unittest.TestCase):
         ], required_winners=2).as_dict()
 
         # Run tests
-        self.assertEqual(output["tallies"], {'c3': 52, 'c2': 52, 'c1': 56, 'c4': 12})
+        self.assertEqual(output["tallies"], {'c3': 52, 'c2': 52, 'c1': 56,
+                                             'c4': 12})
         self.assertEqual(len(output["tie_breaker"]), 4)
         self.assertEqual(output["tied_winners"], set(['c2', 'c3']))
-        self.assert_("c1" in output["winners"] and ("c2" in output["winners"] or "c3" in output["winners"]))
+        self.assert_("c1" in output["winners"] and
+                     ("c2" in output["winners"] or "c3" in output["winners"]))
         self.assertEqual(len(output), 5)
 
 

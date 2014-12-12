@@ -15,14 +15,18 @@
 
 # This class implements the Schulze Proportional Ranking Method as defined
 # in schulze2.pdf
-from schulze_helper import SchulzeHelper
-from abstract_classes import OrderingVotingSystem
+from __future__ import absolute_import
+
 from pygraph.classes.digraph import digraph
+
+from .abstract_classes import OrderingVotingSystem
+from .schulze_helper import SchulzeHelper
 
 
 class SchulzePR(OrderingVotingSystem, SchulzeHelper):
 
-    def __init__(self, ballots, tie_breaker=None, winner_threshold=None, ballot_notation=None):
+    def __init__(self, ballots, tie_breaker=None, winner_threshold=None,
+                 ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
         super(SchulzePR, self).__init__(
             self.ballots,
@@ -39,7 +43,8 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
         if self.winner_threshold is None:
             winner_threshold = len(self.candidates)
         else:
-            winner_threshold = min(len(self.candidates), self.winner_threshold + 1)
+            winner_threshold = min(len(self.candidates),
+                                   self.winner_threshold + 1)
 
         for self.required_winners in range(1, winner_threshold):
 
@@ -55,12 +60,16 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
 
             # Generate the edges between nodes
             for candidate_from in remaining_candidates:
-                other_candidates = sorted(list(remaining_candidates - set([candidate_from])))
+                other_candidates = sorted(list(remaining_candidates -
+                                               set([candidate_from])))
                 for candidate_to in other_candidates:
-                    completed = self.proportional_completion(candidate_from, set([candidate_to]) | set(self.order))
+                    completed = self.proportional_completion(
+                        candidate_from, set([candidate_to]) | set(self.order)
+                    )
                     weight = self.strength_of_vote_management(completed)
                     if weight > 0:
-                        self.graph.add_edge((candidate_to, candidate_from), weight)
+                        self.graph.add_edge((candidate_to, candidate_from),
+                                            weight)
 
             # Determine the round winner through the Schwartz set heuristic
             self.schwartz_set_heuristic()
@@ -78,7 +87,10 @@ class SchulzePR(OrderingVotingSystem, SchulzeHelper):
                 del self.tied_winners
 
         # Attach the last candidate as the sole winner if necessary
-        if self.winner_threshold is None or self.winner_threshold == len(self.candidates):
+        if (
+            self.winner_threshold is None or
+            self.winner_threshold == len(self.candidates)
+        ):
             self.rounds.append({"winner": list(remaining_candidates)[0]})
             self.order.append(list(remaining_candidates)[0])
 

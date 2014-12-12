@@ -12,11 +12,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+from __future__ import absolute_import
 from abc import ABCMeta, abstractmethod
-from abstract_classes import SingleWinnerVotingSystem
-from pygraph.classes.digraph import digraph
 import itertools
+
+from pygraph.classes.digraph import digraph
+import six
+
+from .abstract_classes import SingleWinnerVotingSystem
 
 
 class CondorcetHelper(object):
@@ -36,14 +39,13 @@ class CondorcetHelper(object):
                 ballot["ballot"] = new_ballot
         elif ballot_notation == "ranking":
             for ballot in self.ballots:
-                for candidate, rating in ballot["ballot"].iteritems():
+                for candidate, rating in six.iteritems(ballot["ballot"]):
                     ballot["ballot"][candidate] = -float(rating)
         elif ballot_notation == "rating" or ballot_notation is None:
             for ballot in self.ballots:
-                for candidate, rating in ballot["ballot"].iteritems():
+                for candidate, rating in six.iteritems(ballot["ballot"]):
                     ballot["ballot"][candidate] = float(rating)
         else:
-            print ballot_notation
             raise Exception("Unknown notation specified")
 
         self.candidates = set()
@@ -89,23 +91,25 @@ class CondorcetHelper(object):
     def remove_weak_edges(graph):
         for pair in itertools.combinations(graph.nodes(), 2):
             pairs = (pair, (pair[1], pair[0]))
-            weights = (graph.edge_weight(pairs[0]), graph.edge_weight(pairs[1]))
+            weights = (graph.edge_weight(pairs[0]),
+                       graph.edge_weight(pairs[1]))
             if weights[0] >= weights[1]:
                 graph.del_edge(pairs[1])
             if weights[1] >= weights[0]:
                 graph.del_edge(pairs[0])
 
-# This class determines the Condorcet winner if one exists.
-
 
 class CondorcetSystem(SingleWinnerVotingSystem, CondorcetHelper):
-
+    """
+    This class determines the Condorcet winner if one exists.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
-        super(CondorcetSystem, self).__init__(self.ballots, tie_breaker=tie_breaker)
+        super(CondorcetSystem, self).__init__(self.ballots,
+                                              tie_breaker=tie_breaker)
 
     def calculate_results(self):
         self.graph = self.ballots_into_graph(self.candidates, self.ballots)

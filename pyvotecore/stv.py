@@ -12,22 +12,26 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-from abstract_classes import MultipleWinnerVotingSystem
-import math
+from __future__ import absolute_import
 import copy
-from common_functions import matching_keys
+import math
 
-# This class implements the Single Transferable vote (aka STV) in its most
-# classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
-# Alternate counting methods such as Meek's and Warren's would be nice, but
-# would need to be covered in a separate class.
+import six
+
+from .abstract_classes import MultipleWinnerVotingSystem
+from .common_functions import matching_keys
 
 
 class STV(MultipleWinnerVotingSystem):
-
+    """
+    This class implements the Single Transferable vote (aka STV) in its most
+    classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
+    Alternate counting methods such as Meek's and Warren's would be nice, but
+    would need to be covered in a separate class.
+    """
     def __init__(self, ballots, tie_breaker=None, required_winners=1):
-        super(STV, self).__init__(ballots, tie_breaker=tie_breaker, required_winners=required_winners)
+        super(STV, self).__init__(ballots, tie_breaker=tie_breaker,
+                                  required_winners=required_winners)
 
     def calculate_results(self):
 
@@ -44,16 +48,25 @@ class STV(MultipleWinnerVotingSystem):
         ballots = copy.deepcopy(self.ballots)
 
         # Loop until we have enough candidates
-        while len(self.winners) < self.required_winners and len(remaining_candidates) + len(self.winners) > self.required_winners:
+        while (
+            len(self.winners) < self.required_winners and
+            len(remaining_candidates) + len(self.winners) >
+            self.required_winners
+        ):
 
-            # If all the votes have been used up, start from scratch for the remaining candidates
+            # If all the votes have been used up, start from scratch for the
+            # remaining candidates
             round = {}
-            if len(filter(lambda ballot: ballot["count"] > 0, ballots)) == 0:
+            if len(list(filter(lambda ballot: ballot["count"] > 0,
+                               ballots))) == 0:
                 round["note"] = "reset"
                 ballots = copy.deepcopy(self.ballots)
                 for ballot in ballots:
-                    ballot["ballot"] = filter(lambda x: x in remaining_candidates, ballot["ballot"])
-                quota = STV.droop_quota(ballots, self.required_winners - len(self.winners))
+                    ballot["ballot"] = list(filter(
+                        lambda x: x in remaining_candidates, ballot["ballot"]
+                    ))
+                quota = STV.droop_quota(ballots, self.required_winners -
+                                        len(self.winners))
 
             # If any candidates meet or exceeds the quota, they're a winner
             round["tallies"] = STV.tallies(ballots)
@@ -71,16 +84,22 @@ class STV(MultipleWinnerVotingSystem):
                 # Redistribute excess votes
                 for ballot in ballots:
                     if ballot["ballot"][0] in round["winners"]:
-                        ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - self.quota) / round["tallies"][ballot["ballot"][0]]
+                        ballot["count"] *= (
+                            (round["tallies"][ballot["ballot"][0]] -
+                             self.quota) /
+                            round["tallies"][ballot["ballot"][0]]
+                        )
 
                 # Remove candidates from remaining ballots
-                ballots = self.remove_candidates_from_ballots(round["winners"], ballots)
+                ballots = self.remove_candidates_from_ballots(round["winners"],
+                                                              ballots)
 
             # If no candidate exceeds the quota, elimiate the least preferred
             else:
                 round.update(self.loser(round["tallies"]))
                 remaining_candidates.remove(round["loser"])
-                ballots = self.remove_candidates_from_ballots([round["loser"]], ballots)
+                ballots = self.remove_candidates_from_ballots([round["loser"]],
+                                                              ballots)
 
             # Record this round's actions
             self.rounds.append(round)
@@ -122,7 +141,10 @@ class STV(MultipleWinnerVotingSystem):
         for ballot in ballots:
             if len(ballot["ballot"]) > 0:
                 tallies[ballot["ballot"][0]] += ballot["count"]
-        return dict((candidate, votes) for (candidate, votes) in tallies.iteritems() if votes > 0)
+        return dict(
+            (candidate, votes) for (candidate, votes)in six.iteritems(tallies)
+            if votes > 0
+        )
 
     @staticmethod
     def viable_candidates(ballots):

@@ -12,17 +12,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import
 
-from abstract_classes import AbstractOrderingVotingSystem
-from schulze_helper import SchulzeHelper
-from schulze_method import SchulzeMethod
-
-#
+from .abstract_classes import AbstractOrderingVotingSystem
+from .schulze_helper import SchulzeHelper
+from .schulze_method import SchulzeMethod
 
 
 class SchulzeNPR(AbstractOrderingVotingSystem, SchulzeHelper):
 
-    def __init__(self, ballots, winner_threshold=None, tie_breaker=None, ballot_notation=None):
+    def __init__(self, ballots, winner_threshold=None, tie_breaker=None,
+                 ballot_notation=None):
         self.standardize_ballots(ballots, ballot_notation)
         super(SchulzeNPR, self).__init__(
             self.ballots,
