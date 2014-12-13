@@ -17,9 +17,8 @@ from abstract_classes import AbstractOrderingVotingSystem
 from schulze_helper import SchulzeHelper
 from schulze_method import SchulzeMethod
 
+
 #
-
-
 class SchulzeNPR(AbstractOrderingVotingSystem, SchulzeHelper):
 
     def __init__(self, ballots, winner_threshold=None, tie_breaker=None, ballot_notation=None):

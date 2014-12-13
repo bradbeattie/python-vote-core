@@ -31,7 +31,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
         ]
-        SchulzeSTV(input, required_winners=5, ballot_notation="ranking").as_dict()
+        SchulzeSTV(input, required_winners=5, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assert_(time.time() - startTime < 8)
@@ -48,7 +48,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
         ]
-        SchulzeSTV(input, required_winners=9, ballot_notation="ranking").as_dict()
+        SchulzeSTV(input, required_winners=9, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assert_(time.time() - startTime < 2)
@@ -64,7 +64,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
         ]
-        output = SchulzeSTV(input, required_winners=10, ballot_notation="ranking").as_dict()
+        output = SchulzeSTV(input, required_winners=10, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertAlmostEqual(startTime, time.time(), 1)

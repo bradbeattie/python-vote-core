@@ -47,7 +47,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 24, "ballot": [["e"], ["c"], ["a"], ["d"], ["b"]]},
             {"count": 3, "ballot": [["e"], ["d"], ["c"], ["b"], ["a"]]},
         ]
-        output = SchulzeSTV(input, required_winners=3, ballot_notation="grouping").as_dict()
+        output = SchulzeSTV(input, required_winners=3, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output['winners'], set(['a', 'd', 'e']))
@@ -63,7 +63,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation="grouping").as_dict()
+        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -88,7 +88,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation="grouping").as_dict()
+        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -109,7 +109,7 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             {"count": 1, "ballot": {"a": 1, "b": 1, "c": 3}}
         ]
-        output = SchulzeSTV(input, required_winners=1, ballot_notation="rating").as_dict()
+        output = SchulzeSTV(input, required_winners=1, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RATING).as_dict()
 
         # Run tests
         self.assertEqual(output['winners'], set(["c"]))
@@ -122,7 +122,7 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             {"count": 1, "ballot": {"Metal": 1, "Paper": 1, "Plastic": 2, "Wood": 2}},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
+        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -139,7 +139,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 1, "ballot": {"Metal": 2, "Paper": 1, "Plastic": 2, "Wood": 2}},
             {"count": 1, "ballot": {"Metal": 2, "Paper": 2, "Plastic": 2, "Wood": 1}}
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
+        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -156,7 +156,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation="ranking").as_dict()
+        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(
@@ -173,7 +173,7 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 2, "ballot": [["B1", "B2"], ["A1", "A2", "C1", "C2"]]},
             {"count": 4, "ballot": [["C1", "C2"], ["B1", "B2"], ["A1", "A2"]]},
         ]
-        output = SchulzeSTV(input, required_winners=3, ballot_notation="grouping").as_dict()
+        output = SchulzeSTV(input, required_winners=3, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assert_(set(["A1", "A2"]) & output["winners"])

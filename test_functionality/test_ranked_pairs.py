@@ -28,7 +28,7 @@ class TestRankedPairs(unittest.TestCase):
             {"count": 50, "ballot": [["c2"], ["c3", "c1"]]},
             {"count": 40, "ballot": [["c3"], ["c1"], ["c2"]]}
         ]
-        output = RankedPairs(input, ballot_notation="grouping").as_dict()
+        output = RankedPairs(input, ballot_notation=RankedPairs.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -58,7 +58,7 @@ class TestRankedPairs(unittest.TestCase):
             {"count": 50, "ballot": [["c2"], ["c3"], ["c1"]]},
             {"count": 40, "ballot": [["c3"], ["c1"], ["c2"]]}
         ]
-        output = RankedPairs(input, ballot_notation="grouping").as_dict()
+        output = RankedPairs(input, ballot_notation=RankedPairs.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -93,7 +93,7 @@ class TestRankedPairs(unittest.TestCase):
             {"count": 100, "ballot": [["vanilla"], ["strawberry"]]},
             {"count": 1, "ballot": [["strawberry"], ["chocolate"]]}
         ]
-        output = RankedPairs(input, ballot_notation="grouping").as_dict()
+        output = RankedPairs(input, ballot_notation=RankedPairs.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output["pairs"], {

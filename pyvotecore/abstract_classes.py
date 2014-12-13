@@ -18,9 +18,8 @@ from abc import ABCMeta, abstractmethod
 from copy import copy, deepcopy
 import types
 
+
 # This class provides methods that most electoral systems make use of.
-
-
 class VotingSystem(object):
     __metaclass__ = ABCMeta
 
@@ -48,9 +47,8 @@ class VotingSystem(object):
             self.tie_breaker = TieBreaker(self.candidates)
         return self.tie_breaker.break_ties(tied_objects, reverse_order)
 
+
 # Given a set of candidates, return a fixed number of winners
-
-
 class FixedWinnerVotingSystem(VotingSystem):
     __metaclass__ = ABCMeta
 
@@ -64,9 +62,8 @@ class FixedWinnerVotingSystem(VotingSystem):
             data["tied_winners"] = self.tied_winners
         return data
 
-# Given a set of candidates, return a fixed number of winners
 
-
+# Given a set of candidates, return the set of winners
 class MultipleWinnerVotingSystem(FixedWinnerVotingSystem):
     __metaclass__ = ABCMeta
 
@@ -84,9 +81,8 @@ class MultipleWinnerVotingSystem(FixedWinnerVotingSystem):
         data["winners"] = self.winners
         return data
 
-# Given a set of candidates, return a fixed number of winners
 
-
+# Given a set of candidates, return a single winners
 class SingleWinnerVotingSystem(FixedWinnerVotingSystem):
     __metaclass__ = ABCMeta
 
@@ -99,9 +95,8 @@ class SingleWinnerVotingSystem(FixedWinnerVotingSystem):
         data["winner"] = self.winner
         return data
 
+
 # Given a set of candidates, return a fixed number of winners
-
-
 class AbstractSingleWinnerVotingSystem(SingleWinnerVotingSystem):
     __metaclass__ = ABCMeta
 
@@ -122,9 +117,8 @@ class AbstractSingleWinnerVotingSystem(SingleWinnerVotingSystem):
         del data["winners"]
         return data
 
+
 # Given a set of candidates, return an ordering
-
-
 class OrderingVotingSystem(VotingSystem):
     __metaclass__ = ABCMeta
 
@@ -138,9 +132,10 @@ class OrderingVotingSystem(VotingSystem):
         data["order"] = self.order
         return data
 
-# Given a single winner system, generate a non-proportional ordering by sequentially removing the winner
 
-
+# Given a single winner system, generate a non-proportional ordering by
+# sequentially removing the winner and rerunning the election with the
+# smaller subset of candidates until all candidates are consumed.
 class AbstractOrderingVotingSystem(OrderingVotingSystem):
     __metaclass__ = ABCMeta
 

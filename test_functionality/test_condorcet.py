@@ -29,7 +29,7 @@ class TestCondorcet(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -60,7 +60,7 @@ class TestCondorcet(unittest.TestCase):
             {"count": 13, "ballot": {"Carter": 1, "Andrea": 2, "Brad": 3}},
             {"count": 27, "ballot": {"Brad": 1}}
         ]
-        output = SchulzeMethod(input, ballot_notation="ranking").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -91,7 +91,7 @@ class TestCondorcet(unittest.TestCase):
             {"count": 13, "ballot": {"Carter": 10, "Andrea": 5, "Brad": 3}},
             {"count": 27, "ballot": {"Brad": 10}}
         ]
-        output = SchulzeMethod(input, ballot_notation="rating").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RATING).as_dict()
 
         # Run tests
         self.assertEqual(output, {

@@ -25,7 +25,7 @@ class TestSchulzeNPR(unittest.TestCase):
         input = [
             {"count": 1, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
         ]
-        output = SchulzeNPR(input, winner_threshold=5, ballot_notation="ranking").as_dict()
+        output = SchulzeNPR(input, winner_threshold=5, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -47,7 +47,7 @@ class TestSchulzeNPR(unittest.TestCase):
             {"count": 2, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
             {"count": 1, "ballot": {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}},
         ]
-        output = SchulzeNPR(input, winner_threshold=5, ballot_notation="ranking").as_dict()
+        output = SchulzeNPR(input, winner_threshold=5, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {

@@ -21,10 +21,14 @@ import itertools
 
 class CondorcetHelper(object):
 
+    BALLOT_NOTATION_GROUPING = 0
+    BALLOT_NOTATION_RANKING = 1
+    BALLOT_NOTATION_RATING = 2
+
     def standardize_ballots(self, ballots, ballot_notation):
 
         self.ballots = ballots
-        if ballot_notation == "grouping":
+        if ballot_notation == CondorcetHelper.BALLOT_NOTATION_GROUPING:
             for ballot in self.ballots:
                 ballot["ballot"].reverse()
                 new_ballot = {}
@@ -34,17 +38,16 @@ class CondorcetHelper(object):
                     for candidate in rank:
                         new_ballot[candidate] = r
                 ballot["ballot"] = new_ballot
-        elif ballot_notation == "ranking":
+        elif ballot_notation == CondorcetHelper.BALLOT_NOTATION_RANKING:
             for ballot in self.ballots:
                 for candidate, rating in ballot["ballot"].iteritems():
                     ballot["ballot"][candidate] = -float(rating)
-        elif ballot_notation == "rating" or ballot_notation is None:
+        elif ballot_notation == CondorcetHelper.BALLOT_NOTATION_RATING or ballot_notation is None:
             for ballot in self.ballots:
                 for candidate, rating in ballot["ballot"].iteritems():
                     ballot["ballot"][candidate] = float(rating)
         else:
-            print ballot_notation
-            raise Exception("Unknown notation specified")
+            raise Exception("Unknown notation specified", ballot_notation)
 
         self.candidates = set()
         for ballot in self.ballots:

@@ -14,16 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from abstract_classes import MultipleWinnerVotingSystem
-import math
-import copy
 from common_functions import matching_keys
+import copy
+import math
+
 
 # This class implements the Single Transferable vote (aka STV) in its most
 # classic form (see http://en.wikipedia.org/wiki/Single_transferable_vote).
 # Alternate counting methods such as Meek's and Warren's would be nice, but
 # would need to be covered in a separate class.
-
-
 class STV(MultipleWinnerVotingSystem):
 
     def __init__(self, ballots, tie_breaker=None, required_winners=1):

@@ -31,7 +31,7 @@ class TestSchulzeMethod(unittest.TestCase):
             {"count": 5, "ballot": [["D"], ["A"], ["B"], ["C"]]},
             {"count": 5, "ballot": [["D"], ["B"], ["C"], ["A"]]}
         ]
-        output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -82,7 +82,7 @@ class TestSchulzeMethod(unittest.TestCase):
             {"count": 7, "ballot": [["D"], ["C"], ["E"], ["B"], ["A"]]},
             {"count": 8, "ballot": [["E"], ["B"], ["A"], ["D"], ["C"]]}
         ]
-        output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -136,7 +136,7 @@ class TestSchulzeMethod(unittest.TestCase):
             {"count": 1, "ballot": [["A"], ["B", "C"]]},
             {"count": 1, "ballot": [["B"], ["A"], ["C"]]},
         ]
-        output = SchulzeMethod(input, ballot_notation="grouping").as_dict()
+        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output['candidates'], set(['A', 'B', 'C']))
@@ -153,6 +153,7 @@ class TestSchulzeMethod(unittest.TestCase):
             ('B', 'C'): 1,
         })
         self.assertEqual(output['tied_winners'], set(['A', 'B']))
+
 
 if __name__ == "__main__":
     unittest.main()

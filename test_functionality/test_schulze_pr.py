@@ -37,7 +37,7 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 108, "ballot": [["d"], ["b"], ["e"], ["c"], ["a"]]},
             {"count": 30, "ballot": [["e"], ["a"], ["b"], ["d"], ["c"]]},
         ]
-        output = SchulzePR(input, ballot_notation="grouping").as_dict()
+        output = SchulzePR(input, ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
@@ -59,7 +59,7 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 1, "ballot": [["a"], ["d"], ["b"], ["c"], ["e"]]},
             {"count": 1, "ballot": [["d"], ["a"], ["e"], ["c"], ["b"]]},
         ]
-        output = SchulzePR(input, ballot_notation="grouping").as_dict()
+        output = SchulzePR(input, ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
         self.assertEqual(output["candidates"], set(["a", "b", "c", "d", "e"]))
@@ -67,6 +67,20 @@ class TestSchulzePR(unittest.TestCase):
         self.assertEqual(output["rounds"][0]["tied_winners"], set(['a', 'd']))
         self.assertEqual(output["rounds"][2]["tied_winners"], set(['c', 'b', 'e']))
         self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
+
+    def test_reported_tie_bug(self):
+
+        # Generate data
+        input = [
+            {"count": 1, "ballot": [["a", "b"], ["c"]]},
+            {"count": 1, "ballot": [["c"], ["a", "b"]]},
+        ]
+        output = SchulzePR(input, winner_threshold=3, ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING).as_dict()
+
+        from pprint import PrettyPrinter
+        print
+        PrettyPrinter(indent=4).pprint(output)
+
 
     def test_happenstance_example(self):
 
@@ -76,7 +90,7 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 7, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
             {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
         ]
-        output = SchulzePR(input, winner_threshold=2, ballot_notation="ranking").as_dict()
+        output = SchulzePR(input, winner_threshold=2, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assertEqual(output, {
