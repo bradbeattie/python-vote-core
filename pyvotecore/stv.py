@@ -33,7 +33,7 @@ class STV(MultipleWinnerVotingSystem):
         self.candidates = set()
         for ballot in self.ballots:
             ballot["count"] = float(ballot["count"])
-            self.candidates.update(set(ballot['ballot']))
+            self.candidates.add(ballot["ballot"][0])
 
         self.quota = STV.droop_quota(self.ballots, self.required_winners)
         self.rounds = []
