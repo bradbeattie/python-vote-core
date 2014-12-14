@@ -104,9 +104,9 @@ class TestSTV(unittest.TestCase):
             'candidates': set(['c1', 'c2', 'c3', 'c4']),
             'quota': 1,
             'rounds': [
-                {'tallies': {'c1': 1.0}, 'winners': set(['c1'])},
-                {'note': 'reset', 'tallies': {'c2': 1.0}, 'winners': set(['c2'])},
-                {'note': 'reset', 'tallies': {'c3': 1.0}, 'winners': set(['c3'])}
+                {'tallies': {'c1': 1.0, 'c2': 0, 'c3': 0, 'c4': 0}, 'winners': set(['c1'])},
+                {'note': 'reset', 'tallies': {'c2': 1.0, 'c3': 0, 'c4': 0}, 'winners': set(['c2'])},
+                {'note': 'reset', 'tallies': {'c3': 1.0, 'c4': 0}, 'winners': set(['c3'])},
             ],
             'winners': set(['c1', 'c2', 'c3'])
         })
@@ -126,8 +126,8 @@ class TestSTV(unittest.TestCase):
             'candidates': set(['c1', 'c2', 'c3', 'c4']),
             'quota': 1,
             'rounds': [
-                {'tallies': {'c2': 1.0, 'c1': 1.0}, 'winners': set(['c2', 'c1'])},
-                {'note': 'reset', 'tallies': {'c3': 2.0}, 'winners': set(['c3'])}
+                {'tallies': {'c1': 1.0, 'c2': 1.0, 'c3': 0, 'c4': 0}, 'winners': set(['c1', 'c2'])},
+                {'note': 'reset', 'tallies': {'c3': 2.0, 'c4': 0}, 'winners': set(['c3'])},
             ],
             'winners': set(['c1', 'c2', 'c3'])
         })
@@ -180,7 +180,22 @@ class TestSTV(unittest.TestCase):
         output = STV(input, required_winners=4).as_dict()
 
         # Run tests
-        self.assert_("G" not in output["winners"])
+        self.assertEqual(output["winners"], set(['A', 'C', 'D', 'F']))
+
+    # STV, Ian Jacobs use-case #3
+    def test_stv_ian_jacobs_3(self):
+
+        # Generate data
+        input = [
+            {"count": 3, "ballot": ["A", "X", "D"]},
+            {"count": 3, "ballot": ["B", "X", "D"]},
+            {"count": 2, "ballot": ["C", "X"]},
+            {"count": 1, "ballot": ["D", "X"]},
+        ]
+        output = STV(input, required_winners=3).as_dict()
+
+        # Run tests
+        self.assertEqual(output["winners"], set(["A", "B", "C"]))
 
 
 
