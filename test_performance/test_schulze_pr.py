@@ -31,7 +31,7 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
         ]
-        SchulzePR(input, winner_threshold=5, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
+        SchulzePR(input, winner_threshold=5, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assert_(time.time() - startTime < 1)
@@ -47,7 +47,7 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
             {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
         ]
-        SchulzePR(input, winner_threshold=9, ballot_notation=BALLOT_NOTATION_RANKING).as_dict()
+        SchulzePR(input, winner_threshold=9, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
 
         # Run tests
         self.assert_(time.time() - startTime < 2)
