@@ -156,6 +156,35 @@ class TestSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output["winners"], set(["AB", "BC", "QR"]))
 
+    # STV, Ian Jacobs use-case #2
+    def test_stv_ian_jacobs_2(self):
+
+        # Generate data
+        input = [
+            {"count": 1, "ballot": ["A", "B", "C"]},
+            {"count": 1, "ballot": ["A", "D", "B", "G"]},
+            {"count": 1, "ballot": ["D", "A", "C", "E", "B", "F"]},
+            {"count": 1, "ballot": ["E", "A", "C", "F", "B", "D"]},
+            {"count": 1, "ballot": ["F", "C", "B"]},
+            {"count": 1, "ballot": ["C", "F", "A", "G"]},
+            {"count": 1, "ballot": ["A", "E", "B", "D", "C", "F"]},
+            {"count": 1, "ballot": ["F", "E", "D", "A", "C", "B", "G"]},
+            {"count": 1, "ballot": ["C", "F", "D"]},
+            {"count": 1, "ballot": ["C", "A", "E", "F", "D", "B", "G"]},
+            {"count": 1, "ballot": ["F", "B", "A", "C", "E", "D"]},
+            {"count": 1, "ballot": ["D", "A", "B", "F", "E", "C", "G"]},
+            {"count": 1, "ballot": ["D", "B", "C", "F", "A", "E", "G"]},
+            {"count": 1, "ballot": ["A", "F", "C", "E", "B", "G"]},
+            {"count": 1, "ballot": ["F", "A", "B"]}
+        ]
+        output = STV(input, required_winners=4).as_dict()
+
+        # Run tests
+        import pprint
+        pprint.pprint(output)
+        self.assert_("G" not in output["winners"])
+
+
 
 if __name__ == "__main__":
     unittest.main()
