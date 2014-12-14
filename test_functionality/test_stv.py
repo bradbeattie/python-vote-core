@@ -180,8 +180,6 @@ class TestSTV(unittest.TestCase):
         output = STV(input, required_winners=4).as_dict()
 
         # Run tests
-        import pprint
-        pprint.pprint(output)
         self.assert_("G" not in output["winners"])
 
 

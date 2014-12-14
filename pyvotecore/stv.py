@@ -28,58 +28,74 @@ class STV(MultipleWinnerVotingSystem):
     def __init__(self, ballots, tie_breaker=None, required_winners=1):
         super(STV, self).__init__(ballots, tie_breaker=tie_breaker, required_winners=required_winners)
 
+    def repopulate_remaining_candidates(self, ballots):
+        return set(
+            ballot["ballot"][0]
+            for ballot in ballots
+            if ballot["ballot"] and ballot["ballot"][0] not in self.winners
+        )
+
     def calculate_results(self):
 
         self.candidates = set()
         for ballot in self.ballots:
             ballot["count"] = float(ballot["count"])
             self.candidates.update(ballot["ballot"])
+        if len(self.candidates) < self.required_winners:
+            raise Exception("Not enough candidates provided")
 
         self.quota = STV.droop_quota(self.ballots, self.required_winners)
         self.rounds = []
         self.winners = set()
         quota = self.quota
-        remaining_candidates = copy.deepcopy(self.candidates)
         ballots = copy.deepcopy(self.ballots)
+        remaining_candidates = self.repopulate_remaining_candidates(ballots)
 
         # Loop until we have enough candidates
-        while len(self.winners) < self.required_winners and len(remaining_candidates) + len(self.winners) > self.required_winners:
+        while len(self.winners) < self.required_winners and len(remaining_candidates) + len(self.winners) != self.required_winners:
+
+            # Repopulate the remaining candidates if necessary
+            if not remaining_candidates:
+                remaining_candidates = self.repopulate_remaining_candidates(ballots)
 
             # If all the votes have been used up, start from scratch for the remaining candidates
             round = {}
-            if len(filter(lambda ballot: ballot["count"] > 0, ballots)) == 0:
+            if len(filter(lambda ballot: ballot["count"] > 0 and ballot["ballot"], ballots)) == 0:
+                remaining_candidates = self.candidates - self.winners
                 round["note"] = "reset"
                 ballots = copy.deepcopy(self.ballots)
                 for ballot in ballots:
                     ballot["ballot"] = filter(lambda x: x in remaining_candidates, ballot["ballot"])
                 quota = STV.droop_quota(ballots, self.required_winners - len(self.winners))
 
-            # If any candidates meet or exceeds the quota, they're a winner
             round["tallies"] = STV.tallies(ballots)
-            if max(round["tallies"].values()) >= quota:
+            if round["tallies"]:
 
-                # Collect candidates as winners
-                round["winners"] = set([
-                    candidate
-                    for candidate, tally in round["tallies"].items()
-                    if tally >= self.quota
-                ])
-                self.winners |= round["winners"]
-                remaining_candidates -= round["winners"]
+                # If any candidates meet or exceeds the quota, they're a winner
+                if max(round["tallies"].values()) >= quota:
 
-                # Redistribute excess votes
-                for ballot in ballots:
-                    if ballot["ballot"] and ballot["ballot"][0] in round["winners"]:
-                        ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - self.quota) / round["tallies"][ballot["ballot"][0]]
+                    # Collect candidates as winners
+                    round["winners"] = set([
+                        candidate
+                        for candidate, tally in round["tallies"].items()
+                        if tally >= self.quota
+                    ])
+                    self.winners |= round["winners"]
+                    remaining_candidates -= round["winners"]
 
-                # Remove candidates from remaining ballots
-                ballots = self.remove_candidates_from_ballots(round["winners"], ballots)
+                    # Redistribute excess votes
+                    for ballot in ballots:
+                        if ballot["ballot"] and ballot["ballot"][0] in round["winners"]:
+                            ballot["count"] *= (round["tallies"][ballot["ballot"][0]] - self.quota) / round["tallies"][ballot["ballot"][0]]
 
-            # If no candidate exceeds the quota, elimiate the least preferred
-            else:
-                round.update(self.loser(round["tallies"]))
-                remaining_candidates.remove(round["loser"])
-                ballots = self.remove_candidates_from_ballots([round["loser"]], ballots)
+                    # Remove candidates from remaining ballots
+                    ballots = self.remove_candidates_from_ballots(round["winners"], ballots)
+
+                # If no candidate exceeds the quota, elimiate the least preferred
+                else:
+                    round.update(self.loser(round["tallies"]))
+                    remaining_candidates.remove(round["loser"])
+                    ballots = self.remove_candidates_from_ballots([round["loser"]], ballots)
 
             # Record this round's actions
             self.rounds.append(round)
@@ -134,5 +150,6 @@ class STV(MultipleWinnerVotingSystem):
     def droop_quota(ballots, seats=1):
         voters = 0
         for ballot in ballots:
-            voters += ballot["count"]
+            if ballot["ballot"]:
+                voters += ballot["count"]
         return int(math.floor(voters / (seats + 1)) + 1)
