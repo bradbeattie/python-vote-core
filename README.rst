@@ -34,6 +34,7 @@ Basic Usage
 Schulze method example::
 
     >>> from pyvotecore.schulze_method import SchulzeMethod
+    >>> from pyvotecore.condorcet import CondorcetHelper
     >>> ballots = [
     ...   { "count":3, "ballot":[["A"], ["C"], ["D"], ["B"]] },
     ...   { "count":9, "ballot":[["B"], ["A"], ["C"], ["D"]] },
@@ -41,7 +42,7 @@ Schulze method example::
     ...   { "count":5, "ballot":[["D"], ["A"], ["B"], ["C"]] },
     ...   { "count":5, "ballot":[["D"], ["B"], ["C"], ["A"]] }
     ... ]
-    >>> SchulzeMethod(ballots, ballot_notation = "grouping").as_dict()
+    >>> SchulzeMethod(ballots, ballot_notation = CondorcetHelper.BALLOT_NOTATION_GROUPING).as_dict()
     {'actions': [{'edges': {('A', 'B')}},
       {'edges': {('A', 'C')}},
       {'nodes': {'A'}},
