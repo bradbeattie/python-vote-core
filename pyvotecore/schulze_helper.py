@@ -108,10 +108,13 @@ class SchulzeHelper(CondorcetHelper):
         weight_sum = sum(profile.values())
 
         # Peel off patterns with indifference (from the most to the least) and apply proportional completion to them
-        for pattern in sorted(profile.keys(), key=lambda pattern: pattern.count(PREFERRED_SAME), reverse=True):
-            if pattern.count(PREFERRED_SAME) == 0:
+        while True:
+            m = max(pattern.count(PREFERRED_SAME) for pattern in profile)
+            if m == 0:
                 break
-            self.proportional_completion_round(pattern, profile)
+            for pattern in profile.keys():
+                if pattern.count(PREFERRED_SAME) == m:
+                    self.proportional_completion_round(pattern, profile)
 
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
@@ -138,9 +141,8 @@ class SchulzeHelper(CondorcetHelper):
                         append = True
                 else:
                     append_target.append(completion_pattern[i])
-            append_target = tuple(append_target)
 
-            if append is True and append_target in profile:
+            if append is True:
                 append_target = tuple(append_target)
                 if append_target not in patterns_to_consider:
                     patterns_to_consider[append_target] = set()
