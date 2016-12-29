@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # This class implements Schulze STV, a proportional representation system
-from abstract_classes import MultipleWinnerVotingSystem
-from schulze_helper import SchulzeHelper
+from pyvotecore.abstract_classes import MultipleWinnerVotingSystem
+from pyvotecore.schulze_helper import SchulzeHelper
 from pygraph.classes.digraph import digraph
 import itertools
 

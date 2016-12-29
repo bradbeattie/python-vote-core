@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from abstract_classes import MultipleWinnerVotingSystem
-from common_functions import matching_keys
+from pyvotecore.abstract_classes import MultipleWinnerVotingSystem
+from pyvotecore.common_functions import matching_keys
 import types
 import copy
 

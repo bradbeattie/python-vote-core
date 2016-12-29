@@ -13,9 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from schulze_method import SchulzeMethod
-from schulze_helper import SchulzeHelper
-from abstract_classes import AbstractOrderingVotingSystem
+from pyvotecore.schulze_method import SchulzeMethod
+from pyvotecore.schulze_helper import SchulzeHelper
+from pyvotecore.abstract_classes import AbstractOrderingVotingSystem
 from pygraph.classes.digraph import digraph
 
 

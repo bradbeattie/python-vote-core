@@ -16,8 +16,8 @@
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
-from condorcet import CondorcetHelper
-from common_functions import matching_keys, unique_permutations
+from pyvotecore.condorcet import CondorcetHelper
+from pyvotecore.common_functions import matching_keys, unique_permutations
 
 PREFERRED_LESS = 1
 PREFERRED_SAME = 2
