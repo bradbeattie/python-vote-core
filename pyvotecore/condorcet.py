@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from abc import ABCMeta, abstractmethod
-from abstract_classes import SingleWinnerVotingSystem
+from pyvotecore.abstract_classes import SingleWinnerVotingSystem
 from pygraph.classes.digraph import digraph
 import itertools
 
@@ -40,11 +40,11 @@ class CondorcetHelper(object):
                 ballot["ballot"] = new_ballot
         elif ballot_notation == CondorcetHelper.BALLOT_NOTATION_RANKING:
             for ballot in self.ballots:
-                for candidate, rating in ballot["ballot"].iteritems():
+                for candidate, rating in ballot["ballot"].items():
                     ballot["ballot"][candidate] = -float(rating)
         elif ballot_notation == CondorcetHelper.BALLOT_NOTATION_RATING or ballot_notation is None:
             for ballot in self.ballots:
-                for candidate, rating in ballot["ballot"].iteritems():
+                for candidate, rating in ballot["ballot"].items():
                     ballot["ballot"][candidate] = float(rating)
         else:
             raise Exception("Unknown notation specified", ballot_notation)

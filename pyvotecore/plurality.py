@@ -1,5 +1,5 @@
-from abstract_classes import AbstractSingleWinnerVotingSystem
-from plurality_at_large import PluralityAtLarge
+from pyvotecore.abstract_classes import AbstractSingleWinnerVotingSystem
+from pyvotecore.plurality_at_large import PluralityAtLarge
 
 
 class Plurality(AbstractSingleWinnerVotingSystem):

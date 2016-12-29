@@ -1,5 +1,5 @@
-from abstract_classes import AbstractSingleWinnerVotingSystem
-from stv import STV
+from pyvotecore.abstract_classes import AbstractSingleWinnerVotingSystem
+from pyvotecore.stv import STV
 
 
 class IRV(AbstractSingleWinnerVotingSystem):

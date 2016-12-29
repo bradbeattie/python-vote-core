@@ -16,8 +16,8 @@
 from pygraph.algorithms.accessibility import accessibility, mutual_accessibility
 from pygraph.classes.digraph import digraph
 from pygraph.algorithms.minmax import maximum_flow
-from condorcet import CondorcetHelper
-from common_functions import matching_keys, unique_permutations
+from pyvotecore.condorcet import CondorcetHelper
+from pyvotecore.common_functions import matching_keys, unique_permutations
 
 PREFERRED_LESS = 1
 PREFERRED_SAME = 2
@@ -89,7 +89,7 @@ class SchulzeHelper(CondorcetHelper):
                 self.completed_patterns.append(tuple(pattern))
 
     def proportional_completion(self, candidate, other_candidates):
-        profile = dict(zip(self.completed_patterns, [0] * len(self.completed_patterns)))
+        profile = dict(list(zip(self.completed_patterns, [0] * len(self.completed_patterns))))
 
         # Obtain an initial tally from the ballots
         for ballot in self.ballots:
@@ -112,14 +112,14 @@ class SchulzeHelper(CondorcetHelper):
             m = max(pattern.count(PREFERRED_SAME) for pattern in profile)
             if m == 0:
                 break
-            for pattern in profile.keys():
+            for pattern in list(profile.keys()):
                 if pattern.count(PREFERRED_SAME) == m:
                     self.proportional_completion_round(pattern, profile)
 
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print( "Proportional completion broke (went from {} to {})".format(weight_sum, sum(profile.values())) )
 
         return profile
 
@@ -165,7 +165,7 @@ class SchulzeHelper(CondorcetHelper):
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print( "Proportional completion round broke (went from {} to {})".format(weight_sum, sum(profile.values())) )
 
         return profile
 
@@ -189,7 +189,7 @@ class SchulzeHelper(CondorcetHelper):
             for i in range(self.required_winners):
                 self.vote_management_graph.set_edge_weight((i, NODE_SINK), r[-1])
             max_flow = maximum_flow(self.vote_management_graph, NODE_SOURCE, NODE_SINK)
-            sink_sum = sum(v for k, v in max_flow[0].iteritems() if k[1] == NODE_SINK)
+            sink_sum = sum(v for k, v in max_flow[0].items() if k[1] == NODE_SINK)
             r.append(sink_sum / self.required_winners)
 
             # We expect strengths to be above a specified threshold
