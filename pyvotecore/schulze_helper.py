@@ -189,7 +189,7 @@ class SchulzeHelper(CondorcetHelper):
             for i in range(self.required_winners):
                 self.vote_management_graph.set_edge_weight((i, NODE_SINK), r[-1])
             max_flow = maximum_flow(self.vote_management_graph, NODE_SOURCE, NODE_SINK)
-            sink_sum = sum(v for k, v in max_flow[0].iteritems() if k[1] == NODE_SINK)
+            sink_sum = sum(v for k, v in max_flow[0].items() if k[1] == NODE_SINK)
             r.append(sink_sum / self.required_winners)
 
             # We expect strengths to be above a specified threshold

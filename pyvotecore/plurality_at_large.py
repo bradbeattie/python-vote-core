@@ -15,7 +15,6 @@
 
 from pyvotecore.abstract_classes import MultipleWinnerVotingSystem
 from pyvotecore.common_functions import matching_keys
-import types
 import copy
 
 
@@ -31,7 +30,7 @@ class PluralityAtLarge(MultipleWinnerVotingSystem):
         for ballot in self.ballots:
 
             # Convert single candidate ballots into ballot lists
-            if not isinstance(ballot["ballot"], types.ListType):
+            if not isinstance(ballot["ballot"], list):
                 ballot["ballot"] = [ballot["ballot"]]
 
             # Ensure no ballot has an excess of votes

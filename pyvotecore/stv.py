@@ -59,7 +59,7 @@ class STV(MultipleWinnerVotingSystem):
                 round["note"] = "reset"
                 ballots = copy.deepcopy(self.ballots)
                 for ballot in ballots:
-                    ballot["ballot"] = filter(lambda x: x in remaining_candidates, ballot["ballot"])
+                    ballot["ballot"] = list(filter(lambda x: x in remaining_candidates, ballot["ballot"]))
                 quota = STV.droop_quota(ballots, self.required_winners - len(self.winners))
 
             round["tallies"] = self.tallies(ballots)
