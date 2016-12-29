@@ -89,7 +89,7 @@ class SchulzeHelper(CondorcetHelper):
                 self.completed_patterns.append(tuple(pattern))
 
     def proportional_completion(self, candidate, other_candidates):
-        profile = dict(zip(self.completed_patterns, [0] * len(self.completed_patterns)))
+        profile = dict(list(zip(self.completed_patterns, [0] * len(self.completed_patterns))))
 
         # Obtain an initial tally from the ballots
         for ballot in self.ballots:
@@ -112,7 +112,7 @@ class SchulzeHelper(CondorcetHelper):
             m = max(pattern.count(PREFERRED_SAME) for pattern in profile)
             if m == 0:
                 break
-            for pattern in profile.keys():
+            for pattern in list(profile.keys()):
                 if pattern.count(PREFERRED_SAME) == m:
                     self.proportional_completion_round(pattern, profile)
 
