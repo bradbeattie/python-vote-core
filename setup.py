@@ -12,14 +12,14 @@ requires = [
 ]
 
 setup(name='python-vote-core',
-      version='20120423.0',
+      version='20161228.0',
       description="An implementation of various election methods, most notably the Schulze Method and Schulze STV.",
       long_description=README + '\n\n' + CHANGES + '\n\n' + LICENSE,
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "License :: OSI Approved :: GNU General Public License (GPL)",
           "Programming Language :: Python",
-          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3.5",
           "Topic :: Scientific/Engineering :: Mathematics",
       ],
       author='Brad Beattie',

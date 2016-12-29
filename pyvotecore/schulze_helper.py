@@ -119,7 +119,7 @@ class SchulzeHelper(CondorcetHelper):
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print( "Proportional completion broke (went from {} to {})".format(weight_sum, sum(profile.values())) )
 
         return profile
 
@@ -165,7 +165,7 @@ class SchulzeHelper(CondorcetHelper):
         try:
             assert round(weight_sum, 5) == round(sum(profile.values()), 5)
         except:
-            print "Proportional completion round broke (went from %s to %s)" % (weight_sum, sum(profile.values()))
+            print( "Proportional completion round broke (went from {} to {})".format(weight_sum, sum(profile.values())) )
 
         return profile
 
