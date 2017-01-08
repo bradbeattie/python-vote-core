@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from schulze_helper import SchulzeHelper
-from condorcet import CondorcetSystem
+from pyvotecore.schulze_helper import SchulzeHelper
+from pyvotecore.condorcet import CondorcetSystem
 
 
 # This class implements the Schulze Method (aka the beatpath method)

@@ -177,9 +177,9 @@ class TestSchulzeSTV(unittest.TestCase):
         output = SchulzeSTV(input, required_winners=3, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
-        self.assert_(set(["A1", "A2"]) & output["winners"])
-        self.assert_(set(["B1", "B2"]) & output["winners"])
-        self.assert_(set(["C1", "C2"]) & output["winners"])
+        self.assertTrue(set(["A1", "A2"]) & output["winners"])
+        self.assertTrue(set(["B1", "B2"]) & output["winners"])
+        self.assertTrue(set(["C1", "C2"]) & output["winners"])
 
     # Proportional completion example worked through in Schulze's calcul01.pdf
     def test_A53_proportional_completion(self):

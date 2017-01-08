@@ -13,9 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from abstract_classes import MultipleWinnerVotingSystem
+from pyvotecore.abstract_classes import MultipleWinnerVotingSystem
 from collections import defaultdict
-from common_functions import matching_keys
+from pyvotecore.common_functions import matching_keys
 import copy
 import math
 
@@ -54,12 +54,12 @@ class STV(MultipleWinnerVotingSystem):
 
             # If all the votes have been used up, start from scratch for the remaining candidates
             round = {}
-            if len(filter(lambda ballot: ballot["count"] > 0 and ballot["ballot"], ballots)) == 0:
+            if len(list(filter(lambda ballot: ballot["count"] > 0 and ballot["ballot"], ballots))) == 0:
                 remaining_candidates = self.candidates - self.winners
                 round["note"] = "reset"
                 ballots = copy.deepcopy(self.ballots)
                 for ballot in ballots:
-                    ballot["ballot"] = filter(lambda x: x in remaining_candidates, ballot["ballot"])
+                    ballot["ballot"] = list(filter(lambda x: x in remaining_candidates, ballot["ballot"]))
                 quota = STV.droop_quota(ballots, self.required_winners - len(self.winners))
 
             round["tallies"] = self.tallies(ballots)
@@ -133,7 +133,7 @@ class STV(MultipleWinnerVotingSystem):
         for ballot in ballots:
             if ballot["ballot"]:
                 tallies[ballot["ballot"][0]] += ballot["count"]
-        return dict((candidate, votes) for (candidate, votes) in tallies.iteritems())
+        return dict((candidate, votes) for (candidate, votes) in tallies.items())
 
     @staticmethod
     def droop_quota(ballots, seats=1):
