@@ -20,7 +20,7 @@ from common_functions import matching_keys
 from copy import deepcopy
 
 
-# This class implements the Schulze Method (aka the beatpath method)
+# This class implements the Tideman Ranked Pairs method
 class RankedPairs(CondorcetSystem, CondorcetHelper):
 
     def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
