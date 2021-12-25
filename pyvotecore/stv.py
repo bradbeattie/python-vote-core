@@ -85,7 +85,7 @@ class STV(MultipleWinnerVotingSystem):
                     # Remove candidates from remaining ballots
                     ballots = self.remove_candidates_from_ballots(round["winners"], ballots)
 
-                # If no candidate exceeds the quota, elimiate the least preferred
+                # If no candidate exceeds the quota, eliminate the least preferred
                 else:
                     round.update(self.loser(round["tallies"]))
                     remaining_candidates.remove(round["loser"])
